@@ -12,8 +12,8 @@ FastFlowLM is a lightweight runtime for deploying LLMs like LLaMA and DeepSeek d
 
 FastFlowLM vs AMD’s official stack — **real-time speedup and power efficiency**: 
 
-- Same prompt (length: 1835 tokens)
-- Real-time CPU, iGPU, NPU usage, and power consumption shown
+- Same prompt (length: 1835 tokens), same model (LLaMA 3.2 1B model), running on the same machine (AMD Ryzen AI 5 340 NPU)
+- Real-time CPU, iGPU, NPU usage, and power consumption shown (Windows task manager + HWINFO)
 
 ### 🔹 FastFlowLM vs AMD Ryzen AI Software 1.4 (NPU-only via Lemonade)
 
