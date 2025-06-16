@@ -8,6 +8,26 @@ FastFlowLM is a lightweight runtime for deploying LLMs like LLaMA and DeepSeek d
 
 ---
 
+## 📺 Demo Videos
+
+FastFlowLM vs AMD’s official stack — **real-time speedup and power efficiency**: 
+
+- Same prompt (length: 1835 tokens)
+- Real-time CPU, iGPU, NPU usage, and power consumption shown
+
+### 🔹 FastFlowLM vs AMD Ryzen AI Software 1.4 (NPU-only via Lemonade)
+
+[![Demo: FastFlowLM vs Lemonade](https://img.youtube.com/vi/kv31FZ_q0_I/0.jpg)](https://www.youtube.com/watch?v=kv31FZ_q0_I)
+
+### 🔹 FastFlowLM vs GAIA vs AMD Ryzen AI Software 1.4 (Hybrid iGPU+NPU via GAIA)
+
+[![Demo: FastFlowLM vs GAIA](https://img.youtube.com/vi/PFjH-L_Kr0w/0.jpg)](https://www.youtube.com/watch?v=PFjH-L_Kr0w)
+
+> Click to watch each video on YouTube. Power and utilization metrics shown live.
+
+
+---
+
 ## 🧠 Local AI on Your NPU
 
 FastFlowLM makes it easy to run modern LLMs locally with:
