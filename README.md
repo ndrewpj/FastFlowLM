@@ -23,9 +23,6 @@ FastFlowLM vs AMD’s official stack — **real-time speedup and power efficienc
 
 [![Demo: FastFlowLM vs GAIA](https://img.youtube.com/vi/PFjH-L_Kr0w/0.jpg)](https://www.youtube.com/watch?v=PFjH-L_Kr0w)
 
-> Click to watch each video on YouTube. Power and utilization metrics shown live.
-
-
 ---
 
 ## 🧠 Local AI on Your NPU
