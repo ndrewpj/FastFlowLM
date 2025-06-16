@@ -1,85 +1,82 @@
-# 🚀 FastFlowLM
+# FastFlowLM
 
-**Deploy large language models (LLMs) on AMD Ryzen™ AI NPUs—in minutes.**  
-Think **Ollama**, purpose-built for the AMD Ryzen™ NPU architecture.
+Run large language models on AMD Ryzen™ AI NPUs — in minutes.
 
----
+FastFlowLM is a lightweight runtime for deploying LLMs like LLaMA and DeepSeek directly on AMD’s integrated NPU — no GPU or CPU needed.
 
-## Overview
-
-**FastFlowLM** is a high-performance runtime for deploying state-of-the-art LLMs—such as **LLaMA**, **DeepSeek**, and others—directly on AMD Ryzen™ NPUs. It is engineered for **low-latency**, **low-power**, and **always-on** AI, leveraging the NPU silicon already embedded in next-gen AI PCs.
+Just like Ollama, but built for Ryzen™.
 
 ---
 
-## Key Features
+## 🧠 Local AI on Your NPU
 
-### 👨‍💻 Developer-Centric Design  
-Purpose-built for local AI agent development.  
-No low-level NPU knowledge required—FastFlowLM abstracts the hardware layer for you.
+FastFlowLM makes it easy to run modern LLMs locally with:
+- ⚡ High performance and low power
+- 🧰 Simple CLI and API
+- 🔐 Fully private and offline
 
-### 🧰 Ollama-Like Simplicity  
-Offers a streamlined **CLI** and **API**, mirroring the ease of use of Ollama, with the added benefit of **native NPU acceleration**.
-
-### 💻 Zero GPU/CPU Dependency  
-All model inference runs entirely on the **AMD Ryzen™ NPU**, freeing CPU and GPU resources for other workloads.
-
-### 📏 Extended Context Support  
-Supports long context windows—**up to 128k tokens** on models like **LLaMA 3.1/3.2**—enabling long-form reasoning, multi-turn memory, and RAG workflows without compromise.
+No drivers, no model rewrites, no tuning — it just works.
 
 ---
 
-## ⚡ Performance That Speaks for Itself
+## ✅ Features
+
+- **Runs fully on AMD Ryzen™ NPU** — no GPU or CPU load
+- **CLI-first developer flow** — like Ollama, but optimized for NPU
+- **Support for long context windows** — up to 128k tokens (e.g., LLaMA 3.1/3.2)
+- **No low-level tuning required** — plug in your model, we handle the rest
+
+---
+
+## ⚡ Performance
 
 Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 
-### 🚀 LLM Decoding Throughput *(TPS: Tokens per Second)*
-- Up to **14.2× faster** vs NPU-only baseline  
-- Up to **16.2× faster** vs hybrid iGPU+NPU baseline
+### LLM Decoding Speed (TPS: Tokens per Second)
+- 🚀 Up to 14.2× faster (vs NPU-only baseline)
+- 🚀 Up to 16.2× faster (vs hybrid iGPU+NPU)
 
-### 🔋 Power Efficiency
-- Up to **2.66× more efficient** in LLM decoding vs NPU-only  
-- Up to **11.38× more efficient** in LLM decoding vs hybrid iGPU+NPU  
-- Up to **3.4× more efficient** in LLM prefill vs NPU-only or hybrid
+### Power Efficiency
+- 🔋 Up to 2.66× more efficient (vs NPU-only)
+- 🔋 Up to 11.38× more efficient (vs hybrid)
+- 🔋 Up to 3.4× more efficient in prefill (vs NPU-only or hybrid)
 
-### ⏱️ Latency *(LLM Prefill Speed)*
-- **Matches or exceeds** the **Time to First Token (TTFT)** performance of NPU-only and hybrid configurations
-
----
-
-## Model Support
-
-- ✅ Meta LLaMA 3.1 / 3.2  
-- ✅ DeepSeek R1  
-- ✅ And more...
+### Latency
+- ⏱️ Matches or exceeds TTFT of NPU-only or hybrid configurations
 
 ---
 
-## Quick Start (Coming Soon)
+## 🧪 Model Support
 
-Full installation guide, API reference, and deployment examples will be published shortly.
+FastFlowLM supports many of today’s best open models:
+- LLaMA 2 / 3.1 / 3.2
+- DeepSeek R1 / V2
+- Phi-2 / Phi-3
+- Command-R / Zephyr  
+*…and more coming soon.*
 
 ---
 
-## License
+## 🛠️ Getting Started
 
-This project is released under the **MIT License**.  
-Proprietary components are distributed in binary form and subject to separate licensing terms.
+Documentation, install guides, and example workflows coming soon.  
+You’ll be able to:
+- Load and run models locally via CLI
+- Integrate into your app via a simple HTTP API
 
 ---
 
 ## 🔒 Proprietary Kernel Optimizations
 
-FastFlowLM leverages **proprietary, low-level kernel code** optimized specifically for AMD Ryzen™ NPUs.  
-> These performance-critical components are **not open source**, but seamlessly integrated into the runtime for maximum efficiency and security.
+FastFlowLM uses **proprietary low-level kernel code** optimized for AMD Ryzen™ NPUs.  
+> These kernels are **not open source**, but are included as binaries for seamless integration.
 
-The open-source layers include the CLI, model orchestration, and runtime logic—enabling developers to integrate and deploy models without concern for NPU internals.
-
----
-
-## Acknowledgments
-
-Special thanks to **AMD Ryzen™ AI** engineering teams and the broader open-source community for driving innovation in efficient edge AI.
+The rest of the stack — CLI, model runner, orchestration — is open and developer-friendly.
 
 ---
 
+## License
 
+Open components are released under the **MIT License**. Proprietary binaries are subject to separate terms.
+
+---
