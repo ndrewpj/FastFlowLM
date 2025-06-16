@@ -2,8 +2,6 @@
   <img src="assets/logo.png" alt="FastFlowLM Logo" width="200"/>
 </p>
 
-# FastFlowLM
-
 Run large language models on AMD Ryzen™ AI NPUs — in minutes.
 
 FastFlowLM is a lightweight runtime for deploying LLMs like LLaMA and DeepSeek directly on AMD’s integrated NPU — no GPU or CPU needed.
