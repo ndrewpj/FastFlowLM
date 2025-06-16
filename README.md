@@ -1,30 +1,30 @@
 # 🚀 FastFlowLM
 
-**Deploy large language models (LLMs) on AMD Ryzen™ AI NPUs—in minutes.**
-
-Think **Ollama**, but purpose-built for the great **AMD Ryzen™ NPUs**.
-
----
-
-## 🔧 What is FastFlowLM?
-
-**FastFlowLM** is a high-performance runtime for deploying popular LLMs like **LLaMA** and **DeepSeek-R1** directly on AMD Ryzen™ NPUs. It's hardware-optimized for lightning-fast, low-power, private, always-on AI—running entirely on the silicon already in your AI PC.
+**Deploy large language models (LLMs) on AMD Ryzen™ AI NPUs—in minutes.**  
+Think **Ollama**, purpose-built for the AMD Ryzen™ NPU architecture.
 
 ---
 
-## 👨‍💻 Built for Developers Building Local AI Agents
+## Overview
 
-### 🧠 Zero Low-Level Tuning
-You don't need to know anything about NPU internals—just run your model. FastFlowLM takes care of all the hardware optimization for you.
+**FastFlowLM** is a high-performance runtime for deploying state-of-the-art LLMs—such as **LLaMA**, **DeepSeek**, and others—directly on AMD Ryzen™ NPUs. It is engineered for **low-latency**, **low-power**, and **always-on** AI, leveraging the NPU silicon already embedded in next-gen AI PCs.
 
-### 🧰 Familiar Workflow
-FastFlowLM offers the **CLI and API simplicity** developers love from tools like Ollama, but optimized for **AMD Ryzen™ NPU** execution.
+---
 
-### 💻 No GPU or CPU Required
-Models run **entirely on the Ryzen™ NPU**, leaving your CPU and GPU free for other tasks.
+## Key Features
 
-### 📏 Full Context Window Support  
-Supports full-context windows—**up to 128k tokens** on models like **LLaMA 3.1/3.2**—ideal for long-form reasoning and RAG applications.
+### 👨‍💻 Developer-Centric Design  
+Purpose-built for local AI agent development.  
+No low-level NPU knowledge required—FastFlowLM abstracts the hardware layer for you.
+
+### 🧰 Ollama-Like Simplicity  
+Offers a streamlined **CLI** and **API**, mirroring the ease of use of Ollama, with the added benefit of **native NPU acceleration**.
+
+### 💻 Zero GPU/CPU Dependency  
+All model inference runs entirely on the **AMD Ryzen™ NPU**, freeing CPU and GPU resources for other workloads.
+
+### 📏 Extended Context Support  
+Supports long context windows—**up to 128k tokens** on models like **LLaMA 3.1/3.2**—enabling long-form reasoning, multi-turn memory, and RAG workflows without compromise.
 
 ---
 
@@ -32,44 +32,44 @@ Supports full-context windows—**up to 128k tokens** on models like **LLaMA 3.1
 
 Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 
-### 🚀 LLM Decoding Speed *(TPS: Tokens per Second)*
-- Up to **14.2× faster** in LLM decoding *(vs NPU-only baseline)*
-- Up to **16.2× faster** in LLM decoding *(vs hybrid iGPU+NPU baseline)*
+### 🚀 LLM Decoding Throughput *(TPS: Tokens per Second)*
+- Up to **14.2× faster** vs NPU-only baseline  
+- Up to **16.2× faster** vs hybrid iGPU+NPU baseline
 
 ### 🔋 Power Efficiency
-- Up to **2.66× more efficient** in LLM decoding *(vs NPU-only baseline)*
-- Up to **11.38× more efficient** in LLM decoding *(vs hybrid iGPU+NPU baseline)*
-- Up to **3.4× more efficient** in LLM prefill *(vs NPU-only or hybrid baseline)*
+- Up to **2.66× more efficient** in LLM decoding vs NPU-only  
+- Up to **11.38× more efficient** in LLM decoding vs hybrid iGPU+NPU  
+- Up to **3.4× more efficient** in LLM prefill vs NPU-only or hybrid
 
 ### ⏱️ Latency *(LLM Prefill Speed)*
-- **Matches or exceeds** the **Time to First Token (TTFT)** of **NPU-only** or **hybrid** baselines
+- **Matches or exceeds** the **Time to First Token (TTFT)** performance of NPU-only and hybrid configurations
 
 ---
 
-## 🚀 Get Started
+## Model Support
 
-Coming soon: setup instructions, model loading guide, and API examples.
-
----
-
-## 🧪 Supported Models
-
-- Meta LLaMA 2 / 3
-- DeepSeek-V2 / R1
-- Phi-2 / Phi-3
-- Command-R / Zephyr
-- And more...
+- ✅ Meta LLaMA 2 / 3.1 / 3.2  
+- ✅ DeepSeek R1 / V2  
+- ✅ Phi-2 / Phi-3  
+- ✅ Command-R / Zephyr  
+- ✅ And more...
 
 ---
 
-## 📄 License
+## Quick Start (Coming Soon)
 
-MIT License
+Full installation guide, API reference, and deployment examples will be published shortly.
 
 ---
 
-## 🙌 Acknowledgments
+## License
 
-Thanks to AMD for Ryzen™ AI hardware innovation, and the open-source community for continued support.
+This project is licensed under the **MIT License**.
+
+---
+
+## Acknowledgments
+
+Special thanks to **AMD Ryzen™ AI** engineering teams and the broader open-source community for driving innovation in efficient edge AI.
 
 ---
