@@ -23,8 +23,8 @@ FastFlowLM offers the **CLI and API simplicity** developers love from tools like
 ### 💻 No GPU or CPU Required
 Models run **entirely on the Ryzen™ NPU**, leaving your CPU and GPU free for other tasks.
 
-### 📏 Full Context Window Support
-Supports context windows up to **128k tokens** on LLaMA 3.1/3.2—ideal for long-form reasoning and RAG applications.
+### 📏 Full Context Window Support  
+Supports full-context windows—**up to 128k tokens** on models like **LLaMA 3.1/3.2**—ideal for long-form reasoning and RAG applications.
 
 ---
 
