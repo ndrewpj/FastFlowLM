@@ -68,7 +68,6 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 FastFlowLM supports many of today’s best open models:
 - LLaMA 3.1 / 3.2  
 - DeepSeek R1  
-- Phi-2 / Phi-3  
 *...with more models coming soon.*
 
 ---
