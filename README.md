@@ -4,7 +4,7 @@ Run large language models on AMD Ryzen™ AI NPUs — in minutes.
 
 FastFlowLM is a lightweight runtime for deploying LLMs like LLaMA and DeepSeek directly on AMD’s integrated NPU — no GPU or CPU needed.
 
-**Just like Ollama — but built for Ryzen™.**
+**Just like Ollama — but built for the great Ryzen™ NPU.**
 
 ---
 
