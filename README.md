@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.png" alt="FastFlowLM Logo" width="200"/>
+</p>
+
 # FastFlowLM
 
 Run large language models on AMD Ryzen™ AI NPUs — in minutes.
