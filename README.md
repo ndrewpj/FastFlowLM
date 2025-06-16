@@ -24,7 +24,7 @@ No drivers, no model rewrites, no tuning — it just works.
 - **Runs fully on AMD Ryzen™ NPU** — no GPU or CPU load
 - **CLI-first developer flow** — like Ollama, but optimized for NPU
 - **Support for long context windows** — up to 128k tokens (e.g., LLaMA 3.1/3.2)
-- **No low-level tuning required** — plug in your model, we handle the rest
+- **No low-level tuning required** — *Worry about your app, we handle the rest*
 
 ---
 
