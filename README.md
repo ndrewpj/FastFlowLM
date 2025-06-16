@@ -90,6 +90,14 @@ The rest of the stack — CLI, model runner, orchestration — is open and devel
 
 ---
 
+## 📝 Licensing & Contact
+
+- 🆓 **Deep-optimized FastFlowLM models** are **free for non-commercial use**  
+- 💼 **Interested in commercial licensing?** Email us at [info@fastflowlm.edu](mailto:info@fastflowlm.edu)  
+- 📦 **Want to bring your own model?** We can optimize it for FastFlowLM — just reach out!
+
+---
+
 ## License
 
 Open components are released under the **MIT License**. Proprietary binaries are subject to separate terms.
