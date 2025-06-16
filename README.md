@@ -19,7 +19,7 @@ FastFlowLM vs AMD’s official stack — **real-time speedup and power efficienc
 
 [![Demo: FastFlowLM vs Lemonade](https://img.youtube.com/vi/kv31FZ_q0_I/0.jpg)](https://www.youtube.com/watch?v=kv31FZ_q0_I)
 
-### 🔹 FastFlowLM vs GAIA vs AMD Ryzen AI Software 1.4 (Hybrid iGPU+NPU via GAIA)
+### 🔹 FastFlowLM vs AMD Ryzen AI Software 1.4 (Hybrid iGPU+NPU via GAIA)
 
 [![Demo: FastFlowLM vs GAIA](https://img.youtube.com/vi/PFjH-L_Kr0w/0.jpg)](https://www.youtube.com/watch?v=PFjH-L_Kr0w)
 
