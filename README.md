@@ -48,10 +48,8 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 
 ## Model Support
 
-- ✅ Meta LLaMA 2 / 3.1 / 3.2  
-- ✅ DeepSeek R1 / V2  
-- ✅ Phi-2 / Phi-3  
-- ✅ Command-R / Zephyr  
+- ✅ Meta LLaMA 3.1 / 3.2  
+- ✅ DeepSeek R1  
 - ✅ And more...
 
 ---
@@ -64,7 +62,17 @@ Full installation guide, API reference, and deployment examples will be publishe
 
 ## License
 
-This project is licensed under the **MIT License**.
+This project is released under the **MIT License**.  
+Proprietary components are distributed in binary form and subject to separate licensing terms.
+
+---
+
+## 🔒 Proprietary Kernel Optimizations
+
+FastFlowLM leverages **proprietary, low-level kernel code** optimized specifically for AMD Ryzen™ NPUs.  
+> These performance-critical components are **not open source**, but seamlessly integrated into the runtime for maximum efficiency and security.
+
+The open-source layers include the CLI, model orchestration, and runtime logic—enabling developers to integrate and deploy models without concern for NPU internals.
 
 ---
 
@@ -73,3 +81,5 @@ This project is licensed under the **MIT License**.
 Special thanks to **AMD Ryzen™ AI** engineering teams and the broader open-source community for driving innovation in efficient edge AI.
 
 ---
+
+
