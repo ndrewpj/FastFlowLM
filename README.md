@@ -1,6 +1,9 @@
 <p align="center">
-  <img src="assets/logo.png" alt="FastFlowLM Logo" width="200"/>
+  <a href="https://www.fastflowlm.com" target="_blank">
+    <img src="assets/logo.png" alt="FastFlowLM Logo" width="200"/>
+  </a>
 </p>
+
 
 Run large language models on AMD Ryzen™ AI NPUs — in minutes.
 
