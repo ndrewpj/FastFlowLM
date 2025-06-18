@@ -70,7 +70,7 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 
 #### 🚀 Decoding Speed (Tokens per Second; three model sizes and various context lengths)
 
-<div style="font-size: 85%">
+<div style="font-size: 75%">
 
 | **Model**        | **Hardware**       | **1k** | **2k** | **4k** | **8k** | **16k** | **32k** | **64k** | **128k** |
 |------------------|--------------------|--------|--------|--------|--------|---------|---------|---------|----------|
