@@ -1,10 +1,10 @@
 ## ⚡ Performance and Efficiency Benchmarks
 
-This section reports the decoding speed and power usage of LLMs on different hardware: NPU (FastFlowLM), iGPU, and CPU.
+This section reports the decoding speed and power usage of LLMs on different hardware: NPU (FastFlowLM), NPU (Ryzen AI Software), iGPU, and CPU.
 
 ---
 
-### 🚀 Decoding Speed (Tokens per Second)
+### 🚀 Decoding Speed (Tokens per Second at different sequence lengths)
 
 | **Model**        | **Hardware**       | **1k** | **2k** | **4k** | **8k** | **16k** | **32k** | **64k** | **128k** |
 |------------------|--------------------|--------|--------|--------|--------|---------|---------|---------|----------|
