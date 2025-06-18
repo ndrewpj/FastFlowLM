@@ -4,7 +4,7 @@ This section reports the decoding speed and power usage of LLMs on different har
 
 ---
 
-### 🚀 Decoding Speed (Tokens per Second at different sequence lengths)
+### 🚀 Decoding Speed (Tokens per Second, or TPS, at different sequence lengths)
 
 | **Model**        | **Hardware**       | **1k** | **2k** | **4k** | **8k** | **16k** | **32k** | **64k** | **128k** |
 |------------------|--------------------|--------|--------|--------|--------|---------|---------|---------|----------|
