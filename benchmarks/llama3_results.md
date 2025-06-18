@@ -41,7 +41,7 @@ This section reports the decoding speed and power usage of LLMs on different har
 
 ---
 
-### ⚙️ Power Consumption (Watts) During Prefill
+### 🔋 Power Consumption (Watts) During Prefill
 
 | **Model**        | **Method**         | **CPU** | **NPU** | **iGPU** | **Total Power (W)** | **Efficiency Gain** |
 |------------------|--------------------|--------:|--------:|--------:|---------------------:|----------------------:|
