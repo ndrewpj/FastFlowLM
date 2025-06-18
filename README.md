@@ -70,6 +70,8 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 
 #### 🚀 Decoding Speed (Tokens per Second; three model sizes and various context lengths)
 
+<sub>
+
 | **Model**        | **Hardware**       | **1k** | **2k** | **4k** | **8k** | **16k** | **32k** | **64k** | **128k** |
 |------------------|--------------------|--------|--------|--------|--------|---------|---------|---------|----------|
 | **LLaMA 3.2 1B**  | NPU (FastFlowLM)    | 36.7   | 35.8   | 33.2   | 29.6   | 24.0    | 17.7    | 11.5    | 6.8      |
@@ -82,9 +84,13 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 |                  | iGPU                | 11.3   | 9.9    | 7.7    | 5.4    | 3.4     | 1.9     | 1.0     | 0.5      |
 |                  | CPU                 | 10.3   | 7.7    | 7.6    | 6.7    | 5.8     | 3.3     | 2.0     | 1.1      |
 
-> 📝 *Note: All results above were obtained using LM Studio for CPU and iGPU backends. Official AMD Ryzen AI Software 1.4 is excluded as it supports a maximum context length of only 2048 tokens.*
+<sub>
+  
+> 🔎 Note: All results were measured using LM Studio for CPU/iGPU. Ryzen AI Software is excluded due to its 2K context length limit.
 
 #### 🔋 Power Consumption (Watts) During Decoding
+
+</sub>
 
 | **Model**        | **Method**       | **CPU** | **NPU** | **iGPU** | **Total Power (W)** | **Efficiency Gain** |
 |------------------|------------------|--------:|--------:|--------:|---------------------:|----------------------:|
@@ -101,7 +107,11 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 |                  | iGPU              | 0.11    | 0       | 14      | 14.11                | 11.38×               |
 |                  | CPU               | 4.50    | 0       | 0       | 4.50                 | 3.63×                |
 
+</sub>
+
 #### ⚙️ Power Consumption (Watts) During Prefill
+
+</sub>
 
 | **Model**        | **Method**         | **CPU** | **NPU** | **iGPU** | **Total Power (W)** | **Efficiency Gain** |
 |------------------|--------------------|--------:|--------:|--------:|---------------------:|----------------------:|
@@ -114,6 +124,8 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 | **LLaMA 3.1 8B**  | NPU (FastFlowLM)   | 0.23    | 0.86    | 0.00    | **1.09**             | –                    |
 |                  | NPU (Ryzen AI SW)  | 1.20    | 2.50    | 0.00    | 3.70                 | 3.39×                |
 |                  | iGPU               | 1.40    | 0.00    | 14.00   | 15.40                | 14.13×               |
+
+</sub>
 
 ---
 
