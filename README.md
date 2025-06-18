@@ -66,11 +66,9 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 ### Latency
 - ⏱️ **Matches or exceeds** TTFT of NPU-only or hybrid configurations
 
----
+### ⚡ Performance and Efficiency Benchmarks
 
-## ⚡ Performance and Efficiency Benchmarks
-
-### 🚀 Decoding Speed (Tokens per Second; three model sizes and various context lengths)
+#### 🚀 Decoding Speed (Tokens per Second; three model sizes and various context lengths)
 
 | **Model**        | **Hardware**       | **1k** | **2k** | **4k** | **8k** | **16k** | **32k** | **64k** | **128k** |
 |------------------|--------------------|--------|--------|--------|--------|---------|---------|---------|----------|
@@ -86,7 +84,7 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 
 > 📝 *Note: All results above were obtained using LM Studio for CPU and iGPU backends. Official AMD Ryzen AI Software 1.4 is excluded as it supports a maximum context length of only 2048 tokens.*
 
-### 🔋 Power Consumption (Watts) During Decoding
+#### 🔋 Power Consumption (Watts) During Decoding
 
 | **Model**        | **Method**       | **CPU** | **NPU** | **iGPU** | **Total Power (W)** | **Efficiency Gain** |
 |------------------|------------------|--------:|--------:|--------:|---------------------:|----------------------:|
@@ -103,28 +101,19 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 |                  | iGPU              | 0.11    | 0       | 14      | 14.11                | 11.38×               |
 |                  | CPU               | 4.50    | 0       | 0       | 4.50                 | 3.63×                |
 
-### ⚙️ Power Efficiency During Prefill
+#### ⚙️ Power Consumption (Watts) During Prefill
 
-| **Model**        | **Platform**       | **CPU** | **NPU** | **iGPU** | **Efficiency Gain** |
-|------------------|--------------------|--------:|--------:|--------:|---------------------:|
-| **LLaMA 3.2 1B**  | NPU (FastFlowLM)   | 0.31    | 0.90    | 0.00    | –                    |
-|                  | NPU (Ryzen AI SW)  | 0.96    | 2.05    | 0.00    | 3.4×                 |
-|                  | iGPU               | 2.70    | 0.00    | 10.00   | 14.1×                |
-| **LLaMA 3.2 3B**  | NPU (FastFlowLM)   | 0.20    | 0.90    | 0.00    | –                    |
-|                  | NPU (Ryzen AI SW)  | 1.06    | 2.10    | 0.00    | 2.5×                 |
-|                  | iGPU               | 2.10    | 0.00    | 11.00   | 11.9×                |
-| **LLaMA 3.1 8B**  | NPU (FastFlowLM)   | 0.23    | 0.86    | 0.00    | –                    |
-|                  | NPU (Ryzen AI SW)  | 1.20    | 2.50    | 0.00    | 3.2×                 |
-|                  | iGPU               | 1.40    | 0.00    | 14.00   | 13.4×                |
-
----
-
-### ✅ Summary
-
-- **FastFlowLM on NPU** provides fast and power-efficient decoding, especially at long context lengths.
-- Compared to iGPU, FastFlowLM can be **up to 11× more efficient** in both decoding and prefill.
-- Even compared to other NPU software like **Ryzen AI SW**, FastFlowLM significantly reduces **total system power draw**.
-
+| **Model**        | **Method**         | **CPU** | **NPU** | **iGPU** | **Total Power (W)** | **Efficiency Gain** |
+|------------------|--------------------|--------:|--------:|--------:|---------------------:|----------------------:|
+| **LLaMA 3.2 1B**  | NPU (FastFlowLM)   | 0.31    | 0.90    | 0.00    | **1.21**             | –                    |
+|                  | NPU (Ryzen AI SW)  | 0.96    | 2.05    | 0.00    | 3.01                 | 2.49×                |
+|                  | iGPU               | 2.70    | 0.00    | 10.00   | 12.70                | 10.50×               |
+| **LLaMA 3.2 3B**  | NPU (FastFlowLM)   | 0.20    | 0.90    | 0.00    | **1.10**             | –                    |
+|                  | NPU (Ryzen AI SW)  | 1.06    | 2.10    | 0.00    | 3.16                 | 2.87×                |
+|                  | iGPU               | 2.10    | 0.00    | 11.00   | 13.10                | 11.91×               |
+| **LLaMA 3.1 8B**  | NPU (FastFlowLM)   | 0.23    | 0.86    | 0.00    | **1.09**             | –                    |
+|                  | NPU (Ryzen AI SW)  | 1.20    | 2.50    | 0.00    | 3.70                 | 3.39×                |
+|                  | iGPU               | 1.40    | 0.00    | 14.00   | 15.40                | 14.13×               |
 
 ---
 
