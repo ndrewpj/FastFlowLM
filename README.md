@@ -68,7 +68,7 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 - 🔋 Up to **3.4× more efficient in prefill** vs NPU-only or hybrid
 
 ### Latency
-- ⏱️ **Matches or exceeds** TTFT of NPU-only or hybrid configurations
+- ⏱️ **Matches or exceeds** TTFT (Time to First Token) of NPU-only or hybrid configurations
 
 ### 📈 Benchmarks
 <p style="font-size:85%; margin:0;">
