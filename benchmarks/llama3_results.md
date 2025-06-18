@@ -2,8 +2,6 @@
 
 This section reports the decoding speed and power usage of LLMs on different hardware: NPU (FastFlowLM), NPU (Ryzen AI Software), iGPU (LM Studio), and CPU (LM Studio).
 
-> 🔎 Note: Ryzen AI SW 1.4 is excluded due to 2K context length limit.
-
 ---
 
 ### 🚀 Decoding Speed (Tokens per Second, or TPS, at different sequence lengths)
@@ -11,17 +9,19 @@ This section reports the decoding speed and power usage of LLMs on different har
 | **Model**        | **Hardware**       | **1k** | **2k** | **4k** | **8k** | **16k** | **32k** | **64k** | **128k** |
 |------------------|--------------------|--------|--------|--------|--------|---------|---------|---------|----------|
 | **LLaMA 3.2 1B**  | NPU (FastFlowLM)    | 36.7   | 35.8   | 33.2   | 29.6   | 24.0    | 17.7    | 11.5    | 6.8      |
-|                  | NPU (Ryzen AI SW)   | 18.6   | 14.9   | *na*   | na    | na     | na     | na     | na      |
+|                  | NPU (Ryzen AI SW)   | 18.6   | 14.9   | *NA*   | *NA*    | *NA*     | *NA*     | *NA*     | *NA*      |
 |                  | iGPU                | 28.7   | 19.0   | 10.9   | 6.0    | 3.2     | 1.6     | 0.8     | 0.4      |
 |                  | CPU                 | 54.6   | 52.6   | 42.3   | 34.1   | 24.4    | 14.8    | 8.4     | 4.5      |
 | **LLaMA 3.2 3B**  | NPU (FastFlowLM)    | 16.1   | 15.4   | 14.3   | 12.4   | 9.9     | 7.0     | 4.4     | 2.6      |
-|                  | NPU (Ryzen AI SW)   | 9.0   | 6.1   | na   | na    | na     | na     | na     | na      |
+|                  | NPU (Ryzen AI SW)   | 9.0   | 6.1   | *NA*   | *NA*    | *NA*     | *NA*     | *NA*     | *NA*      |
 |                  | iGPU                | 23.2   | 18.8   | 14.0   | 9.2    | 5.5     | 3.0     | 1.6     | 0.8      |
 |                  | CPU                 | 22.6   | 21.3   | 17.5   | 14.1   | 9.4     | 6.1     | 3.5     | 1.9      |
 | **LLaMA 3.1 8B**  | NPU (FastFlowLM)    | 7.6    | 7.4    | 7.1    | 6.5    | 5.7     | 4.4     | 3.1     | 2.0      |
-|                  | NPU (Ryzen AI SW)   | 6.3   | 4.6    | na   | na    | na     | na     | na     | na      |
+|                  | NPU (Ryzen AI SW)   | 6.3   | 4.6    | *NA*   | *NA*    | *NA*     | *NA*     | *NA*     | *NA*      |
 |                  | iGPU                | 11.3   | 9.9    | 7.7    | 5.4    | 3.4     | 1.9     | 1.0     | 0.5      |
 |                  | CPU                 | 10.3   | 7.7    | 7.6    | 6.7    | 5.8     | 3.3     | 2.0     | 1.1      |
+
+> 🔎 Note: Ryzen AI Software 1.4 has a 2K context length limit, thus "*NA*" is used in the table.
 
 ---
 
