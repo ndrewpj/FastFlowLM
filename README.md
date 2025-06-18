@@ -20,7 +20,7 @@ FastFlowLM vs AMD’s official stack — **real-time speedup and power efficienc
 - Same prompt (length: 1835 tokens), same model (LLaMA 3.2 1B model), running on the same machine (AMD Ryzen AI 5 340 NPU with 16GB SO-DIMM DDR5 5600 MHz memory)
 - Real-time CPU, iGPU, NPU usage, and power consumption shown (Windows task manager + HWINFO)
 
-### 🔹 FastFlowLM vs AMD Ryzen AI Software 1.4 (NPU-only via OGA)
+### 🔹 FastFlowLM vs AMD Ryzen AI Software 1.4 (NPU-only via OGA/Lemonade)
 
 [![Demo: FastFlowLM vs OGA](https://img.youtube.com/vi/kv31FZ_q0_I/0.jpg)](https://www.youtube.com/watch?v=kv31FZ_q0_I)
 
