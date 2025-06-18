@@ -4,6 +4,10 @@
   </a>
 </p>
 
+<p align="center">
+  <img src="https://img.shields.io/badge/license-MIT-blue.svg" />
+  <img src="https://img.shields.io/badge/NPU-Optimized-red" />
+</p>
 
 Run large language models on AMD Ryzen™ AI NPUs — in minutes.
 
@@ -20,11 +24,11 @@ FastFlowLM vs AMD’s official stack — **real-time speedup and power efficienc
 - Same prompt (length: 1835 tokens), same model (LLaMA 3.2 1B model), running on the same machine (AMD Ryzen AI 5 340 NPU with 16GB SO-DIMM DDR5 5600 MHz memory)
 - Real-time CPU, iGPU, NPU usage, and power consumption shown (Windows task manager + HWINFO)
 
-### 🔹 FastFlowLM vs AMD Ryzen AI Software 1.4 (NPU-only via OGA/Lemonade)
+### 🔹 FastFlowLM vs Ryzen AI SW 1.4 (NPU-only)
 
 [![Demo: FastFlowLM vs OGA](https://img.youtube.com/vi/kv31FZ_q0_I/0.jpg)](https://www.youtube.com/watch?v=kv31FZ_q0_I)
 
-### 🔹 FastFlowLM vs AMD Ryzen AI Software 1.4 (Hybrid iGPU+NPU via GAIA)
+### 🔹 FastFlowLM vs Ryzen AI SW 1.4 (Hybrid)
 
 [![Demo: FastFlowLM vs GAIA](https://img.youtube.com/vi/PFjH-L_Kr0w/0.jpg)](https://www.youtube.com/watch?v=PFjH-L_Kr0w)
 
@@ -46,7 +50,7 @@ No drivers, no model rewrites, no tuning — it just works.
 - **Runs fully on AMD Ryzen™ NPU** — no GPU or CPU load  
 - **CLI-first developer flow** — like Ollama, but optimized for NPU  
 - **Support for long context windows** — up to 128k tokens (e.g., LLaMA 3.1/3.2)  
-- **No low-level tuning required** — Worry about your app, we handle the rest
+- **No low-level tuning required** — You focus on your app, we handle the rest
 
 ---
 
@@ -59,14 +63,14 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 - 🚀 Up to **16.2× faster** vs hybrid iGPU+NPU baseline
 
 ### Power Efficiency
-- 🔋 Up to **2.66× more efficient** vs NPU-only  
-- 🔋 Up to **11.38× more efficient** vs hybrid  
+- 🔋 Up to **2.66× more efficient in decoding** vs NPU-only  
+- 🔋 Up to **11.38× more efficient in decoding** vs hybrid  
 - 🔋 Up to **3.4× more efficient in prefill** vs NPU-only or hybrid
 
 ### Latency
 - ⏱️ **Matches or exceeds** TTFT of NPU-only or hybrid configurations
 
-
+### 📈 Benchmarks
 <p style="font-size:85%; margin:0;">
 📊 View the detailed results here:
 <a href="benchmarks/llama3_results.md" style="text-decoration:none;">
@@ -117,4 +121,4 @@ Open components are released under the **MIT License**. Proprietary binaries are
 
 ---
 
-💬 **Have feedback or want early access? [Open an issue](#) or reach out!**
+💬 **Have feedback or want early access? [Open an issue](https://github.com/fastflowlm/fastflowlm/issues/new) or reach out!**
