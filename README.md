@@ -15,6 +15,7 @@ FastFlowLM is a lightweight runtime for deploying LLMs like LLaMA and DeepSeek d
 
 **Just like Ollama — but purpose-built and deeply optimized for the Ryzen™ NPU**
 
+> FastFlowLM runs all Ryzen™ AI 300 Series processors, with full support for all XDNA2-based NPUs.
 ---
 
 ## 📺 Demo Videos
