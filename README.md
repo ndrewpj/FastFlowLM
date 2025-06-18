@@ -32,6 +32,22 @@ FastFlowLM vs AMD’s official stack — **real-time speedup and power efficienc
 
 [![Demo: FastFlowLM vs GAIA](https://img.youtube.com/vi/PFjH-L_Kr0w/0.jpg)](https://www.youtube.com/watch?v=PFjH-L_Kr0w)
 
+<table>
+  <tr>
+    <td valign="top">
+      <h3>🔹 FastFlowLM vs Ryzen AI SW 1.4 (NPU-only)</h3>
+      <a href="https://www.youtube.com/watch?v=kv31FZ_q0_I">
+        <img src="https://img.youtube.com/vi/kv31FZ_q0_I/0.jpg" alt="Demo: FastFlowLM vs OGA">
+      </a>
+    </td>
+    <td valign="top">
+      <h3>🔹 FastFlowLM vs Ryzen AI SW 1.4 (Hybrid)</h3>
+      <a href="https://www.youtube.com/watch?v=PFjH-L_Kr0w">
+        <img src="https://img.youtube.com/vi/PFjH-L_Kr0w/0.jpg" alt="Demo: FastFlowLM vs GAIA">
+      </a>
+    </td>
+  </tr>
+</table>
 ---
 
 ## 🧠 Local AI on Your NPU
