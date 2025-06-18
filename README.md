@@ -41,6 +41,7 @@ FastFlowLM vs AMD’s official stack — **real-time speedup and power efficienc
     </td>
   </tr>
 </table>
+
 ---
 
 ## 🧠 Local AI on Your NPU
