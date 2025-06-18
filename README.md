@@ -86,8 +86,6 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 
 #### 🔋 Power Consumption (Watts) During Decoding
 
-<small>
-
 | **Model**        | **Method**       | **CPU** | **NPU** | **iGPU** | **Total Power (W)** | **Efficiency Gain** |
 |------------------|------------------|--------:|--------:|--------:|---------------------:|----------------------:|
 | **LLaMA 3.2 1B**  | NPU (FastFlowLM)  | 0.07    | 1.57    | 0       | **1.64**             | –                    |
@@ -103,11 +101,7 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 |                  | iGPU              | 0.11    | 0       | 14      | 14.11                | 11.38×               |
 |                  | CPU               | 4.50    | 0       | 0       | 4.50                 | 3.63×                |
 
-</small>
-
 #### ⚙️ Power Consumption (Watts) During Prefill
-
-<small>
 
 | **Model**        | **Method**         | **CPU** | **NPU** | **iGPU** | **Total Power (W)** | **Efficiency Gain** |
 |------------------|--------------------|--------:|--------:|--------:|---------------------:|----------------------:|
@@ -120,8 +114,6 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 | **LLaMA 3.1 8B**  | NPU (FastFlowLM)   | 0.23    | 0.86    | 0.00    | **1.09**             | –                    |
 |                  | NPU (Ryzen AI SW)  | 1.20    | 2.50    | 0.00    | 3.70                 | 3.39×                |
 |                  | iGPU               | 1.40    | 0.00    | 14.00   | 15.40                | 14.13×               |
-
-</small>
 
 > 🔎 Note: CPU results are excluded for prefill, as CPU is not typically used in this stage due to performance limitations.
 
