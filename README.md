@@ -117,8 +117,6 @@ The rest of the stack — CLI, model runner, orchestration — is open and devel
 
 ## License
 
-## License
-
 This repository contains two types of components:
 
 - **Open-source components** (e.g., CLI, orchestration code) are released under the **MIT License**.
