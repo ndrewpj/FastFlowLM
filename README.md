@@ -66,6 +66,7 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 ### Latency
 - ⏱️ **Matches or exceeds** TTFT of NPU-only or hybrid configurations
 
+
 <p style="font-size:85%; margin:0;">
 📊 View the detailed results here:
 <a href="benchmarks/llama3_results.md" style="text-decoration:none;">
