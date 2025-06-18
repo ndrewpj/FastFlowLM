@@ -70,7 +70,7 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 
 #### 🚀 Decoding Speed (Tokens per Second; three model sizes and various context lengths)
 
-<sub>
+<div style="font-size: 85%">
 
 | **Model**        | **Hardware**       | **1k** | **2k** | **4k** | **8k** | **16k** | **32k** | **64k** | **128k** |
 |------------------|--------------------|--------|--------|--------|--------|---------|---------|---------|----------|
@@ -84,7 +84,7 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 |                  | iGPU                | 11.3   | 9.9    | 7.7    | 5.4    | 3.4     | 1.9     | 1.0     | 0.5      |
 |                  | CPU                 | 10.3   | 7.7    | 7.6    | 6.7    | 5.8     | 3.3     | 2.0     | 1.1      |
 
-</sub>
+</div>
   
 > 🔎 Note: All results were measured using LM Studio for CPU/iGPU. Ryzen AI Software is excluded due to its 2K context length limit.
 
