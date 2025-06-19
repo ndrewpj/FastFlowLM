@@ -21,7 +21,7 @@ This section reports the decoding speed and power usage of LLMs on different har
 |                  | iGPU                | 11.3   | 9.9    | 7.7    | 5.4    | 3.4     | 1.9     | 1.0     | 0.5      |
 |                  | CPU                 | 10.3   | 7.7    | 7.6    | 6.7    | 5.8     | 3.3     | 2.0     | 1.1      |
 
-> 🔎 Note: Ryzen AI Software 1.4 has a 2K context length limit, thus "*NA*" is used in the table.
+> 🔎 Note: The official release of Ryzen AI Software 1.4 limits context length to 2,048 tokens, thus "*NA*" is used in the table.
 
 ---
 
