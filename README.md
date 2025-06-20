@@ -135,3 +135,11 @@ This repository contains two types of components:
 ---
 
 💬 **Have feedback or want early access? [Open an issue](https://github.com/fastflowlm/fastflowlm/issues/new) or reach out!**
+
+---
+
+## 🙏 Acknowledgements
+
+- Powered by the great **AMD Ryzen™ AI NPU architecture**
+- Inspired by [Ollama](https://github.com/ollama/ollama)
+- Low-level kernels optimized using [AIE-MLIR + IRON toolchains](https://github.com/Xilinx/mlir-aie)
