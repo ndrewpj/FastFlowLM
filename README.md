@@ -142,6 +142,6 @@ This repository contains two types of components:
 
 ## 🙏 Acknowledgements
 
-- Powered by the great **AMD Ryzen™ AI NPU architecture**
-- Inspired by [Ollama](https://github.com/ollama/ollama)
-- Low-level kernels optimized using [IRON toolchains](https://github.com/Xilinx/mlir-aie/tree/main/programming_guide)+[Riallto](https://riallto.ai/)+[AIE-MLIR](https://github.com/Xilinx/mlir-aie/tree/main/mlir_tutorials)
+- Powered by the advanced **AMD Ryzen™ AI NPU architecture**
+- Inspired by the widely adopted [Ollama](https://github.com/ollama/ollama)
+- Low-level kernels optimized using the powerful [IRON](https://github.com/Xilinx/mlir-aie/tree/main/programming_guide)+[Riallto](https://riallto.ai/)+[AIE-MLIR](https://github.com/Xilinx/mlir-aie/tree/main/mlir_tutorials)
