@@ -122,7 +122,7 @@ The rest of the stack — CLI, model runner, orchestration — is open and devel
 ## 📝 Licensing & Contact
 
 - 🆓 **Deep-optimized FastFlowLM models** are **free for non-commercial use**  
-- 💼 **Interested in commercial licensing?** Email us at [info@fastflowlm.edu](mailto:info@fastflowlm.edu)  
+- 💼 **Interested in commercial use?** Email us at [info@fastflowlm.edu](mailto:info@fastflowlm.edu)  
 - 📦 **Want to bring your own model?** We can optimize it for FastFlowLM — just reach out!
 
 ---
@@ -144,4 +144,4 @@ This repository contains two types of components:
 
 - Powered by the great **AMD Ryzen™ AI NPU architecture**
 - Inspired by [Ollama](https://github.com/ollama/ollama)
-- Low-level kernels optimized using [AIE-MLIR + IRON toolchains](https://github.com/Xilinx/mlir-aie)
+- Low-level kernels optimized using [IRON toolchains](https://github.com/Xilinx/mlir-aie/tree/main/programming_guide)+[Riallto](https://riallto.ai/)+[AIE-MLIR](https://github.com/Xilinx/mlir-aie/tree/main/mlir_tutorials)
