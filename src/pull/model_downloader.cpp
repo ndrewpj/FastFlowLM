@@ -1,0 +1,196 @@
+/// \file model_downloader.cpp
+/// \brief Model downloader class
+/// \author FastFlowLM Team
+/// \date 2025-06-24
+/// \version 1.0
+/// \note This class is used to download models from the huggingface
+#include "model_downloader.hpp"
+#include "utils/utils.hpp"
+#include "download_model.hpp"
+#include <sstream>
+#include <iomanip>
+
+/// \brief Constructor
+/// \param models the model list
+/// \return the model downloader
+ModelDownloader::ModelDownloader(model_list& models) 
+    : supported_models(models), curl_init() {
+}
+
+/// \brief Check if the model is downloaded
+/// \param model_tag the model tag
+/// \return true if the model is downloaded, false otherwise
+bool ModelDownloader::is_model_downloaded(const std::string& model_tag) {
+    auto missing_files = get_missing_files(model_tag);
+    return missing_files.empty();
+}
+
+/// \brief Pull the model
+/// \param model_tag the model tag
+/// \param force_redownload true if the model should be downloaded even if it is already downloaded
+/// \return true if the model is downloaded, false otherwise
+bool ModelDownloader::pull_model(const std::string& model_tag, bool force_redownload) {
+    try {
+        // Get model info
+        auto model_info = supported_models.get_model_info(model_tag);
+        std::string model_name = model_info["name"];
+        std::string base_url = model_info["url"];
+        
+        header_print("PULL", "Model: " + model_tag);
+        header_print("PULL", "Name: " + model_name);
+        
+        // Check if model is already downloaded
+        if (!force_redownload && is_model_downloaded(model_tag)) {
+            header_print("PULL", "Model already downloaded. Use --force to re-download.");
+            return true;
+        }
+        
+        // Get missing files
+        auto missing_files = get_missing_files(model_tag);
+        if (missing_files.empty() && !force_redownload) {
+            header_print("PULL", "All files already present.");
+            return true;
+        }
+        
+        if (!missing_files.empty()) {
+            header_print("PULL", "Missing files:");
+            for (const auto& file : missing_files) {
+                std::cout << "  - " << file << std::endl;
+            }
+        }
+        
+        // Build download list
+        auto downloads = build_download_list(model_tag);
+        if (downloads.empty()) {
+            header_print("ERROR", "No files to download for model: " + model_tag);
+            return false;
+        }
+        
+        header_print("PULL", "Downloading " + std::to_string(downloads.size()) + " files...");
+        
+        // Download files with progress
+        bool success = download_utils::download_multiple_files(downloads, get_progress_callback());
+        
+        if (success) {
+            header_print("PULL", "Model downloaded successfully!");
+            
+            // Verify download
+            auto final_missing = get_missing_files(model_tag);
+            if (final_missing.empty()) {
+                header_print("PULL", "All files verified successfully.");
+            } else {
+                header_print("WARNING", "Some files may be missing after download:");
+                for (const auto& file : final_missing) {
+                    std::cout << "  - " << file << std::endl;
+                }
+            }
+            return true;
+        } else {
+            header_print("ERROR", "Failed to download model files.");
+            return false;
+        }
+        
+    } catch (const std::exception& e) {
+        header_print("ERROR", "Exception during download: " + std::string(e.what()));
+        return false;
+    }
+}
+
+/// \brief Model not found
+/// \param model_tag the model tag
+void ModelDownloader::model_not_found(const std::string& model_tag) {
+    header_print("ERROR", "Model not found: " + model_tag);
+    header_print("ERROR", "Supported models: ");
+    nlohmann::json models = supported_models.get_all_models();
+    for (const auto& model : models["models"]) {
+        header_print("ERROR", "  - " + model["name"].get<std::string>());
+    }
+}
+
+/// \brief Get missing files
+/// \param model_tag the model tag
+/// \return the missing files
+std::vector<std::string> ModelDownloader::get_missing_files(const std::string& model_tag) {
+    std::vector<std::string> missing_files;
+    
+    try {
+        auto model_info = supported_models.get_model_info(model_tag);
+        std::string model_name = model_info["name"];
+        
+        // Check each required file
+        for (int i = 0; i < model_list::model_files_count; ++i) {
+            std::string filename = model_list::model_files[i];
+            std::string file_path = get_model_file_path(model_tag, filename);
+            if (!file_exists(file_path)) {
+                missing_files.push_back(filename);
+            }
+        }
+        
+    } catch (const std::exception& e) {
+        header_print("ERROR", "Error checking missing files: " + std::string(e.what()));
+    }
+    
+    return missing_files;
+}
+
+/// \brief Get progress callback
+/// \return the progress callback
+std::function<void(size_t, size_t)> ModelDownloader::get_progress_callback() {
+    return [](size_t completed, size_t total) {
+        if (total > 0) {
+            double percentage = (static_cast<double>(completed) / total) * 100.0;
+            std::cout << "\rOverall progress: " << std::fixed << std::setprecision(1) 
+                      << percentage << "% (" << completed << "/" << total << " files)" << std::flush;
+            
+            if (completed == total) {
+                std::cout << std::endl;
+            }
+        }
+    };
+}
+
+/// \brief Check if the file exists
+/// \param file_path the file path
+/// \return true if the file exists, false otherwise
+bool ModelDownloader::file_exists(const std::string& file_path) {
+    return std::filesystem::exists(file_path) && std::filesystem::is_regular_file(file_path);
+}
+
+/// \brief Get the model file path
+/// \param model_tag the model tag
+/// \param filename the filename
+/// \return the model file path
+std::string ModelDownloader::get_model_file_path(const std::string& model_tag, const std::string& filename) {
+    std::string model_path = supported_models.get_model_path(model_tag);
+    return model_path + "/" + filename;
+}
+
+/// \brief Build the download list
+/// \param model_tag the model tag
+/// \return the download list
+std::vector<std::pair<std::string, std::string>> ModelDownloader::build_download_list(const std::string& model_tag) {
+    std::vector<std::pair<std::string, std::string>> downloads;
+    
+    try {
+        auto model_info = supported_models.get_model_info(model_tag);
+        std::string base_url = model_info["url"];
+        std::string model_name = model_info["name"];
+        
+        // Create model directory
+        std::string model_path = supported_models.get_model_path(model_tag);
+        std::filesystem::create_directories(model_path);
+        
+        // Build download list for each required file
+        for (int i = 0; i < model_list::model_files_count; ++i) {
+            std::string filename = model_list::model_files[i];
+            std::string url = base_url + "/resolve/main/" + filename + "?download=true";
+            std::string local_path = get_model_file_path(model_tag, filename);
+            downloads.emplace_back(url, local_path);
+        }
+        
+    } catch (const std::exception& e) {
+        header_print("ERROR", "Error building download list: " + std::string(e.what()));
+    }
+    
+    return downloads;
+} 
