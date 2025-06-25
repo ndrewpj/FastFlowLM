@@ -2,7 +2,7 @@
 /// \brief typedef file for the FastFlowLM project
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 1.0
+/// \version 0.1.0
 /// \note This file contains the typedefs for the FastFlowLM project
 
 #pragma once
@@ -51,7 +51,7 @@ typedef enum: u8 {cpu, npu} device_t;
 /// \brief bf16_t class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 1.0
+/// \version 0.1.0
 /// \note This class is used to store bfloat16 values, and provide some arithmetic operations.
 /// \note C++17 does not support bfloat16, so we use this class to store bfloat16 values.
 class bf16_t {

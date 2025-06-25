@@ -2,7 +2,7 @@
 /// \brief npu_utils class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 1.0
+/// \version 0.1.0
 /// \note This file contains the npu_utils class
 #pragma once
 

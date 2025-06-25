@@ -2,7 +2,7 @@
 /// \brief Tokenizer implementation for text encoding/decoding
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 1.0.0
+/// \version 0.1.0
 #include "tokenizer/tokenizer.hpp"
 #include <cstdint>
 #include <unordered_map>

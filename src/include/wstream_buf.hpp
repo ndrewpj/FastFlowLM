@@ -2,7 +2,7 @@
 /// \brief wstream_buf class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 1.0
+/// \version 0.1.0
 /// \note This class is used to write UTF-8 characters to a stream
 #pragma once
 
@@ -12,7 +12,7 @@
 /// \brief wstream_buf class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 1.0
+/// \version 0.1.0
 /// \note This class is used to avoid partial UTF-8 characters from the decoder.
 struct wstream_buf : std::streambuf {
     std::vector<char> utf8_buffer;  // Buffer for incomplete UTF-8 sequences

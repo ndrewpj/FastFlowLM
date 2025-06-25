@@ -2,7 +2,7 @@
 /// \brief NPU instruction utilities implementation
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 1.0.0
+/// \version 0.1.0
 #include "npu_utils/npu_instr_utils.hpp"
 
 /// \brief Constructor

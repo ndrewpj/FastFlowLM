@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(q4nx VERSION 1.0.0 LANGUAGES CXX)
+project(q4nx version 0.1.0 LANGUAGES CXX)
 
 # Set build type to Release
 set(CMAKE_BUILD_TYPE Release)

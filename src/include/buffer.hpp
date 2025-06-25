@@ -2,7 +2,7 @@
 /// \brief Buffer and bytes class for memory management
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 1.0
+/// \version 0.1.0
 /// \note This class is used to manage the memory.
 #pragma once
 #include <cstdint>
