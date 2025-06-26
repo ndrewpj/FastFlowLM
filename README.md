@@ -57,7 +57,7 @@ FastFlowLM makes it easy to run modern LLMs locally with:
 - 🧰 Simple CLI and API
 - 🔐 Fully private and offline
 
-No drivers, no model rewrites, no tuning — it just works.
+No model rewrites, no tuning — it just works.
 
 ---
 
