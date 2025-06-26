@@ -24,7 +24,7 @@ FastFlowLM supports full context lengths — up to 128K tokens with LLaMA 3.1 an
 
 A packaged Windows installer is available here: [**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/download/v0.1.0/flm-setup.exe). For more details (available models, etc.), see the [v0.1.0 release notes](https://github.com/FastFlowLM/FastFlowLM/releases/tag/v0.1.0).
 
-Open **PowerShell**.
+After installation, open **PowerShell**.
 
 To run a model in terminal (chat-style):
 ```powershell
