@@ -24,6 +24,24 @@ FastFlowLM supports full context lengths — up to 128K tokens with LLaMA 3.1 an
 
 A packaged Windows installer is available here: [**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/download/v0.1.0/flm-setup.exe).  
 For more details, see the [**v0.1.0 release notes**](https://github.com/FastFlowLM/FastFlowLM/releases/tag/v0.1.0).
+---
+
+## ⚡ Quick Start
+
+Open **PowerShell**.
+
+To run a model in terminal (chat-style):
+
+```powershell
+flm run llama3.2:1B```
+
+To start the local REST API server:
+
+```powershell
+flm serve llama3.2:1B```
+
+>The model tag (e.g., `llama3.2:1B`) sets the initial model. If another model is requested, FastFlowLM will automatically switch to it.
+---
 
 ## 📺 Demo Videos
 
@@ -106,7 +124,7 @@ FastFlowLM supports many of today’s best open models:
 
 ---
 
-## 🛠️ Getting Started
+## 🛠️ More Instructions
 
 Documentation, install guides, and example workflows coming soon.  
 You’ll be able to:
