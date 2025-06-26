@@ -18,12 +18,14 @@ FastFlowLM supports full context lengths — up to 128K tokens with LLaMA 3.1 an
 **Just like Ollama — but purpose-built and deeply optimized for the Ryzen™ NPU**
 
 > FastFlowLM supports all Ryzen™ AI 300 Series chips with XDNA2 NPUs.
+
 ---
 
 ## 📦 Installer
 
 A packaged Windows installer is available here: [**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/download/v0.1.0/flm-setup.exe).  
-For more details, see the [**v0.1.0 release notes**](https://github.com/FastFlowLM/FastFlowLM/releases/tag/v0.1.0).
+For more details, see the [*v0.1.0 release notes*](https://github.com/FastFlowLM/FastFlowLM/releases/tag/v0.1.0).
+
 ---
 
 ## ⚡ Quick Start
@@ -33,14 +35,17 @@ Open **PowerShell**.
 To run a model in terminal (chat-style):
 
 ```powershell
-flm run llama3.2:1B```
+flm run llama3.2:1B
+```
 
 To start the local REST API server:
 
 ```powershell
-flm serve llama3.2:1B```
+flm serve llama3.2:1B
+```
 
->The model tag (e.g., `llama3.2:1B`) sets the initial model. If another model is requested, FastFlowLM will automatically switch to it.
+> The model tag (e.g., `llama3.2:1B`) sets the initial model. If another model is requested, FastFlowLM will automatically switch to it.
+
 ---
 
 ## 📺 Demo Videos
