@@ -22,7 +22,9 @@ FastFlowLM supports full context lengths — up to 128K tokens with LLaMA 3.1 an
 
 ## 📦 Installer
 
-A packaged Windows installer is available in the [v0.1.0 release](https://github.com/FastFlowLM/FastFlowLM/releases/tag/v0.1.0).
+A packaged Windows installer is available here [**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/download/v0.1.0/flm-setup.exe).
+
+More details are here [v0.1.0 release](https://github.com/FastFlowLM/FastFlowLM/releases/tag/v0.1.0).
 
 ## 📺 Demo Videos
 
