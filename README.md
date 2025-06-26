@@ -20,9 +20,9 @@ FastFlowLM supports full context lengths — up to 128K tokens with LLaMA 3.1 an
 > FastFlowLM supports all Ryzen™ AI 300 Series chips with XDNA2 NPUs.
 ---
 
-## 📦 Installer and ⚡ Quick Start
+## ⚡ Quick Start
 
-A packaged Windows installer is available here: [**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/download/v0.1.0/flm-setup.exe). For more details (available models,etc.), see the [v0.1.0 release notes](https://github.com/FastFlowLM/FastFlowLM/releases/tag/v0.1.0).
+A packaged Windows installer is available here: [**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/download/v0.1.0/flm-setup.exe). For more details (available models, etc.), see the [v0.1.0 release notes](https://github.com/FastFlowLM/FastFlowLM/releases/tag/v0.1.0).
 
 Open **PowerShell**.
 
