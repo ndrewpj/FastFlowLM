@@ -120,7 +120,7 @@ FastFlowLM supports many of today’s best open models:
 
 ## 🛠️ Instructions
 
-Documentation, install guides, and example workflows coming soon. Like Ollama, you can:
+Documentation and example workflows coming soon. Like Ollama, you can:
 - Load and run models locally via CLI
 - Integrate into your app via a simple HTTP API
 
