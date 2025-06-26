@@ -33,17 +33,13 @@ For more details, see the [*v0.1.0 release notes*](https://github.com/FastFlowLM
 Open **PowerShell**.
 
 To run a model in terminal (chat-style):
-
 ```powershell
 flm run llama3.2:1B
 ```
-
 To start the local REST API server:
-
 ```powershell
 flm serve llama3.2:1B
 ```
-
 > The model tag (e.g., `llama3.2:1B`) sets the initial model. If another model is requested, FastFlowLM will automatically switch to it.
 
 ---
