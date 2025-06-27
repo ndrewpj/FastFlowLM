@@ -36,8 +36,11 @@ To start the local REST API server:
 ```powershell
 flm serve llama3.2:1B
 ```
-> The model tag (e.g., `llama3.2:1B`) sets the initial model. If another model is requested, FastFlowLM will automatically switch to it.
+> The model tag (e.g., `llama3.2:1B`) sets the initial model, which is optional. If another model is requested, FastFlowLM will automatically switch to it.
 ---
+
+
+> ⚠️ The model will be downloaded to the folder: ``C:\Users\<USER>\Documents\flm\models\``. If Hugging Face is not accessible from your location, you can manually download the model and place it in this directory.
 
 ## 📺 Demo Videos
 
