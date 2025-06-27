@@ -30,6 +30,8 @@ To run a model in terminal (chat-style):
 ```powershell
 flm run llama3.2:1B
 ```
+> Optimized model kernels are on Hugging Face. Direct access is required to download.
+
 To start the local REST API server:
 ```powershell
 flm serve llama3.2:1B
