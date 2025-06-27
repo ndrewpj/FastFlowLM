@@ -42,14 +42,6 @@ public:
     /// \brief clear the context
     virtual void clear_context() = 0;
 
-    /// \brief add the sampled token
-    /// \param token the token
-    virtual void add_sampled_token(int token) = 0;
-
-    /// \brief get the history
-    /// \return the history
-    virtual std::vector<int> get_history() = 0;
-
     /// \brief get the k cache
     /// \param layer_idx the layer index
     /// \param idx the index

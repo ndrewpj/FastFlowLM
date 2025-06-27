@@ -17,16 +17,14 @@ chat_bot::chat_bot(unsigned int MAX_L, unsigned int device_id){
     }
     this->last_prefill_time = {0, "us"};
     this->system_prompt = "";
+    this->token_history.reserve(MAX_L);
 }
 
 /// \brief Load the model
 /// \param model_path the path to the model
-/// \param MAX_L the max length
+/// \param model_info the model info
 /// \note The function will load the model
-/// \note The function will load the model weights
-/// \note The function will load the model tokenizer
-/// \note The function will load the model sampler
-void chat_bot::load_model(std::string model_path, unsigned int MAX_L){
+void chat_bot::load_model(std::string model_path, json model_info){
     // default models
     static const std::vector<std::pair<std::string, std::string>> default_models = {
         {"Llama-3.2-1B-q4nx", "1B"}, // 1B
@@ -46,7 +44,7 @@ void chat_bot::load_model(std::string model_path, unsigned int MAX_L){
         header_print("FLM", "Model already loaded: " << this->model_path);
         return;
     }
-
+    this->is_think_model = model_info["details"]["think"];
     this->model_path = model_path;
     for (const auto& model : default_models){
         if (model.second == model_path){
@@ -59,7 +57,7 @@ void chat_bot::load_model(std::string model_path, unsigned int MAX_L){
     this->lm_config->from_pretrained(this->model_path);
 
     this->npu = std::make_unique<npu_manager>(npu_device::device_npu2, device_id);
-    this->MAX_L = MAX_L;
+    this->MAX_L = model_info["default_context_length"];
     this->q4nx = std::make_unique<Q4NX>(this->model_path);
     if (this->lm_config->model_type == "llama"){
         this->lm_engine = std::make_unique<llama_npu>(*this->lm_config, this->npu.get(), this->MAX_L);
@@ -73,7 +71,8 @@ void chat_bot::load_model(std::string model_path, unsigned int MAX_L){
     this->q4nx.reset();
     this->is_model_loaded = true;
 
-
+    this->token_history.clear();
+    this->token_history.reserve(this->MAX_L);
     this->tokenizer = std::make_unique<Tokenizer>(this->model_path);
 
     this->lm_engine->clear_context();
@@ -100,7 +99,7 @@ void chat_bot::load_model(std::string model_path, unsigned int MAX_L){
     // insert the system prompt
     std::vector<int> system_tokens = this->tokenizer->encode(this->get_system_prompt(true, this->system_prompt));
     std::vector<int> system_prompts = this->apply_chat_template(system_tokens, SYSTEM, false);
-    this->insert(system_prompts);
+    this->insert(system_prompts, true);
 }
 
 /// \brief Set the sampler
@@ -140,7 +139,9 @@ void chat_bot::insert(std::vector<int>& tokens, bool is_system_prompt){
         header_print("warning", "Max length reached, stopping prefilling...");
         return;
     }
-
+    for (int token : tokens){
+        this->token_history.push_back(token);
+    }
     buffer<bf16> y;
     this->profiler_list[PREFILL_TIME].start();
     y = this->lm_engine->prefill(tokens);
@@ -180,10 +181,19 @@ std::string chat_bot::generate(std::ostream& os){
     std::string result;
     result.reserve(4096);
 
+    if (this->is_think_model){
+        std::string think_result = this->tokenizer->run_time_decoder(128013);
+        result += think_result;
+        os << think_result << std::flush;
+        think_result = this->tokenizer->run_time_decoder(198);
+        result += think_result;
+        os << think_result << std::flush;
+    }
+
     int last_sampled_token = this->last_token;
-    this->lm_engine->add_sampled_token(this->last_token);
+    this->token_history.push_back(this->last_token);
     this->profiler_list[TKOEN_DECODE_TIME].start();
-    if (this->tokenizer->is_normal_token(last_sampled_token) && last_sampled_token != -1){
+    if (this->tokenizer->is_normal_token(last_sampled_token, this->is_think_model) && last_sampled_token != -1){
         std::string token_str = this->tokenizer->run_time_decoder(last_sampled_token);
         result += token_str;
         os << token_str << std::flush;
@@ -211,16 +221,15 @@ std::string chat_bot::generate(std::ostream& os){
 
         this->profiler_list[TKOEN_DECODE_TIME].start();
         this->profiler_list[TKOEN_DECODE_TIME].stop(1);
-        if (this->tokenizer->is_normal_token(sampled_token)){ // filter out special tokens
+        if (this->tokenizer->is_normal_token(sampled_token, this->is_think_model)){ // filter out special tokens
             std::string token_str = this->tokenizer->run_time_decoder(sampled_token);
             os << token_str << std::flush;
             result += token_str;
         }
+        this->token_history.push_back(sampled_token);
         if (this->tokenizer->is_eos(sampled_token)){
+            this->lm_engine->forward(last_sampled_token);
             break;
-        }
-        else{
-            this->lm_engine->add_sampled_token(sampled_token);
         }
     }
     if (this->total_tokens >= this->MAX_L){
@@ -250,6 +259,7 @@ std::string chat_bot::generate_with_prompt(std::vector<int>& tokens, std::ostrea
 void chat_bot::clear_context(){
     this->total_tokens = 0;
     this->last_token = -1;
+    this->token_history.clear();
     this->lm_engine->clear_context();
     this->total_tokens = 0;
     for (size_t i = 0; i < PROFILER_TYPE_NUM; i++){
@@ -273,6 +283,7 @@ std::string chat_bot::get_system_prompt(bool include_timestamp, const std::strin
     
     // Build system prompt with context information
     std::stringstream system_prompt;
+    system_prompt << "You are a helpful assistant.\n";
     
     // Add timestamp if requested
     if (include_timestamp) {
@@ -345,7 +356,7 @@ std::string chat_bot::show_profile(){
 /// \note The function will get the history
 /// \note The function will return the history
 std::pair<std::string, std::vector<int>> chat_bot::get_history(){
-    std::vector<int> history = this->lm_engine->get_history();
+    std::vector<int> history = this->token_history;
     std::string all_context = this->tokenizer->decode(history);
     return std::make_pair(all_context, history);
 }
@@ -354,7 +365,7 @@ std::pair<std::string, std::vector<int>> chat_bot::get_history(){
 /// \note The function will get the history string
 /// \note The function will return the history string
 std::string chat_bot::get_history_string(){
-    std::vector<int> history = this->lm_engine->get_history();
+    std::vector<int> history = this->token_history;
     std::string all_context = this->tokenizer->decode(history);
     return all_context;
 }
@@ -477,10 +488,20 @@ std::vector<int> chat_bot::apply_chat_template(std::vector<int>& tokens, role_ty
         new_tokens.push_back(this->tokenizer->begin_of_header_id());
         new_tokens.push_back(this->tokenizer->assistant_id());
         new_tokens.push_back(this->tokenizer->end_of_header_id());
-        new_tokens.push_back(271); // \n\n
+        if (this->is_think_model){
+            new_tokens.push_back(128013); // <think>
+            new_tokens.push_back(198); // </think>
+        }
+        else{
+            new_tokens.push_back(271); // \n\n
+        }
     }
     else if (role == SYSTEM){ // system prompt header is added in the hardware
-        // new_tokens.push_back(this->tokenizer->system_id());
+        new_tokens.push_back(this->tokenizer->begin_of_text_id());
+        new_tokens.push_back(this->tokenizer->begin_of_header_id());
+        new_tokens.push_back(this->tokenizer->system_id());
+        new_tokens.push_back(this->tokenizer->end_of_header_id());
+        new_tokens.push_back(271); // \n\n
     }
     new_tokens.insert(new_tokens.end(), tokens.begin(), tokens.end());
     new_tokens.push_back(128009); // eot
@@ -488,7 +509,13 @@ std::vector<int> chat_bot::apply_chat_template(std::vector<int>& tokens, role_ty
         new_tokens.push_back(this->tokenizer->begin_of_header_id());
         new_tokens.push_back(this->tokenizer->assistant_id());
         new_tokens.push_back(this->tokenizer->end_of_header_id());
-        new_tokens.push_back(271); // \n\n
+        if (this->is_think_model){
+            new_tokens.push_back(128013); // <think>
+            new_tokens.push_back(198); // </think>
+        }
+        else{
+            new_tokens.push_back(271); // \n\n
+        }
     }
     return new_tokens;
 }

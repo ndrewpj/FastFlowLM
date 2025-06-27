@@ -61,8 +61,16 @@ public:
 
     /// \brief Check if the token is normal
     /// \param token the token
+    /// \param is_think_model the is think model
     /// \return true if the token is normal, false otherwise
-    inline bool is_normal_token(int token) {return ((token < 128000) || (token == 128013) || (token == 128014));}
+    inline bool is_normal_token(int token, bool is_think_model) {
+        if (is_think_model){
+            return ((token < 128000) || (token == 128013) || (token == 128014));
+        }
+        else{
+            return ((token < 128000));
+        }
+    }
 
     /// \brief Get the begin of text id
     /// \return the begin of text id
@@ -83,6 +91,10 @@ public:
     /// \brief Get the assistant id
     /// \return the assistant id
     inline int assistant_id() {return 78191;}
+
+    /// \brief Get the system id
+    /// \return the system id
+    inline int system_id() {return 9125;}
 
     /// \brief Get the end of text id
     /// \return the end of text id

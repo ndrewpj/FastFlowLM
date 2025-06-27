@@ -35,7 +35,8 @@ private:
     bool is_model_loaded = false;
     std::string model_path = "";
     std::string current_model = "Llama-3.2-1B-Instruct";
-
+    bool is_think_model = false;
+    std::vector<int> token_history;
     std::unique_ptr<npu_manager> npu = nullptr;
 
     uint32_t MAX_L = 0;
@@ -90,7 +91,8 @@ public:
 
     /// \brief Load the model
     /// \param model_path the model path
-    void load_model(std::string model_path, unsigned int MAX_L = 131072);
+    /// \param model_info the model info
+    void load_model(std::string model_path, json model_info);
 
     /// \brief Average the embeddings
     /// \param tokens the tokens

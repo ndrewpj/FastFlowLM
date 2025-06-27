@@ -15,6 +15,10 @@
 #include <windows.h>
 #include <fcntl.h>
 #include <io.h>
+#include <filesystem>
+#include <map>
+#include <iomanip>
+#include <fstream>
 
 /// \brief Command map for command line input
 std::map<std::string, runner_cmd_t> cmd_map = {
@@ -40,7 +44,7 @@ Runner::Runner(model_list& supported_models, ModelDownloader& downloader, std::s
         this->downloader.pull_model(this->tag);
     }
     nlohmann::json model_info = this->supported_models.get_model_info(this->tag);
-    this->chat_engine->load_model(this->supported_models.get_model_path(this->tag), model_info["default_context_length"]);
+    this->chat_engine->load_model(this->supported_models.get_model_path(this->tag), model_info);
     
     // Set console to UTF-8 mode for proper Unicode handling
     SetConsoleOutputCP(CP_UTF8);
@@ -336,17 +340,26 @@ void Runner::cmd_load(std::vector<std::string>& input_list) {
     std::string model_name = input_list[1];
     this->tag = model_name;
     if (!this->downloader.is_model_downloaded(this->tag)) {
-        this->downloader.model_not_found(this->tag);
-        exit(1);
+        this->downloader.pull_model(this->tag);
     }
     nlohmann::json model_info = this->supported_models.get_model_info(this->tag);
-    this->chat_engine->load_model(this->supported_models.get_model_path(this->tag), model_info["default_context_length"]);
+    this->chat_engine->load_model(this->supported_models.get_model_path(this->tag), model_info);
 }
 
 /// \brief Save the history
 /// \param input_list, std::vector<std::string>
 void Runner::cmd_save(std::vector<std::string>& input_list) {
     std::pair<std::string, std::vector<int>> history = this->chat_engine->get_history();
+    
+    // Get the Documents directory and create the history directory
+    std::string documents_dir = utils::get_user_documents_directory();
+    std::string history_dir = documents_dir + "/flm/history";
+    
+    // Create the history directory if it doesn't exist
+    if (!std::filesystem::exists(history_dir)) {
+        std::filesystem::create_directories(history_dir);
+    }
+    
     // save file to history_hh_mm_mm_dd_yyyy.txt
     // 1) get current date
     std::time_t t = std::time(nullptr);
@@ -364,8 +377,8 @@ void Runner::cmd_save(std::vector<std::string>& input_list) {
             << (tm.tm_year + 1900);
     std::string date_str = date_ss.str();
 
-    // 2) build filename
-    std::string file_name = "history_" + date_str + ".txt";
+    // 2) build filename in the history directory
+    std::string file_name = history_dir + "/history_" + date_str + ".txt";
     std::ofstream file(file_name);
     if (file.is_open()) {
         file << history.first << std::endl;
