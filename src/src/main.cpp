@@ -16,6 +16,8 @@
 #include <atomic>
 #include <windows.h>
 #include <filesystem>
+#include <shlobj.h>
+
 
 // Global variables
 ///@brief should_exit is used to control the server thread
@@ -34,10 +36,23 @@ std::string get_executable_directory() {
     return ".";
 }
 
+///@brief get_user_documents_directory gets the user's Documents directory
+///@return the user's Documents directory path
+std::string get_user_documents_directory() {
+    char buffer[MAX_PATH];
+    if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_PERSONAL, NULL, 0, buffer))) {
+        return std::string(buffer);
+    }
+    // Fallback to executable directory if Documents folder cannot be found
+    return get_executable_directory();
+}
+
 ///@brief ensure_models_directory creates the models directory if it doesn't exist
 ///@param exe_dir the executable directory
 void ensure_models_directory(const std::string& exe_dir) {
-    std::string models_dir = exe_dir + "/models";
+    // Use Documents directory for models instead of executable directory
+    std::string documents_dir = get_user_documents_directory();
+    std::string models_dir = documents_dir + "/flm/models";
     if (!std::filesystem::exists(models_dir)) {
         std::filesystem::create_directories(models_dir);
     }
@@ -71,7 +86,10 @@ int main(int argc, char* argv[]) {
     // Initialize Unicode support for the console
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
-    if (argc < 3 || argc > 4) {
+    std::string command;
+    std::string tag;
+    // Parse the command line arguments
+    if (argc < 2 || argc > 4) {
         std::cout << "Usage: " << argv[0] << " <command: run | serve | pull> <model_tag> [--force]" << std::endl;
         std::cout << "Commands:" << std::endl;
         std::cout << "  run   - Run the model interactively" << std::endl;
@@ -81,11 +99,32 @@ int main(int argc, char* argv[]) {
         std::cout << "  --force - Force re-download even if model exists (for pull command)" << std::endl;
         return 1;
     }
+    command = argv[1];
+    if (command == "run") {
+        if (argc < 3) {
+            std::cout << "Usage: " << argv[0] << " run <model_tag>" << std::endl;
+            return 1;
+        }
+        tag = argv[2];
+    }
+    else if (command == "serve") {
+        if (argc < 3) {
+            tag = "llama3.2:1B";
+        }
+        else {
+            tag = argv[2];
+        }
+    }
+    else if (command == "pull") {
+        if (argc < 3) {
+            std::cout << "Usage: " << argv[0] << " pull <model_tag>" << std::endl;
+            return 1;
+        }
+    }
+
     // Get the command, model tag, and force flag
     std::string exe_dir = get_executable_directory();
     std::string config_path = exe_dir + "/model_list.json";
-    std::string command = argv[1];
-    std::string tag = argv[2];
     bool force_redownload = false;
     
     // Check for force flag, if true, the model will be re-downloaded
@@ -94,12 +133,18 @@ int main(int argc, char* argv[]) {
     }
 
     try {
-        // Load the model list
-        model_list supported_models(config_path, exe_dir);
+        // Get the Documents directory for models
+        std::string documents_dir = get_user_documents_directory();
+        std::string models_dir = documents_dir + "/flm/models";
+        
+        // Load the model list with Documents directory as the base
+        model_list supported_models(config_path, documents_dir);
         ModelDownloader downloader(supported_models);
 
-        // Ensure models directory exists
-        ensure_models_directory(exe_dir);
+        // Ensure models directory exists in Documents
+        if (!std::filesystem::exists(models_dir)) {
+            std::filesystem::create_directories(models_dir);
+        }
 
         if (command == "run") {
             Runner runner(supported_models, downloader, tag);

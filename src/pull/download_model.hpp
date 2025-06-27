@@ -14,6 +14,10 @@
 
 namespace download_utils {
 
+// Cursor control functions
+void hide_cursor();
+void show_cursor();
+
 // Callback function for libcurl to write data to a file
 size_t write_data_to_file(void* ptr, size_t size, size_t nmemb, FILE* stream);
 

@@ -44,14 +44,6 @@ public:
     /// \brief update the max length
     void clear_context() override;
 
-    /// \brief add the sampled token
-    /// \param token the token
-    void add_sampled_token(int token) override;
-
-    /// \brief get the history
-    /// \return the history
-    std::vector<int> get_history() override;
-
     /// \brief get the k cache
     /// \param layer_idx the layer index
     /// \param idx the index

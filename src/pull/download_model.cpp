@@ -12,6 +12,16 @@
 
 namespace download_utils {
 
+/// \brief Hide the cursor
+void hide_cursor() {
+    std::cout << "\033[?25l" << std::flush;
+}
+
+/// \brief Show the cursor
+void show_cursor() {
+    std::cout << "\033[?25h" << std::flush;
+}
+
 /// \brief Callback function for libcurl to write data to a file
 /// \param ptr the pointer to the data
 /// \param size the size of the data
@@ -75,6 +85,9 @@ bool download_file(const std::string& url, const std::string& local_path,
         return false;
     }
 
+    // Hide cursor before starting download
+    hide_cursor();
+
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data_to_file);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
@@ -94,6 +107,9 @@ bool download_file(const std::string& url, const std::string& local_path,
     
     fclose(fp);
     curl_easy_cleanup(curl);
+
+    // Show cursor after download completes
+    show_cursor();
 
     if (res != CURLE_OK) {
         std::cerr << "CURL error: " << curl_easy_strerror(res) << std::endl;
@@ -146,6 +162,9 @@ bool download_multiple_files(const std::vector<std::pair<std::string, std::strin
     size_t total_files = downloads.size();
     size_t completed_files = 0;
 
+    // Hide cursor before starting downloads
+    hide_cursor();
+
     for (const auto& [url, local_path] : downloads) {
         std::cout << "Downloading " << (completed_files + 1) << "/" << total_files 
                   << ": " << std::filesystem::path(url).filename().string() << std::endl;
@@ -158,6 +177,7 @@ bool download_multiple_files(const std::vector<std::pair<std::string, std::strin
 
         if (!download_file(url, local_path, file_progress)) {
             std::cerr << "Failed to download: " << url << std::endl;
+            show_cursor(); // Show cursor on error
             return false;
         }
 
@@ -167,6 +187,8 @@ bool download_multiple_files(const std::vector<std::pair<std::string, std::strin
         }
     }
 
+    // Show cursor after all downloads complete
+    show_cursor();
     std::cout << "All downloads completed successfully!" << std::endl;
     return true;
 }

@@ -41,7 +41,7 @@ void RestHandler::ensure_model_loaded(const std::string& model_tag) {
         }
         std::string tag_copy = model_tag; // Create non-const copy
         nlohmann::json model_info = supported_models.get_model_info(tag_copy);
-        chat_engine->load_model(supported_models.get_model_path(tag_copy), model_info["default_context_length"]);
+        chat_engine->load_model(supported_models.get_model_path(tag_copy), model_info);
         current_model_tag = model_tag;
     }
 }

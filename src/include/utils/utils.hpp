@@ -12,6 +12,10 @@
 #include <chrono>
 #include <iostream>
 #include <fstream>
+#ifdef _WIN32
+#include <windows.h>
+#include <shlobj.h>
+#endif
 
 namespace time_utils {
 
@@ -297,5 +301,18 @@ inline bool check_file_exists(std::string name) {
     std::ifstream file(name);
     return file.good();
 }
+
+#ifdef _WIN32
+/// \brief get the user's Documents directory on Windows
+/// \return the user's Documents directory path
+inline std::string get_user_documents_directory() {
+    char buffer[MAX_PATH];
+    if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_PERSONAL, NULL, 0, buffer))) {
+        return std::string(buffer);
+    }
+    // Fallback to current directory if Documents folder cannot be found
+    return ".";
+}
+#endif
 
 } // end of namespace utils

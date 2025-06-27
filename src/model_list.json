@@ -1,5 +1,5 @@
 {
-    "model_path": "../../models",
+    "model_path": "flm/models",
     "models": {
         "llama3.2": {
             "1B": {
@@ -46,6 +46,23 @@
                     "quantization_level": "AWQ-asym-uint4-g32"
                 }
             }
+        },
+        "deepseek": {
+            "8B": {
+                "name": "deepseek-distill-llama-8B-q4nx",
+                "url": "https://huggingface.co/FastFlowLM/Deepseek-R1-Distill-Llama-8B-NPU2",
+                "modified_at": "2025-05-30T00:00:00Z",
+                "size": 8000000000,
+                "default_context_length": 16384,
+                "details": {
+                    "format": "q4nx",
+                    "family": "llama",
+                    "think": true,
+                    "parameter_size": "8B",
+                    "quantization_level": "AWQ-asym-uint4-g32"
+                }
+            }
         }
     }
+
 }

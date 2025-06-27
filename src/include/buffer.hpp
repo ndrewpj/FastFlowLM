@@ -120,15 +120,14 @@ public:
     /// \brief destructor
     virtual ~bytes() {
         if (is_owner_) {
-            data_ = nullptr;
             owned_data_.reset();
         }
+        data_ = nullptr;
 #ifdef __XRT__
         if (is_bo_owner_) {
-            bo_ = nullptr;
-            owned_bo_->~bo();
             owned_bo_.reset();
         }
+        bo_ = nullptr;
 #endif
     }
 
@@ -139,7 +138,6 @@ public:
             if (is_owner_){
                 owned_data_.reset();
             }
-            owned_data_.reset();
             data_ = other.data_;
             size_ = other.size_;
             is_owner_ = false;
@@ -149,7 +147,6 @@ public:
             }
             is_bo_owner_ = false;
             bo_ = other.bo_;
-            owned_bo_.reset();
 #endif
         }
         return *this;
@@ -168,7 +165,7 @@ public:
             is_owner_ = other.is_owner_;
 #ifdef __XRT__
             if (is_bo_owner_){
-                owned_bo_->~bo();
+                owned_bo_.reset();
             }
             is_bo_owner_ = other.is_bo_owner_;
             owned_bo_ = std::move(other.owned_bo_);
@@ -233,17 +230,18 @@ public:
 #ifdef __XRT__
         assert(!is_bo_owner_);
 #endif
-        owned_data_.reset();
+        if (is_owner_){
+            owned_data_.reset();
+        }
         data_ = nullptr;
         size_ = 0;
         is_owner_ = false;
 #ifdef __XRT__
         if (is_bo_owner_){
-            owned_bo_->~bo();
+            owned_bo_.reset();
         }
         is_bo_owner_ = false;
         bo_ = nullptr;
-        owned_bo_.reset();
 #endif
     }
 
