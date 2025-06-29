@@ -27,7 +27,7 @@ A packaged Windows installer is available here: [**flm-setup.exe**](https://gith
 After installation, open **PowerShell**.
 
 To run a model in terminal (CLI):
-```powershell
+```
 flm run llama3.2:1B
 ```
 > Requires internet access to HuggingFace to pull (download) the optimized model kernel if not already present. The model will be downloaded to the folder: ``C:\Users\<USER>\Documents\flm\models\``. ⚠️ If HuggingFace is not directly accessible in your region, you can manually download the model and place it in this directory.
@@ -113,16 +113,16 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 
 ## 🧪 Model Support
 
-```powershell
+```
 flm run llama3.1:8B
 ```
-```powershell
+```
 flm run llama3.2:1B
 ```
-```powershell
+```
 flm run llama3.2:3B
 ```
-```powershell
+```
 flm run deepseek-r1-distill-llama3.1-8B
 ```
 *...with more models coming soon.*
