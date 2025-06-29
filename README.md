@@ -113,12 +113,13 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 
 ## 🧪 Model Support
 
-FastFlowLM supports many of today’s best open models:
-- LLaMA 3.1 / 3.2  
-- DeepSeek R1  
+- `flm run llama3.1:8B`
+- `flm run llama3.2:1B`
+- `flm run llama3.2:3B`
+- `flm run deepseek-r1-distill-llama3.1-8B`
 *...with more models coming soon.*
 
----
+  ---
 
 ## 🛠️ Instructions
 
