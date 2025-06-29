@@ -126,6 +126,7 @@ flm run llama3.2:3B
 flm run deepseek-r1-distill-llama3.1-8B
 ```
 *...with more models coming soon.*
+
   ---
 
 ## 🛠️ Instructions
