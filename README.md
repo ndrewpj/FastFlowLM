@@ -49,7 +49,7 @@ FastFlowLM vs AMD’s official stack — **real-time speedup and power efficienc
 
 ## ⚡ Quick Start
 
-A packaged Windows installer is available here: [**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/download/v0.1.1/flm-setup.exe). For more details (available models, etc.), see the [release notes](https://github.com/FastFlowLM/FastFlowLM/releases/).
+A packaged Windows installer is available here: [**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/download/v0.1.2/flm-setup-v0.1.2.exe). For more details (available models, etc.), see the [release notes](https://github.com/FastFlowLM/FastFlowLM/releases/).
 
 After installation, open **PowerShell**.
 
