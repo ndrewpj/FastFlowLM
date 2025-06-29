@@ -133,7 +133,8 @@ flm run deepseek-r1-distill-llama3.1-8B
 
 Documentation and example workflows coming soon. Like Ollama, you can:
 - Load and run models locally via CLI (Interactive Mode)
-- Integrate into your app via a simple HTTP API (Server Mode: REST API server on port 11434)
+- Integrate into your app via a simple HTTP API (Server Mode: REST API server)
+-- Microsoft AI Toolkit, Open WebUI, etc. 
 
 ---
 
