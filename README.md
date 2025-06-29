@@ -26,13 +26,13 @@ A packaged Windows installer is available here: [**flm-setup.exe**](https://gith
 
 After installation, open **PowerShell**.
 
-To run a model in terminal (CLI):
+To run a model in terminal (Interactive Mode):
 ```
 flm run llama3.2:1B
 ```
 > Requires internet access to HuggingFace to pull (download) the optimized model kernel if not already present. The model will be downloaded to the folder: ``C:\Users\<USER>\Documents\flm\models\``. ⚠️ If HuggingFace is not directly accessible in your region, you can manually download the model and place it in this directory.
 
-To start the local REST API server:
+To start the local REST API server (Server Mode):
 ```
 flm serve llama3.2:1B
 ```
