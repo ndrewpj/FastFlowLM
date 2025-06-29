@@ -12,6 +12,7 @@
 #include <streambuf>
 #include <functional>
 #include <string>
+#include <vector>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -21,7 +22,7 @@ using json = nlohmann::json;
 ///@param callback the callback
 ///@param is_chat_format the is chat format
 ///@return the streaming buf
-///@note The packet is sent every std::flush
+///@note The packet is sent every std::flush, but only when UTF-8 sequences are complete
 class streaming_buf : public std::streambuf {
 public:
     ///@brief StreamCallback
@@ -44,15 +45,17 @@ protected:
     ///@brief Called when stream is flushed
     ///@return 0
     int sync() override {
-        flush_buffer(false);
+        flush_complete_utf8_sequences(false);
         return 0;
     }
 
 public:
     ///@brief Call this when generation is complete
     void finalize_chat() {
+        // Send all remaining content, including incomplete sequences
         if (!buffer.empty()) {
-            flush_buffer(true);
+            send_response(buffer, true);
+            buffer.clear();
         } else {
             send_chat_final_response();
         }
@@ -60,20 +63,70 @@ public:
     ///@brief Call this when generation is complete
     ///@param context the context
     void finalize_generate(std::vector<int>& context) {
+        // Send all remaining content, including incomplete sequences
         if (!buffer.empty()) {
-            flush_buffer(true);
+            send_response(buffer, true);
+            buffer.clear();
         } else {
             send_generate_final_response(context);
         }
     }
 
 private:
-    ///@brief Flush the buffer
+    ///@brief Get UTF-8 sequence length from first byte
+    ///@param first_byte the first byte
+    ///@return sequence length, or 0 if invalid
+    size_t get_utf8_sequence_length(unsigned char first_byte) {
+        if ((first_byte & 0x80) == 0) {
+            return 1; // Single byte sequence
+        } else if ((first_byte & 0xE0) == 0xC0) {
+            return 2; // Two byte sequence
+        } else if ((first_byte & 0xF0) == 0xE0) {
+            return 3; // Three byte sequence
+        } else if ((first_byte & 0xF8) == 0xF0) {
+            return 4; // Four byte sequence
+        }
+        return 0; // Invalid UTF-8 start byte
+    }
+    
+    ///@brief Flush only complete UTF-8 sequences
     ///@param is_final the is final
-    void flush_buffer(bool is_final) {
-        if (!buffer.empty()) {
-            send_response(buffer, is_final);
-            buffer.clear();
+    void flush_complete_utf8_sequences(bool is_final) {
+        if (buffer.empty()) return;
+        
+        std::string complete_content;
+        size_t pos = 0;
+        
+        // Process complete UTF-8 sequences
+        while (pos < buffer.size()) {
+            unsigned char first = static_cast<unsigned char>(buffer[pos]);
+            size_t seq_len = get_utf8_sequence_length(first);
+            
+            if (seq_len == 0) {
+                // Invalid UTF-8 start byte, skip it
+                pos++;
+                continue;
+            }
+            
+            // Check if we have a complete sequence
+            if (pos + seq_len > buffer.size()) {
+                // Incomplete sequence, stop here
+                break;
+            }
+            
+            // Add complete sequence to output
+            complete_content.append(buffer, pos, seq_len);
+            pos += seq_len;
+        }
+        
+        // Send complete sequences if any
+        if (!complete_content.empty()) {
+            send_response(complete_content, is_final);
+        }
+        
+        // Remove processed bytes from buffer
+        if (pos > 0) {
+            buffer.erase(0, pos);
         }
     }
     
@@ -166,4 +219,4 @@ public:
 private:
     ///@brief Buffer
     streaming_buf buf;
-}; 
+};
