@@ -18,25 +18,7 @@ FastFlowLM supports full context lengths — up to 128K tokens with LLaMA 3.1 an
 **Just like Ollama — but purpose-built and deeply optimized for the Ryzen™ NPU**
 
 > FastFlowLM supports all Ryzen™ AI 300 Series chips with XDNA2 NPUs (Strix, Strix Halo, and Kraken).
----
 
-## ⚡ Quick Start
-
-A packaged Windows installer is available here: [**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/download/v0.1.0/flm-setup.exe). For more details (available models, etc.), see the [release notes](https://github.com/FastFlowLM/FastFlowLM/releases/).
-
-After installation, open **PowerShell**.
-
-To run a model in terminal (Interactive Mode):
-```
-flm run llama3.2:1B
-```
-> Requires internet access to HuggingFace to pull (download) the optimized model kernel if not already present. The model will be downloaded to the folder: ``C:\Users\<USER>\Documents\flm\models\``. ⚠️ If HuggingFace is not directly accessible in your region, you can manually download the model and place it in this directory.
-
-To start the local REST API server (Server Mode):
-```
-flm serve llama3.2:1B
-```
-> The model tag (e.g., `llama3.2:1B`) sets the initial model, which is optional. If another model is requested, FastFlowLM will automatically switch to it. Local server is on port 11434 (default).
 ---
 
 ## 📺 Demo Videos
@@ -62,6 +44,26 @@ FastFlowLM vs AMD’s official stack — **real-time speedup and power efficienc
     </td>
   </tr>
 </table>
+
+---
+
+## ⚡ Quick Start
+
+A packaged Windows installer is available here: [**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/download/v0.1.0/flm-setup.exe). For more details (available models, etc.), see the [release notes](https://github.com/FastFlowLM/FastFlowLM/releases/).
+
+After installation, open **PowerShell**.
+
+To run a model in terminal (Interactive Mode):
+```
+flm run llama3.2:1B
+```
+> Requires internet access to HuggingFace to pull (download) the optimized model kernel if not already present. The model will be downloaded to the folder: ``C:\Users\<USER>\Documents\flm\models\``. ⚠️ If HuggingFace is not directly accessible in your region, you can manually download the model and place it in this directory.
+
+To start the local REST API server (Server Mode):
+```
+flm serve llama3.2:1B
+```
+> The model tag (e.g., `llama3.2:1B`) sets the initial model, which is optional. If another model is requested, FastFlowLM will automatically switch to it. Local server is on port 11434 (default).
 
 ---
 
@@ -127,7 +129,7 @@ flm run deepseek-r1-distill-llama3.1-8B
 ```
 *...with more models coming soon.*
 
-  ---
+---
 
 ## 🛠️ Instructions
 
