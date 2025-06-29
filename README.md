@@ -125,7 +125,7 @@ flm run llama3.2:1B
 flm run llama3.2:3B
 ```
 ```
-flm run deepseek-r1-distill-llama3.1-8B
+flm run deepseek
 ```
 *...with more models coming soon.*
 
