@@ -36,7 +36,7 @@ To start the local REST API server:
 ```
 flm serve llama3.2:1B
 ```
-> The model tag (e.g., `llama3.2:1B`) sets the initial model, which is optional. If another model is requested, FastFlowLM will automatically switch to it.
+> The model tag (e.g., `llama3.2:1B`) sets the initial model, which is optional. If another model is requested, FastFlowLM will automatically switch to it. Local server is on port 11434 (default).
 ---
 
 ## 📺 Demo Videos
@@ -132,8 +132,8 @@ flm run deepseek-r1-distill-llama3.1-8B
 ## 🛠️ Instructions
 
 Documentation and example workflows coming soon. Like Ollama, you can:
-- Load and run models locally via CLI
-- Integrate into your app via a simple HTTP API
+- Load and run models locally via CLI (Interactive Mode)
+- Integrate into your app via a simple HTTP API (Server Mode: REST API server on port 11434)
 
 ---
 
