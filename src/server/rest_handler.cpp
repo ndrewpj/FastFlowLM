@@ -9,12 +9,14 @@
 #include "rest_handler.hpp"
 #include "wstream_buf.hpp"
 #include "streaming_ostream.hpp"
+#include "streaming_ostream_openai.hpp"
 #include <sstream>
 #include <iostream>
 #include <thread>
 #include <chrono>
 #include <iomanip>
 #include <locale>
+#include <random>
 
 ///@brief RestHandler constructor
 ///@param models the model list
@@ -343,4 +345,75 @@ void RestHandler::handle_create(const json& request,
                                StreamResponseCallback send_streaming_response) {
     json error_response = {{"error", "Create operation not implemented"}};
     send_response(error_response);
+}
+
+///@brief Handle the openai chat completion request
+///@param request the request
+///@param send_response the send response
+///@param send_streaming_response the send streaming response
+void RestHandler::handle_openai_chat_completion(const json& request,
+                                               std::function<void(const json&)> send_response,
+                                               StreamResponseCallback send_streaming_response) {
+    try {
+        json messages = request["messages"];
+        bool stream = request.value("stream", false);
+        std::string model = request.value("model", default_model_tag);
+        
+        // Extract OpenAI-style parameters
+        json options = request.value("options", json::object());
+        float temperature = request.value("temperature", 0.7);
+        float top_p = request.value("top_p", 0.9);
+        int top_k = request.value("top_k", 10);
+        float frequency_penalty = request.value("frequency_penalty", 0.1);
+        int max_tokens = request.value("max_tokens", 2048);
+
+        chat_engine->set_temperature(temperature);
+        chat_engine->set_topp(top_p);
+        chat_engine->set_topk(top_k);
+        chat_engine->set_frequency_penalty(frequency_penalty);
+        
+        ensure_model_loaded(model);
+        
+        if (stream) {
+            // Create a wrapper callback that passes the pre-formatted SSE string directly
+            auto openai_stream_callback = [&send_streaming_response](const std::string& data, bool is_final) {
+                // Create a JSON string to pass through the existing callback interface
+                json data_json = data;
+                send_streaming_response(data_json, is_final);
+            };
+            
+            // Streaming response using streaming_ostream_openai
+            streaming_ostream_openai ostream(model, openai_stream_callback, true);  // true for chat format
+            std::vector<int> prompts = process_chat_message(messages);
+            chat_engine->insert(prompts);
+            chat_engine->generate(ostream);
+            ostream.finalize_chat();
+            this->chat_engine->clear_context();
+        } else {
+            // For OpenAI compatibility, always use streaming
+            // Create a wrapper callback that passes the pre-formatted SSE string directly
+            auto openai_stream_callback = [&send_streaming_response](const std::string& data, bool is_final) {
+                // Create a JSON string to pass through the existing callback interface
+                json data_json = data;
+                send_streaming_response(data_json, is_final);
+            };
+            
+            // Streaming response using streaming_ostream_openai
+            streaming_ostream_openai ostream(model, openai_stream_callback, true);  // true for chat format
+            std::vector<int> prompts = process_chat_message(messages);
+            chat_engine->insert(prompts);
+            chat_engine->generate(ostream);
+            ostream.finalize_chat();
+            this->chat_engine->clear_context();
+        }
+    } catch (const std::exception& e) {
+        json error_response = {
+            {"error", {
+                {"message", e.what()},
+                {"type", "server_error"},
+                {"code", 500}
+            }}
+        };
+        send_response(error_response);
+    }
 }

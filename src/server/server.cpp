@@ -104,12 +104,27 @@ void HttpSession::write_streaming_response(const json& data, bool is_final) {
 ///@param data the data
 ///@param is_final the is final
 void HttpSession::send_chunk_data(const json& data, bool is_final) {
-    // Format as HTTP chunk
-    std::string chunk_content = data.dump() + "\n";
+    std::string chunk_content;
+    
+    // Check if the data is a string (pre-formatted SSE with "data: " prefix)
+    if (data.is_string()) {
+        std::string data_str = data.get<std::string>();
+        // If it starts with "data: ", it's already formatted for SSE
+        if (data_str.substr(0, 6) == "data: ") {
+            chunk_content = data_str;
+        } else {
+            // Regular JSON string, add single newline for Ollama format
+            chunk_content = data_str;
+        }
+    } else {
+        // Regular JSON object, format for Ollama compatibility
+        chunk_content = data.dump() + "\n";
+    }
     
     std::cout << "\n=== Outgoing Chunk ===" << std::endl;
     std::cout << "Chunk: " << chunk_content << std::endl;
     std::cout << "=====================\n" << std::endl;
+    
     // HTTP chunked format: size in hex + \r\n + data + \r\n
     std::ostringstream chunk_size;
     chunk_size << std::hex << chunk_content.length();
@@ -210,10 +225,10 @@ void WebServer::handle_request(http::request<http::string_body>& req,
     }
     std::cout << "Body: " << std::endl;
     std::cout << request_json.dump(4) << std::endl;
-    std::cout << "=====================\n" << std::endl;
 
     std::string key = std::string(req.method_string()) + " " + std::string(req.target());
-    
+    std::cout << "==========================\n" << std::endl;
+
     auto it = routes.find(key);
     if (it != routes.end()) {
         // Parse JSON request body
@@ -343,5 +358,16 @@ std::unique_ptr<WebServer> create_lm_server(model_list& models, ModelDownloader&
             rest_handler->handle_pull(request_json, send_response, send_streaming_response);
         });
     
+    server->register_handler("POST", "/v1/chat/completions",
+        [rest_handler](const http::request<http::string_body>& req,
+                      std::function<void(const json&)> send_response,
+                      std::function<void(const json&, bool)> send_streaming_response,
+                      std::shared_ptr<HttpSession> session) {
+            json request_json;
+            if (!req.body().empty()) {
+                request_json = json::parse(req.body());
+            }
+            rest_handler->handle_openai_chat_completion(request_json, send_response, send_streaming_response);
+        });
     return server;
 }

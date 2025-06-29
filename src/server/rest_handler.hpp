@@ -74,6 +74,10 @@ public:
                       std::function<void(const json&)> send_response,
                       StreamResponseCallback send_streaming_response);
 
+    void handle_openai_chat_completion(const json& request,
+                                      std::function<void(const json&)> send_response,
+                                      StreamResponseCallback send_streaming_response);
+
 private:
     void ensure_model_loaded(const std::string& model_tag);
     std::vector<int> process_chat_message(const json& message);
