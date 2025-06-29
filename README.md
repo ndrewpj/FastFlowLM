@@ -26,7 +26,7 @@ A packaged Windows installer is available here: [**flm-setup.exe**](https://gith
 
 After installation, open **PowerShell**.
 
-To run a model in terminal (chat-style):
+To run a model in terminal (CLI):
 ```powershell
 flm run llama3.2:1B
 ```
