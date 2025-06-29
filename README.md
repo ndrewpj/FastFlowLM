@@ -107,7 +107,7 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 <p style="font-size:85%; margin:0;">
 📊 View the detailed results here:
 <a href="benchmarks/llama3_results.md" style="text-decoration:none;">
-<strong>[Full benchmark results]</strong>
+<strong>[Benchmark results]</strong>
 </a>
 </p>
 
