@@ -17,14 +17,15 @@ FastFlowLM supports full context lengths — up to 128K tokens with LLaMA 3.1 an
 
 **Just like Ollama — but purpose-built and deeply optimized for the Ryzen™ NPU**
 
-> FastFlowLM supports all Ryzen™ AI 300 Series chips with XDNA2 NPUs.
+> FastFlowLM supports all Ryzen™ AI 300 Series chips with XDNA2 NPUs (Strix, Strix Halo, and Kraken).
+
 ---
 
 ## 📺 Demo Videos
 
 FastFlowLM vs AMD’s official stack — **real-time speedup and power efficiency**: 
 
-- Same prompt (length: 1835 tokens), same model (LLaMA 3.2 1B model; weights int4; activation bf16), running on the same machine (AMD Ryzen AI 5 340 NPU with 32 GB SO-DIMM DDR5 5600 MHz memory)
+- Same prompt (length: 1835 tokens), same model (LLaMA 3.2 1B model; weights int4; activation bf16), running on the same machine (AMD Ryzen AI 5 340 NPU with 16 GB SO-DIMM DDR5 5600 MHz memory)
 - Real-time CPU, iGPU, NPU usage, and power consumption shown (Windows task manager + HWINFO)
 
 <table>
@@ -46,6 +47,26 @@ FastFlowLM vs AMD’s official stack — **real-time speedup and power efficienc
 
 ---
 
+## ⚡ Quick Start
+
+A packaged Windows installer is available here: [**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/download/v0.1.2/flm-setup-v0.1.2.exe). For more details (available models, etc.), see the [release notes](https://github.com/FastFlowLM/FastFlowLM/releases/).
+
+After installation, open **PowerShell**.
+
+To run a model in terminal (Interactive Mode):
+```
+flm run llama3.2:1B
+```
+> Requires internet access to HuggingFace to pull (download) the optimized model kernel if not already present. The model will be downloaded to the folder: ``C:\Users\<USER>\Documents\flm\models\``. ⚠️ If HuggingFace is not directly accessible in your region, you can manually download the model and place it in this directory.
+
+To start the local REST API server (Server Mode):
+```
+flm serve llama3.2:1B
+```
+> The model tag (e.g., `llama3.2:1B`) sets the initial model, which is optional. If another model is requested, FastFlowLM will automatically switch to it. Local server is on port 11434 (default).
+
+---
+
 ## 🧠 Local AI on Your NPU
 
 FastFlowLM makes it easy to run modern LLMs locally with:
@@ -53,7 +74,7 @@ FastFlowLM makes it easy to run modern LLMs locally with:
 - 🧰 Simple CLI and API
 - 🔐 Fully private and offline
 
-No drivers, no model rewrites, no tuning — it just works.
+No model rewrites, no tuning — it just works.
 
 ---
 
@@ -86,7 +107,7 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 <p style="font-size:85%; margin:0;">
 📊 View the detailed results here:
 <a href="benchmarks/llama3_results.md" style="text-decoration:none;">
-<strong>[Full benchmark results]</strong>
+<strong>[Benchmark results]</strong>
 </a>
 </p>
 
@@ -94,19 +115,28 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 
 ## 🧪 Model Support
 
-FastFlowLM supports many of today’s best open models:
-- LLaMA 3.1 / 3.2  
-- DeepSeek R1  
+```
+flm run llama3.1:8B
+```
+```
+flm run llama3.2:1B
+```
+```
+flm run llama3.2:3B
+```
+```
+flm run deepseek
+```
 *...with more models coming soon.*
 
 ---
 
-## 🛠️ Getting Started
+## 🛠️ Instructions
 
-Documentation, install guides, and example workflows coming soon.  
-You’ll be able to:
-- Load and run models locally via CLI
-- Integrate into your app via a simple HTTP API
+Documentation and example workflows coming soon. Like Ollama, you can:
+- Load and run models locally via CLI (Interactive Mode)
+- Integrate into your app via a simple REST API via a local server (Server Mode)
+> Compatible with tools like **Microsoft AI Toolkit**, **Open WebUI**, and more.
 
 ---
 
@@ -121,7 +151,7 @@ The rest of the stack — CLI, model runner, orchestration — is open and devel
 
 ## 📝 Licensing & Contact
 
-- 🆓 **Deep-optimized FastFlowLM models** are **free for non-commercial use**  
+- 🆓 **Deep-optimized FastFlowLM kernels** are **free for non-commercial use**  
 - 💼 **Interested in commercial use?** Email us at [info@fastflowlm.edu](mailto:info@fastflowlm.edu)  
 - 📦 **Want to bring your own model?** We can optimize it for FastFlowLM — just reach out!
 
