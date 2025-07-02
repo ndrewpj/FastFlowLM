@@ -39,7 +39,7 @@ std::map<std::string, runner_cmd_t> cmd_map = {
 /// \param tag - the tag of the model to load
 Runner::Runner(model_list& supported_models, ModelDownloader& downloader, std::string& tag) 
     : supported_models(supported_models), downloader(downloader), tag(tag) {
-    this->chat_engine = std::make_unique<chat_bot>(131072);
+    this->chat_engine = std::make_unique<chat_bot>(0);
     if (!this->downloader.is_model_downloaded(this->tag)) {
         this->downloader.pull_model(this->tag);
     }
@@ -310,9 +310,10 @@ void Runner::run() {
             this->chat_engine->start_total_timer();
             std::vector<int> tokens = this->chat_engine->tokenize(input);
             std::vector<int> prompts = this->chat_engine->apply_chat_template(tokens, chat_bot::USER, true);
-            this->chat_engine->insert(prompts);
+            chat_meta_info meta_info;
+            this->chat_engine->insert(meta_info, prompts);
             this->chat_engine->stop_ttft_timer();
-            this->chat_engine->generate(ostream);
+            this->chat_engine->generate(meta_info, -1, ostream);
             this->chat_engine->stop_total_timer();
             std::cout << std::endl;
             if (verbose) {

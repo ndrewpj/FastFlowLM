@@ -7,8 +7,8 @@
 #pragma once
 #include "chat/chat_bot.hpp"
 
-chat_bot::chat_bot(unsigned int MAX_L, unsigned int device_id){
-    this->MAX_L = MAX_L;
+chat_bot::chat_bot(unsigned int device_id){
+    this->MAX_L = 4096;
     this->device_id = device_id;
     this->total_tokens = 0;
     this->profiler_list.resize(PROFILER_TYPE_NUM);
@@ -66,7 +66,9 @@ void chat_bot::load_model(std::string model_path, json model_info){
         header_print("warning", "Model type not supported: " << this->lm_config->model_type);
         exit(1);
     }
+    
     this->lm_engine->load_weights(*this->q4nx);
+    
     //free the q4nx
     this->q4nx.reset();
     this->is_model_loaded = true;
@@ -99,7 +101,8 @@ void chat_bot::load_model(std::string model_path, json model_info){
     // insert the system prompt
     std::vector<int> system_tokens = this->tokenizer->encode(this->get_system_prompt(true, this->system_prompt));
     std::vector<int> system_prompts = this->apply_chat_template(system_tokens, SYSTEM, false);
-    this->insert(system_prompts, true);
+    chat_meta_info meta_info;
+    this->insert(meta_info, system_prompts, true);
 }
 
 /// \brief Set the sampler
@@ -130,7 +133,7 @@ void chat_bot::set_max_length(unsigned int MAX_L){
 /// \param is_system_prompt the is system prompt
 /// \note The function will insert the tokens
 /// \note The function will check if the tokens are valid
-void chat_bot::insert(std::vector<int>& tokens, bool is_system_prompt){
+void chat_bot::insert(chat_meta_info& meta_info, std::vector<int>& tokens, bool is_system_prompt){
     assert(this->lm_engine != nullptr);
     assert(this->lm_config != nullptr);
     assert(this->tokenizer != nullptr);
@@ -143,9 +146,12 @@ void chat_bot::insert(std::vector<int>& tokens, bool is_system_prompt){
         this->token_history.push_back(token);
     }
     buffer<bf16> y;
-    this->profiler_list[PREFILL_TIME].start();
+
+    auto prefill_start_time = this->profiler_list[PREFILL_TIME].start();
     y = this->lm_engine->prefill(tokens);
-    this->profiler_list[PREFILL_TIME].stop(tokens.size());
+    auto prefill_end_time = this->profiler_list[PREFILL_TIME].stop(tokens.size());
+    meta_info.prefill_duration = (uint64_t)time_utils::duration_ns(prefill_start_time, prefill_end_time).first;
+    meta_info.prompt_tokens = tokens.size();
     this->total_tokens += tokens.size();
     if (this->total_tokens >= this->MAX_L){
         header_print("warning", "Max length reached, stopping prefilling...");
@@ -164,22 +170,29 @@ void chat_bot::insert(std::vector<int>& tokens, bool is_system_prompt){
 }
 
 /// \brief Generate the tokens
+/// \param meta_info the meta info
+/// \param length_limit the length limit, -1 means no limit
 /// \param os the output stream
 /// \note The function will generate the tokens
 /// \note The function will check if the tokens are valid
 /// \note The function will check if the max length is reached
 /// \note The function will check if the last token is valid
-std::string chat_bot::generate(std::ostream& os){
+std::string chat_bot::generate(chat_meta_info& meta_info, int length_limit, std::ostream& os){
     assert(this->lm_engine != nullptr);
     assert(this->lm_config != nullptr);
     assert(this->tokenizer != nullptr);
     assert(this->sampler != nullptr);
     std::vector<int> sampled_tokens;
-    sampled_tokens.reserve(4096);
+    if (length_limit > 0){
+        sampled_tokens.reserve(length_limit);
+    }
+    else{
+        sampled_tokens.reserve(4096);
+    }
     assert(this->last_token != -1);
 
     std::string result;
-    result.reserve(4096);
+    meta_info.generated_tokens = 1;
 
     if (this->is_think_model){
         std::string think_result = this->tokenizer->run_time_decoder(128013);
@@ -188,11 +201,12 @@ std::string chat_bot::generate(std::ostream& os){
         think_result = this->tokenizer->run_time_decoder(198);
         result += think_result;
         os << think_result << std::flush;
+        meta_info.generated_tokens += 2;
     }
-
+    stop_reason reason = EOT_DETECTED;
     int last_sampled_token = this->last_token;
     this->token_history.push_back(this->last_token);
-    this->profiler_list[TKOEN_DECODE_TIME].start();
+    auto decoding_start_time = time_utils::now();
     if (this->tokenizer->is_normal_token(last_sampled_token, this->is_think_model) && last_sampled_token != -1){
         std::string token_str = this->tokenizer->run_time_decoder(last_sampled_token);
         result += token_str;
@@ -231,7 +245,15 @@ std::string chat_bot::generate(std::ostream& os){
             this->lm_engine->forward(last_sampled_token);
             break;
         }
+        meta_info.generated_tokens++;
+        if ((length_limit > 0) && (meta_info.generated_tokens >= length_limit)){
+            reason = MAX_LENGTH_REACHED;
+            break;
+        }
     }
+    auto decoding_end_time = time_utils::now();
+    meta_info.decoding_duration = (uint64_t)time_utils::duration_ns(decoding_start_time, decoding_end_time).first;
+    meta_info.stop_reason = reason;
     if (this->total_tokens >= this->MAX_L){
         header_print("warning", "Max length reached, stopping generation...");
     }
@@ -239,14 +261,16 @@ std::string chat_bot::generate(std::ostream& os){
 }
 
 /// \brief Generate the tokens with prompt
+/// \param meta_info the meta info
 /// \param tokens the tokens
+/// \param length_limit the length limit, -1 means no limit
 /// \param os the output stream
 /// \note The function will generate the tokens
 /// \note The function will insert the tokens
 /// \note The function will check if the tokens are valid
-std::string chat_bot::generate_with_prompt(std::vector<int>& tokens, std::ostream& os){
-    this->insert(tokens);
-    std::string result = this->generate(os);
+std::string chat_bot::generate_with_prompt(chat_meta_info& meta_info, std::vector<int>& tokens, int length_limit, std::ostream& os){
+    this->insert(meta_info, tokens);
+    std::string result = this->generate(meta_info, length_limit, os);
     return result;
 }
 
@@ -268,7 +292,8 @@ void chat_bot::clear_context(){
     this->last_prefill_time = {0, "us"};
     std::vector<int> system_tokens = this->tokenize(this->get_system_prompt(true, this->system_prompt));
     std::vector<int> system_prompts = this->apply_chat_template(system_tokens, SYSTEM, false);
-    this->insert(system_prompts, true);
+    chat_meta_info meta_info;
+    this->insert(meta_info, system_prompts, true);
 }
 
 /// \brief Get the current context length
@@ -418,6 +443,10 @@ void chat_bot::set_topp(float topp){
 /// \note The function will set the temperature
 /// \note The function will check if the temperature is valid
 void chat_bot::set_temperature(float temperature){
+    if (temperature < 0.0f){
+        header_print("warning", "Temperature must be greater than 0.0");
+        return;
+    }
     this->sampler->temperature = temperature;
 }
 

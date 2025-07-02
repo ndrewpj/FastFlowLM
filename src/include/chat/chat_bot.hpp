@@ -6,14 +6,6 @@
 /// \note This is a header file for the chat_bot class
 #pragma once
 
-#include "causal_lm.hpp"
-#include "lm_config.hpp"
-#include "llama/llama_npu.hpp"
-#include "tokenizer/tokenizer.hpp"
-#include "modules/sampler.hpp"
-#include "utils/utils.hpp"
-#include <nlohmann/json.hpp>
-#include "utils/profiler.hpp"
 #include <ctime>
 #include <iomanip>
 #include <sstream>
@@ -21,8 +13,49 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include <type_traits>
+#include "typedef.hpp"
+#include "causal_lm.hpp"
+#include "lm_config.hpp"
+#include "llama/llama_npu.hpp"
+#include "tokenizer/tokenizer.hpp"
+#include "modules/sampler.hpp"
+#include "utils/utils.hpp"
+#include "utils/profiler.hpp"
+#include "tensor_utils/q4_npu_eXpress.hpp"
+#include "npu_utils/npu_utils.hpp"
+#include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
+
+typedef enum {
+    EOT_DETECTED,
+    MAX_LENGTH_REACHED,
+    ERROR_DETECTED
+} stop_reason;
+
+inline std::string stop_reason_to_string(stop_reason reason){
+    switch (reason){
+        case EOT_DETECTED:
+            return "stop";
+        case MAX_LENGTH_REACHED:
+            return "length";
+        case ERROR_DETECTED:
+            return "error";
+        default:
+            return "UNKNOWN";
+    }
+}
+
+typedef struct {
+    int prompt_tokens;
+    int generated_tokens;
+    uint64_t total_duration; // in nanoseconds
+    uint64_t load_duration; // in nanoseconds
+    uint64_t prefill_duration; // in nanoseconds
+    uint64_t decoding_duration; // in nanoseconds
+    stop_reason stop_reason;
+} chat_meta_info;
 
 /// \brief chat_bot class
 /// \note This is a class for the chat_bot
@@ -67,7 +100,7 @@ public:
         SYSTEM
     } role_type;
 
-    chat_bot(unsigned int MAX_L, unsigned int device_id = 0);
+    chat_bot(unsigned int device_id);
 
     /// \brief Clear the context
     void clear_context();
@@ -75,15 +108,15 @@ public:
     /// \brief Insert the tokens
     /// \param tokens the tokens
     /// \param is_system_prompt the is system prompt
-    void insert(std::vector<int>& tokens, bool is_system_prompt = false);
+    void insert(chat_meta_info& meta_info, std::vector<int>& tokens, bool is_system_prompt = false);
 
     /// \brief Generate the tokens
     /// \param os the output stream
     /// \return the tokens
-    std::string generate(std::ostream& os = std::cout);
+    std::string generate(chat_meta_info& meta_info, int length_limit, std::ostream& os = std::cout);
 
     /// \brief Generate the tokens with prompt
-    std::string generate_with_prompt(std::vector<int>& tokens, std::ostream& os = std::cout);
+    std::string generate_with_prompt(chat_meta_info& meta_info, std::vector<int>& tokens, int length_limit, std::ostream& os = std::cout);
 
     /// \brief Get the current context length
     /// \return the current context length

@@ -18,6 +18,8 @@
 #include <functional>
 #include <unordered_map>
 #include <map>
+#include <mutex>
+#include <atomic>
 #include "wstream_buf.hpp"
 #include "streaming_ostream.hpp"
 #include "model_downloader.hpp"
@@ -35,44 +37,50 @@ class HttpSession;
 // Stream response callback type for handling streaming responses
 using StreamCallback = std::function<void(const std::string&)>;
 
+// Cancellation token for request cancellation
+struct CancellationToken {
+    std::atomic<bool> is_cancelled;
+    std::shared_ptr<HttpSession> session;
+    
+    CancellationToken(std::shared_ptr<HttpSession> s) : is_cancelled(false), session(s) {}
+    
+    void cancel() {
+        is_cancelled.store(true);
+    }
+    
+    bool cancelled() const {
+        return is_cancelled.load();
+    }
+};
+
 // Request handler callback type
 using RequestHandler = std::function<void(
     const http::request<http::string_body>& req,
     std::function<void(const json&)> send_response,
     std::function<void(const json&, bool)> send_streaming_response,  // data, is_final
-    std::shared_ptr<HttpSession> session  // for streaming support
+    std::shared_ptr<HttpSession> session,  // for streaming support
+    std::shared_ptr<CancellationToken> cancellation_token  // for cancellation support
 )>;
 
-///@brief WebServer class
-///@param port the port to listen on, default is 11434, same with the ollama server
 class WebServer {
 public:
-    ///@brief constructor
-    ///@param port the port to listen on, default is 11434, same with the ollama server
     WebServer(int port = 11434);
-    ///@brief destructor
     ~WebServer();
 
-    ///@brief start the server
     void start();
-    ///@brief stop the server
     void stop();
 
-    ///@brief register route handlers
-    ///@param method the method of the request
-    ///@param path the path of the request
-    ///@param handler the handler of the request
     void register_handler(const std::string& method, const std::string& path, RequestHandler handler);
 
-    ///@brief handle HTTP request (called by session)
-    ///@param req the request
-    ///@param res the response
-    ///@param socket the socket
-    ///@param session the session
     void handle_request(http::request<http::string_body>& req,
                        http::response<http::string_body>& res,
                        tcp::socket& socket,
                        std::shared_ptr<HttpSession> session);
+
+    // Request tracking methods
+    void register_active_request(const std::string& request_id, std::shared_ptr<CancellationToken> token);
+    void unregister_active_request(const std::string& request_id);
+    bool cancel_request(const std::string& request_id);
 
 private:
     ///@brief do accept
@@ -88,32 +96,23 @@ private:
     bool running;
     ///@brief port
     int port;
+    
+    // Request tracking
+    std::mutex active_requests_mutex_;
+    std::unordered_map<std::string, std::shared_ptr<CancellationToken>> active_requests_;
 };
 
 ///@brief HttpSession class for handling individual connections
 class HttpSession : public std::enable_shared_from_this<HttpSession> {
 public:
-    ///@brief constructor
-    ///@param socket the socket
-    ///@param server the server
     HttpSession(tcp::socket socket, WebServer& server);
-    ///@brief start
     void start();
-    ///@brief write streaming response
-    ///@param data the data
-    ///@param is_final the is final
     void write_streaming_response(const json& data, bool is_final);
 
 private:
-    ///@brief Read the request
     void read_request();
-    ///@brief Handle the request
     void handle_request();
-    ///@brief Write the response
     void write_response();
-    ///@brief Send the chunk data
-    ///@param data the data
-    ///@param is_final the is final
     void send_chunk_data(const json& data, bool is_final);
     
     ///@brief socket

@@ -121,9 +121,7 @@ void HttpSession::send_chunk_data(const json& data, bool is_final) {
         chunk_content = data.dump() + "\n";
     }
     
-    std::cout << "\n=== Outgoing Chunk ===" << std::endl;
-    std::cout << "Chunk: " << chunk_content << std::endl;
-    std::cout << "=====================\n" << std::endl;
+    std::cout << "Chunk: " << chunk_content;
     
     // HTTP chunked format: size in hex + \r\n + data + \r\n
     std::ostringstream chunk_size;
@@ -176,6 +174,35 @@ void WebServer::start() {
 void WebServer::stop() {
     running = false;
     ioc.stop();
+}
+
+///@brief register active request
+///@param request_id the request ID
+///@param token the cancellation token
+void WebServer::register_active_request(const std::string& request_id, std::shared_ptr<CancellationToken> token) {
+    std::lock_guard<std::mutex> lock(active_requests_mutex_);
+    active_requests_[request_id] = token;
+}
+
+///@brief unregister active request
+///@param request_id the request ID
+void WebServer::unregister_active_request(const std::string& request_id) {
+    std::lock_guard<std::mutex> lock(active_requests_mutex_);
+    active_requests_.erase(request_id);
+}
+
+///@brief cancel request
+///@param request_id the request ID
+///@return true if request was found and cancelled
+bool WebServer::cancel_request(const std::string& request_id) {
+    std::lock_guard<std::mutex> lock(active_requests_mutex_);
+    auto it = active_requests_.find(request_id);
+    if (it != active_requests_.end()) {
+        it->second->cancel();
+        active_requests_.erase(it);
+        return true;
+    }
+    return false;
 }
 
 ///@brief register handler
@@ -245,23 +272,43 @@ void WebServer::handle_request(http::request<http::string_body>& req,
             return;
         }
         
-        // Create response callback
-        auto send_response = [&res](const json& response_data) {
+        // Create cancellation token for this request
+        auto cancellation_token = std::make_shared<CancellationToken>(session);
+        
+        // Extract request_id for tracking (generate one if not provided)
+        std::string request_id;
+        if (request_json.contains("request_id")) {
+            request_id = request_json["request_id"];
+        } else {
+            // Generate a unique request ID
+            static std::atomic<int> counter{0};
+            request_id = "req_" + std::to_string(counter.fetch_add(1));
+        }
+        
+        // Register the request for potential cancellation
+        register_active_request(request_id, cancellation_token);
+        
+        // Create response callback that unregisters the request when done
+        auto send_response = [&res, this, request_id](const json& response_data) {
             res.result(http::status::ok);
             res.body() = response_data.dump();
             res.set(http::field::content_type, "application/json");
             res.prepare_payload();
+            unregister_active_request(request_id);
         };
         
         // Create streaming response callback that uses the session
-        auto send_streaming_response = [session](const json& data, bool is_final) {
+        auto send_streaming_response = [session, this, request_id](const json& data, bool is_final) {
             if (session) {
                 session->write_streaming_response(data, is_final);
             }
+            if (is_final) {
+                unregister_active_request(request_id);
+            }
         };
         
-        // Call the handler with the session
-        it->second(req, send_response, send_streaming_response, session);
+        // Call the handler with the session and cancellation token
+        it->second(req, send_response, send_streaming_response, session, cancellation_token);
     } else {
         res.result(http::status::not_found);
         res.body() = json{{"error", "Not Found"}}.dump();
@@ -286,31 +333,34 @@ std::unique_ptr<WebServer> create_lm_server(model_list& models, ModelDownloader&
         [rest_handler](const http::request<http::string_body>& req, 
                       std::function<void(const json&)> send_response,
                       std::function<void(const json&, bool)> send_streaming_response,
-                      std::shared_ptr<HttpSession> session) {
+                      std::shared_ptr<HttpSession> session,
+                      std::shared_ptr<CancellationToken> cancellation_token) {
             json request_json;
             if (!req.body().empty()) {
                 request_json = json::parse(req.body());
             }
-            rest_handler->handle_generate(request_json, send_response, send_streaming_response);
+            rest_handler->handle_generate(request_json, send_response, send_streaming_response, cancellation_token);
         });
     
     server->register_handler("POST", "/api/chat",
         [rest_handler](const http::request<http::string_body>& req,
                       std::function<void(const json&)> send_response,
                       std::function<void(const json&, bool)> send_streaming_response,
-                      std::shared_ptr<HttpSession> session) {
+                      std::shared_ptr<HttpSession> session,
+                      std::shared_ptr<CancellationToken> cancellation_token) {
             json request_json;
             if (!req.body().empty()) {
                 request_json = json::parse(req.body());
             }
-            rest_handler->handle_chat(request_json, send_response, send_streaming_response);
+            rest_handler->handle_chat(request_json, send_response, send_streaming_response, cancellation_token);
         });
 
     server->register_handler("GET", "/api/ps",
         [rest_handler](const http::request<http::string_body>& req,
                       std::function<void(const json&)> send_response,
                       std::function<void(const json&, bool)> send_streaming_response,
-                      std::shared_ptr<HttpSession> session) {
+                      std::shared_ptr<HttpSession> session,
+                      std::shared_ptr<CancellationToken> cancellation_token) {
             json request_json;
             rest_handler->handle_ps(request_json, send_response, send_streaming_response);
         });
@@ -319,7 +369,8 @@ std::unique_ptr<WebServer> create_lm_server(model_list& models, ModelDownloader&
         [rest_handler](const http::request<http::string_body>& req,
                       std::function<void(const json&)> send_response,
                       std::function<void(const json&, bool)> send_streaming_response,
-                      std::shared_ptr<HttpSession> session) {
+                      std::shared_ptr<HttpSession> session,
+                      std::shared_ptr<CancellationToken> cancellation_token) {
             json request_json;
             if (!req.body().empty()) {
                 request_json = json::parse(req.body());
@@ -331,7 +382,8 @@ std::unique_ptr<WebServer> create_lm_server(model_list& models, ModelDownloader&
         [rest_handler](const http::request<http::string_body>& req,
                       std::function<void(const json&)> send_response,
                       std::function<void(const json&, bool)> send_streaming_response,
-                      std::shared_ptr<HttpSession> session) {
+                      std::shared_ptr<HttpSession> session,
+                      std::shared_ptr<CancellationToken> cancellation_token) {
             json request_json;
             rest_handler->handle_models(request_json, send_response, send_streaming_response);
         });
@@ -340,7 +392,8 @@ std::unique_ptr<WebServer> create_lm_server(model_list& models, ModelDownloader&
         [rest_handler](const http::request<http::string_body>& req,
                       std::function<void(const json&)> send_response,
                       std::function<void(const json&, bool)> send_streaming_response,
-                      std::shared_ptr<HttpSession> session) {
+                      std::shared_ptr<HttpSession> session,
+                      std::shared_ptr<CancellationToken> cancellation_token) {
             json request_json;
             rest_handler->handle_version(request_json, send_response, send_streaming_response);
         });
@@ -350,7 +403,8 @@ std::unique_ptr<WebServer> create_lm_server(model_list& models, ModelDownloader&
         [rest_handler](const http::request<http::string_body>& req,
                       std::function<void(const json&)> send_response,
                       std::function<void(const json&, bool)> send_streaming_response,
-                      std::shared_ptr<HttpSession> session) {
+                      std::shared_ptr<HttpSession> session,
+                      std::shared_ptr<CancellationToken> cancellation_token) {
             json request_json;
             if (!req.body().empty()) {
                 request_json = json::parse(req.body());
@@ -362,12 +416,49 @@ std::unique_ptr<WebServer> create_lm_server(model_list& models, ModelDownloader&
         [rest_handler](const http::request<http::string_body>& req,
                       std::function<void(const json&)> send_response,
                       std::function<void(const json&, bool)> send_streaming_response,
-                      std::shared_ptr<HttpSession> session) {
+                      std::shared_ptr<HttpSession> session,
+                      std::shared_ptr<CancellationToken> cancellation_token) {
             json request_json;
             if (!req.body().empty()) {
                 request_json = json::parse(req.body());
             }
-            rest_handler->handle_openai_chat_completion(request_json, send_response, send_streaming_response);
+            rest_handler->handle_openai_chat_completion(request_json, send_response, send_streaming_response, cancellation_token);
         });
+    
+    // Add cancel endpoint - capture server by raw pointer
+    WebServer* server_ptr = server.get();
+    server->register_handler("POST", "/api/cancel",
+        [server_ptr](const http::request<http::string_body>& req,
+                     std::function<void(const json&)> send_response,
+                     std::function<void(const json&, bool)> send_streaming_response,
+                     std::shared_ptr<HttpSession> session,
+                     std::shared_ptr<CancellationToken> cancellation_token) {
+            json request_json;
+            if (!req.body().empty()) {
+                request_json = json::parse(req.body());
+            }
+            
+            if (!request_json.contains("request_id")) {
+                json error_response = {{"error", "request_id is required"}};
+                send_response(error_response);
+                return;
+            }
+            
+            std::string request_id = request_json["request_id"];
+            
+            // Try to cancel the request
+            bool cancelled = server_ptr->cancel_request(request_id);
+            
+            json response;
+            if (cancelled) {
+                response["cancelled"] = true;
+                response["message"] = "Request cancelled successfully";
+            } else {
+                response["cancelled"] = false;
+                response["message"] = "Request not found or already completed";
+            }
+            send_response(response);
+        });
+    
     return server;
 }

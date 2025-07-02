@@ -28,6 +28,14 @@ inline time_point now(){
     return std::chrono::high_resolution_clock::now();
 }
 
+/// \brief duration in nanoseconds
+/// \param start the start time
+/// \param stop the stop time
+/// \return the duration in nanoseconds
+inline time_with_unit duration_ns(time_point start, time_point stop){
+    return std::make_pair(std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start).count(), "ns");
+}
+
 /// \brief duration in microseconds
 /// \param start the start time
 /// \param stop the stop time
@@ -56,6 +64,9 @@ inline time_with_unit duration_s(time_point start, time_point stop){
 /// \param time the time
 /// \return the time in microseconds
 inline time_with_unit cast_to_us(time_with_unit time){
+    if (time.second == "ns"){
+        return std::make_pair(time.first / 1000, "us");
+    }
     if (time.second == "us"){
         return time;
     }
@@ -74,6 +85,9 @@ inline time_with_unit cast_to_us(time_with_unit time){
 /// \param time the time
 /// \return the time in milliseconds
 inline time_with_unit cast_to_ms(time_with_unit time){
+    if (time.second == "ns"){
+        return std::make_pair(time.first / 1000000, "ms");
+    }
     if (time.second == "ms"){
         return time;
     }
@@ -92,6 +106,9 @@ inline time_with_unit cast_to_ms(time_with_unit time){
 /// \param time the time
 /// \return the time in seconds
 inline time_with_unit cast_to_s(time_with_unit time){
+    if (time.second == "ns"){
+        return std::make_pair(time.first / 1000000000, "s");
+    }
     if (time.second == "s"){
         return time;
     }
