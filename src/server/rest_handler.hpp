@@ -18,6 +18,9 @@
 
 using json = nlohmann::json;
 
+// Forward declaration
+struct CancellationToken;
+
 ///@brief Stream callback type for sending streaming responses
 using StreamResponseCallback = std::function<void(const json&, bool)>; // data, is_final
 
@@ -28,11 +31,13 @@ public:
 
     void handle_generate(const json& request, 
                         std::function<void(const json&)> send_response,
-                        StreamResponseCallback send_streaming_response);
+                        StreamResponseCallback send_streaming_response,
+                        std::shared_ptr<CancellationToken> cancellation_token = nullptr);
 
     void handle_chat(const json& request,
                     std::function<void(const json&)> send_response, 
-                    StreamResponseCallback send_streaming_response);
+                    StreamResponseCallback send_streaming_response,
+                    std::shared_ptr<CancellationToken> cancellation_token = nullptr);
     
 
     void handle_embeddings(const json& request,
@@ -76,7 +81,8 @@ public:
 
     void handle_openai_chat_completion(const json& request,
                                       std::function<void(const json&)> send_response,
-                                      StreamResponseCallback send_streaming_response);
+                                      StreamResponseCallback send_streaming_response,
+                                      std::shared_ptr<CancellationToken> cancellation_token = nullptr);
 
 private:
     void ensure_model_loaded(const std::string& model_tag);

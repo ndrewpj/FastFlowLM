@@ -88,9 +88,13 @@ int main(int argc, char* argv[]) {
     SetConsoleCP(CP_UTF8);
     std::string command;
     std::string tag;
+    std::string filename = "";
+    bool force_redownload = false;
     // Parse the command line arguments
     if (argc < 2 || argc > 4) {
-        std::cout << "Usage: " << argv[0] << " <command: run | serve | pull> <model_tag> [--force]" << std::endl;
+        std::cout << "Usage: " << argv[0] << " <command: run <model_tag> <file_name>" << std::endl;
+        std::cout << "Usage: " << argv[0] << " <command: serve <model_tag>" << std::endl;
+        std::cout << "Usage: " << argv[0] << " <command: pull <model_tag> [--force]" << std::endl;
         std::cout << "Commands:" << std::endl;
         std::cout << "  run   - Run the model interactively" << std::endl;
         std::cout << "  serve - Start the Ollama-compatible server" << std::endl;
@@ -104,6 +108,9 @@ int main(int argc, char* argv[]) {
         if (argc < 3) {
             std::cout << "Usage: " << argv[0] << " run <model_tag>" << std::endl;
             return 1;
+        }
+        if (argc == 4){
+            filename = argv[3];
         }
         tag = argv[2];
     }
@@ -120,17 +127,17 @@ int main(int argc, char* argv[]) {
             std::cout << "Usage: " << argv[0] << " pull <model_tag>" << std::endl;
             return 1;
         }
+        tag = argv[2];
+        // Check for force flag, if true, the model will be re-downloaded
+        if (argc == 4 && std::string(argv[3]) == "--force") {
+            force_redownload = true;
+        }
+
     }
 
     // Get the command, model tag, and force flag
     std::string exe_dir = get_executable_directory();
     std::string config_path = exe_dir + "/model_list.json";
-    bool force_redownload = false;
-    
-    // Check for force flag, if true, the model will be re-downloaded
-    if (argc == 4 && std::string(argv[3]) == "--force") {
-        force_redownload = true;
-    }
 
     try {
         // Get the Documents directory for models
@@ -147,8 +154,45 @@ int main(int argc, char* argv[]) {
         }
 
         if (command == "run") {
-            Runner runner(supported_models, downloader, tag);
-            runner.run();
+            if (filename == ""){          
+                Runner runner(supported_models, downloader, tag);
+                runner.run();
+            }
+            else{
+                chat_bot chat(0);
+                if (!downloader.is_model_downloaded(tag)) {
+                    downloader.pull_model(tag);
+                }
+                nlohmann::json model_info = supported_models.get_model_info(tag);
+                chat.load_model(supported_models.get_model_path(tag), model_info);
+                // read the file
+                std::ifstream file(filename);
+                if (!file.is_open()) {
+                    std::cerr << "Error: Could not open file: " << filename << std::endl;
+                    return 1;
+                }
+                // get file size
+                file.seekg(0, std::ios::end);
+                size_t file_size = file.tellg();
+                file.seekg(0, std::ios::beg);
+                // read the file
+                std::string file_content(file_size, '\0');
+                file.read(file_content.data(), file_size);
+                // close the file
+                chat.start_ttft_timer();
+                chat.start_total_timer();
+                std::vector<int> tokens = chat.tokenize(file_content);
+                header_print("FLM", "Prefill starts, " << tokens.size() << " tokens");
+                std::cout << std::endl;
+                std::vector<int> prompts = chat.apply_chat_template(tokens, chat_bot::USER, true);
+                chat_meta_info meta_info;
+                chat.insert(meta_info, prompts);
+                chat.stop_ttft_timer();
+                chat.generate(meta_info, -1, std::cout);
+                chat.stop_total_timer();
+                std::cout << std::endl;
+                chat.verbose();
+            }
         } else if (command == "serve") {
             // Create the server
             auto server = create_lm_server(supported_models, downloader, tag, 11434);
@@ -173,16 +217,16 @@ int main(int argc, char* argv[]) {
             // Check if the model is already downloaded, if true, the model will not be downloaded
             // Check if model is already downloaded
             if (!force_redownload && downloader.is_model_downloaded(tag)) {
-                header_print("PULL", "Model is already downloaded.");
+                header_print("FLM", "Model is already downloaded.");
                 // Show missing files if any, this will be used to show the missing files
                 auto missing_files = downloader.get_missing_files(tag);
                 if (!missing_files.empty()) {
-                    header_print("PULL", "Missing files:");
+                    header_print("FLM", "Missing files:");
                     for (const auto& file : missing_files) {
                         std::cout << "  - " << file << std::endl;
                     }
                 } else {
-                    header_print("PULL", "All required files are present.");
+                    header_print("FLM", "All required files are present.");
                 }
             } else {
                 // Download the model, this will be used to download the model

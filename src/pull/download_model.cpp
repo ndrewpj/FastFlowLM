@@ -9,6 +9,7 @@
 #include <iostream>
 #include <filesystem>
 #include <iomanip>
+#include "utils/utils.hpp"
 
 namespace download_utils {
 
@@ -54,7 +55,7 @@ size_t write_data_to_string(void* ptr, size_t size, size_t nmemb, std::string* u
 int progress_callback(void* clientp, double dltotal, double dlnow, double ultotal, double ulnow) {
     if (dltotal > 0) {
         double percentage = (dlnow / dltotal) * 100.0;
-        std::cout << "\rDownloading: " << std::fixed << std::setprecision(1) 
+        std::cout << "\r[FLM]  Downloading: " << std::fixed << std::setprecision(1) 
                   << percentage << "% (" << dlnow / 1024 / 1024 << "MB / " 
                   << dltotal / 1024 / 1024 << "MB)" << std::flush;
     }
@@ -117,7 +118,8 @@ bool download_file(const std::string& url, const std::string& local_path,
         return false;
     }
 
-    std::cout << std::endl << "Download completed: " << local_path << std::endl;
+    std::cout << std::endl;
+    header_print("FLM", "Download completed: " << local_path);
     return true;
 }
 
@@ -166,8 +168,13 @@ bool download_multiple_files(const std::vector<std::pair<std::string, std::strin
     hide_cursor();
 
     for (const auto& [url, local_path] : downloads) {
-        std::cout << "Downloading " << (completed_files + 1) << "/" << total_files 
-                  << ": " << std::filesystem::path(url).filename().string() << std::endl;
+        std::string filename = std::filesystem::path(url).filename().string();
+        // cut "?download=true"
+        if (filename.find("?download=true") != std::string::npos) {
+            filename = filename.substr(0, filename.find("?download=true"));
+        }
+        header_print("FLM", "Downloading " << (completed_files + 1) << "/" << total_files 
+                  << ": " << filename);
 
         auto file_progress = [&](double percentage) {
             if (progress_cb) {
@@ -189,7 +196,7 @@ bool download_multiple_files(const std::vector<std::pair<std::string, std::strin
 
     // Show cursor after all downloads complete
     show_cursor();
-    std::cout << "All downloads completed successfully!" << std::endl;
+    header_print("FLM", "All downloads completed successfully!");
     return true;
 }
 

@@ -36,24 +36,24 @@ bool ModelDownloader::pull_model(const std::string& model_tag, bool force_redown
         std::string model_name = model_info["name"];
         std::string base_url = model_info["url"];
         
-        header_print("PULL", "Model: " + model_tag);
-        header_print("PULL", "Name: " + model_name);
+        header_print("FLM", "Model: " + model_tag);
+        header_print("FLM", "Name: " + model_name);
         
         // Check if model is already downloaded
         if (!force_redownload && is_model_downloaded(model_tag)) {
-            header_print("PULL", "Model already downloaded. Use --force to re-download.");
+            header_print("FLM", "Model already downloaded. Use --force to re-download.");
             return true;
         }
         
         // Get missing files
         auto missing_files = get_missing_files(model_tag);
         if (missing_files.empty() && !force_redownload) {
-            header_print("PULL", "All files already present.");
+            header_print("FLM", "All files already present.");
             return true;
         }
         
         if (!missing_files.empty()) {
-            header_print("PULL", "Missing files:");
+            header_print("FLM", "Missing files:");
             for (const auto& file : missing_files) {
                 std::cout << "  - " << file << std::endl;
             }
@@ -66,18 +66,18 @@ bool ModelDownloader::pull_model(const std::string& model_tag, bool force_redown
             return false;
         }
         
-        header_print("PULL", "Downloading " + std::to_string(downloads.size()) + " files...");
+        header_print("FLM", "Downloading " + std::to_string(downloads.size()) + " files...");
         
         // Download files with progress
         bool success = download_utils::download_multiple_files(downloads, get_progress_callback());
         
         if (success) {
-            header_print("PULL", "Model downloaded successfully!");
+            header_print("FLM", "Model downloaded successfully!");
             
             // Verify download
             auto final_missing = get_missing_files(model_tag);
             if (final_missing.empty()) {
-                header_print("PULL", "All files verified successfully.");
+                header_print("FLM", "All files verified successfully.");
             } else {
                 header_print("WARNING", "Some files may be missing after download:");
                 for (const auto& file : final_missing) {
@@ -139,12 +139,10 @@ std::function<void(size_t, size_t)> ModelDownloader::get_progress_callback() {
     return [](size_t completed, size_t total) {
         if (total > 0) {
             double percentage = (static_cast<double>(completed) / total) * 100.0;
-            std::cout << "\rOverall progress: " << std::fixed << std::setprecision(1) 
+            std::cout << "\r[FLM]  Overall progress: " << std::fixed << std::setprecision(1) 
                       << percentage << "% (" << completed << "/" << total << " files)" << std::flush;
             
-            if (completed == total) {
-                std::cout << std::endl;
-            }
+            std::cout << std::endl;
         }
     };
 }

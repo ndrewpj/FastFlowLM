@@ -14,6 +14,7 @@
 #include <string>
 #include <vector>
 #include <nlohmann/json.hpp>
+#include "chat/chat_bot.hpp"
 
 using json = nlohmann::json;
 
@@ -51,24 +52,24 @@ protected:
 
 public:
     ///@brief Call this when generation is complete
-    void finalize_chat() {
+    void finalize_chat(chat_meta_info& meta_info) {
         // Send all remaining content, including incomplete sequences
         if (!buffer.empty()) {
             send_response(buffer, true);
             buffer.clear();
         } else {
-            send_chat_final_response();
+            send_chat_final_response(meta_info);
         }
     }
     ///@brief Call this when generation is complete
     ///@param context the context
-    void finalize_generate(std::vector<int>& context) {
+    void finalize_generate(chat_meta_info& meta_info, std::vector<int>& context) {
         // Send all remaining content, including incomplete sequences
         if (!buffer.empty()) {
             send_response(buffer, true);
             buffer.clear();
         } else {
-            send_generate_final_response(context);
+            send_generate_final_response(meta_info, context);
         }
     }
 
@@ -157,7 +158,7 @@ private:
     }
 
     ///@brief Send the chat final response
-    void send_chat_final_response() {
+    void send_chat_final_response(chat_meta_info& meta_info) {
         json response;
         
         response = {
@@ -166,7 +167,14 @@ private:
                 {"role", "assistant"},
                 {"content", ""}
             }},
-            {"done", true}
+            {"done", true},
+            {"done_reason", stop_reason_to_string(meta_info.stop_reason)},
+            {"prompt_eval_count", meta_info.prompt_tokens},
+            {"eval_count", meta_info.generated_tokens},
+            {"total_duration", meta_info.total_duration},
+            {"load_duration", meta_info.load_duration},
+            {"prompt_eval_duration", meta_info.prefill_duration},
+            {"eval_duration", meta_info.decoding_duration}
         };
         
         stream_callback(response, true);
@@ -174,13 +182,20 @@ private:
     
     ///@brief Send the generate final response
     ///@param content the content
-    void send_generate_final_response(const std::vector<int>& content) {
+    void send_generate_final_response(chat_meta_info& meta_info, const std::vector<int>& content) {
         json response;
         
         response = {
             {"model", model_name},
             {"response", ""},
             {"context", content},
+            {"prompt_eval_count", meta_info.prompt_tokens},
+            {"eval_count", meta_info.generated_tokens},
+            {"total_duration", meta_info.total_duration},
+            {"load_duration", meta_info.load_duration},
+            {"prompt_eval_duration", meta_info.prefill_duration},
+            {"eval_duration", meta_info.decoding_duration},
+            {"done_reason", stop_reason_to_string(meta_info.stop_reason)},
             {"done", true}
         };
         
@@ -207,13 +222,13 @@ public:
         : std::ostream(&buf), buf(model, callback, is_chat_format) {}
     
     ///@brief Finalize the chat
-    void finalize_chat() {
-        buf.finalize_chat();
+    void finalize_chat(chat_meta_info& meta_info) {
+        buf.finalize_chat(meta_info);
     }
     ///@brief Finalize the generate
     ///@param context the context
-    void finalize_generate(std::vector<int>& context) {
-        buf.finalize_generate(context);
+    void finalize_generate(chat_meta_info& meta_info, std::vector<int>& context) {
+        buf.finalize_generate(meta_info, context);
     }
 
 private:

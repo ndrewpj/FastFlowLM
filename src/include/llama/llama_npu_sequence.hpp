@@ -34,21 +34,6 @@ public:
     /// \param MAX_L the max length
     void set_max_length(const uint32_t MAX_L);
 
-    /// \brief Generate the dequant sequence
-    /// \param seq the sequence
-    /// \param D_in the input dimension
-    /// \param D_out the output dimension
-    /// \param weight_offset the weight offset
-    void gen_dequant_seq(npu_sequence* seq, const uint32_t D_in, const uint32_t D_out, uint32_t weight_offset);
-
-    /// \brief Generate the mm engine sequence
-    /// \param seq the sequence
-    /// \param M the M
-    /// \param K the K
-    /// \param N the N
-    /// \param weight_offset the weight offset
-    void gen_mm_engine_seq(npu_sequence* seq, const uint32_t M, const uint32_t K, const uint32_t N, uint32_t weight_offset);
-
     /// \brief Generate the mha engine sequence
     /// \param seq the sequence
     /// \param L_begin the begin length

@@ -18,14 +18,15 @@ public:
     }
 
     /// \brief start the profiler
-    void start(){
+    time_utils::time_point start(){
         this->start_time = time_utils::now();
+        return this->start_time;
     }
 
     /// \brief stop the profiler
     /// \param elements the number of elements
     /// \param overwrite the overwrite flag
-    void stop(size_t elements, bool overwrite = false){
+    time_utils::time_point stop(size_t elements, bool overwrite = false){
         time_utils::time_point end_time = time_utils::now();
         time_utils::time_with_unit duration = time_utils::duration_us(this->start_time, end_time);
         this->total_time.first += duration.first;
@@ -35,6 +36,7 @@ public:
         else{
             this->counter += elements;
         }
+        return end_time;
     }
 
     /// \brief reset the profiler

@@ -17,6 +17,7 @@
 #include <sstream>
 #include <iomanip>
 #include <nlohmann/json.hpp>
+#include "chat/chat_bot.hpp"
 
 using json = nlohmann::json;
 
@@ -31,8 +32,8 @@ public:
     ///@brief StreamCallback
     using StreamCallback = std::function<void(const std::string&, bool)>;
     
-    streaming_buf_openai(const std::string& model, StreamCallback callback, bool is_chat_format = false)
-        : model_name(model), stream_callback(callback), is_chat(is_chat_format), first_chunk(true) {
+    streaming_buf_openai(const std::string& model, StreamCallback callback)
+        : model_name(model), stream_callback(callback), first_chunk(true) {
         // Generate a unique ID for this stream
         generate_stream_id();
     }
@@ -57,26 +58,15 @@ protected:
 
 public:
     ///@brief Call this when generation is complete
-    void finalize_chat() {
+    void finalize(chat_meta_info& meta_info) {
         // Send all remaining content, including incomplete sequences
         if (!buffer.empty()) {
             send_response(buffer, true);
             buffer.clear();
-        } else {
-            send_chat_final_response();
         }
+        send_final_response(meta_info);
     }
-    ///@brief Call this when generation is complete
-    ///@param context the context
-    void finalize_generate(std::vector<int>& context) {
-        // Send all remaining content, including incomplete sequences
-        if (!buffer.empty()) {
-            send_response(buffer, true);
-            buffer.clear();
-        } else {
-            send_generate_final_response(context);
-        }
-    }
+ 
 
 private:
     ///@brief Generate a unique stream ID
@@ -154,55 +144,46 @@ private:
     ///@param content the content
     ///@param is_final the is final
     void send_response(const std::string& content, bool is_final) {
-        if (is_chat) {
-            json response;
-            
-            if (first_chunk) {
-                // First chunk with role
-                response = {
-                    {"id", stream_id},
-                    {"object", "chat.completion.chunk"},
-                    {"choices", json::array({
-                        {
-                            {"delta", {
-                                {"role", "assistant"}
-                            }},
-                            {"index", 0}
-                        }
-                    })}
-                };
-                first_chunk = false;
-                stream_callback("data: " + response.dump() + "\n\n", false);
-            }
-            
-            // Content chunk
+        json response;
+        
+        if (first_chunk) {
+            // First chunk with role
             response = {
                 {"id", stream_id},
                 {"object", "chat.completion.chunk"},
                 {"choices", json::array({
                     {
                         {"delta", {
-                            {"content", content}
+                            {"role", "assistant"}
                         }},
                         {"index", 0}
                     }
                 })}
             };
-            
-            stream_callback("data: " + response.dump() + "\n\n", is_final);
-        } else {
-            // Non-chat format (legacy Ollama format) - no "data: " prefix
-            json response = {
-                {"model", model_name},
-                {"response", content},
-                {"done", is_final}
-            };
-            stream_callback(response.dump() + "\n", is_final);
+            first_chunk = false;
+            stream_callback("data: " + response.dump() + "\n\n", false);
         }
+        
+        // Content chunk
+        response = {
+            {"id", stream_id},
+            {"object", "chat.completion.chunk"},
+            {"choices", json::array({
+                {
+                    {"delta", {
+                        {"content", content}
+                    }},
+                    {"index", 0}
+                }
+            })}
+        };
+        
+        stream_callback("data: " + response.dump() + "\n\n", is_final);
+      
     }
 
     ///@brief Send the chat final response
-    void send_chat_final_response() {
+    void send_final_response(chat_meta_info& meta_info) {
         if (first_chunk) {
             // If no content was sent, send role first
             json response = {
@@ -230,34 +211,25 @@ private:
                     {"finish_reason", "stop"},
                     {"index", 0}
                 }
-            })}
+            })},
+            {"usage", {
+                {"prompt_tokens", meta_info.prompt_tokens},
+                {"completion_tokens", meta_info.generated_tokens},
+                {"total_tokens", meta_info.prompt_tokens + meta_info.generated_tokens}
+            }}
         };
         stream_callback("data: " + final_response.dump() + "\n\n", false);
-        
         // Send the [DONE] message
-        stream_callback("data: [DONE]\n\n", true);
+        stream_callback("data: [DONE]\n\n", false);
     }
     
-    ///@brief Send the generate final response
-    ///@param content the content
-    void send_generate_final_response(const std::vector<int>& content) {
-        json response = {
-            {"model", model_name},
-            {"response", ""},
-            {"context", content},
-            {"done", true}
-        };
-        stream_callback(response.dump() + "\n", true);
-    }
-    
+
     ///@brief Buffer
     std::string buffer;
     ///@brief Model name
     std::string model_name;
     ///@brief Stream callback
     StreamCallback stream_callback;
-    ///@brief Is chat
-    bool is_chat;
     ///@brief Stream ID
     std::string stream_id;
     ///@brief First chunk flag
@@ -271,17 +243,12 @@ private:
 ///@return the streaming ostream
 class streaming_ostream_openai : public std::ostream {
 public:
-    streaming_ostream_openai(const std::string& model, streaming_buf_openai::StreamCallback callback, bool is_chat_format = false)
-        : std::ostream(&buf), buf(model, callback, is_chat_format) {}
+    streaming_ostream_openai(const std::string& model, streaming_buf_openai::StreamCallback callback)
+        : std::ostream(&buf), buf(model, callback) {}
     
     ///@brief Finalize the chat
-    void finalize_chat() {
-        buf.finalize_chat();
-    }
-    ///@brief Finalize the generate
-    ///@param context the context
-    void finalize_generate(std::vector<int>& context) {
-        buf.finalize_generate(context);
+    void finalize(chat_meta_info& meta_info) {
+        buf.finalize(meta_info);
     }
 
 private:

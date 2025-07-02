@@ -44,9 +44,6 @@ Source: "logo.ico"; DestDir: "{app}"; Flags: ignoreversion
 
 Source: "model_list.json"; DestDir: "{app}"; Flags: ignoreversion
 
-[Dirs]
-; Create models directory for downloaded models
-Name: "{app}\models"
 
 [Icons]
 
