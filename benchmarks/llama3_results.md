@@ -48,14 +48,14 @@ This section reports the decoding speed and power usage of LLMs on different har
 
 | **Model**        | **Method**         | **CPU** | **NPU** | **iGPU** | **Total Power (W)** | **Efficiency Gain** |
 |------------------|--------------------|--------:|--------:|--------:|---------------------:|----------------------:|
-| **LLaMA 3.2 1B**  | NPU (FastFlowLM)   | 0.31    | 0.90    | 0.00    | **1.21**             | –                    |
-|                  | NPU (Ryzen AI SW)  | 0.96    | 2.05    | 0.00    | 3.01                 | 2.49×                |
-|                  | iGPU               | 2.70    | 0.00    | 10.00   | 12.70                | 10.50×               |
-| **LLaMA 3.2 3B**  | NPU (FastFlowLM)   | 0.20    | 0.90    | 0.00    | **1.10**             | –                    |
-|                  | NPU (Ryzen AI SW)  | 1.06    | 2.10    | 0.00    | 3.16                 | 2.87×                |
-|                  | iGPU               | 2.10    | 0.00    | 11.00   | 13.10                | 11.91×               |
-| **LLaMA 3.1 8B**  | NPU (FastFlowLM)   | 0.23    | 0.86    | 0.00    | **1.09**             | –                    |
-|                  | NPU (Ryzen AI SW)  | 1.20    | 2.50    | 0.00    | 3.70                 | 3.39×                |
-|                  | iGPU               | 1.40    | 0.00    | 14.00   | 15.40                | 14.13×               |
+| **LLaMA 3.2 1B**  | NPU (FastFlowLM)   | 0.31    | 0.90    | 0    | **1.21**             | –                    |
+|                  | NPU (Ryzen AI SW)  | 0.96    | 2.05    | 0    | 3.01                 | 2.49×                |
+|                  | iGPU               | 2.70    | 0    | 10.00   | 12.70                | 10.50×               |
+| **LLaMA 3.2 3B**  | NPU (FastFlowLM)   | 0.20    | 0.90    | 0    | **1.10**             | –                    |
+|                  | NPU (Ryzen AI SW)  | 1.06    | 2.10    | 0    | 3.16                 | 2.87×                |
+|                  | iGPU               | 2.10    | 0    | 11.00   | 13.10                | 11.91×               |
+| **LLaMA 3.1 8B**  | NPU (FastFlowLM)   | 0.23    | 0.86    | 0    | **1.09**             | –                    |
+|                  | NPU (Ryzen AI SW)  | 1.20    | 2.50    | 0    | 3.70                 | 3.39×                |
+|                  | iGPU               | 1.40    | 0    | 14.00   | 15.40                | 14.13×               |
 
 > 🔎 Note: CPU is not commonly used for prefill and is excluded from this table.
