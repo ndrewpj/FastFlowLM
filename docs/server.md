@@ -1,6 +1,6 @@
 ---
 title: Local Server (Server Mode)
-nav_order: 2
+nav_order: 3
 ---
 
 # 🌐 Local Server (Server Mode)
