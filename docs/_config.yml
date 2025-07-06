@@ -3,7 +3,7 @@ description: Documentation for the FastFlowLM project
 theme: just-the-docs
 
 url: "https://FastFlowLM.github.io"
-baseurl: "/FastFlowLM/docs"
+baseurl: "/FastFlowLM/"
 
 # (Optional) Navigation structure
 nav:
