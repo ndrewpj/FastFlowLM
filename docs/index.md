@@ -1,9 +1,9 @@
 ---
-title: FastFlowLM
+title: Instructions
 nav_order: 1
 has_children: true
 ---
 
-# 🧠 FastFlowLM
+# Instructions
 
-AMD NPU-first runtime for local LLMs. Ultra-fast, power-efficient, 100% offline.
+FastFlowLM is an AMD NPU‑optimized runtime for local LLMs—ultra‑fast, power‑efficient, and 100% offline. The UI design is similar to Ollama’s, and you’ll find step‑by‑step documentation here.
