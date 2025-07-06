@@ -1,0 +1,10 @@
+title: FastFlowLM Docs
+description: FastFlowLM – AMD NPU-first runtime for local LLMs
+theme: just-the-docs
+
+url: https://fastflowlm.github.io/FastFlowLM
+baseurl: ""
+color_scheme: dark
+
+aux_links:
+  GitHub Repo: https://github.com/FastFlowLM/FastFlowLM
