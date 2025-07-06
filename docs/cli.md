@@ -4,7 +4,7 @@ nav_order: 1
 parent: Instructions
 ---
 
-# ⚙️ CLI (Interactive Mode)
+# CLI (Interactive Mode)
 
 Use `flm run` to interact with models directly from your terminal.
 
