@@ -9,3 +9,4 @@ Use `flm run` to interact with models directly from your terminal.
 
 ```bash
 flm run llama3.2-1b
+```
