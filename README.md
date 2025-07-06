@@ -69,7 +69,8 @@ For best performance, it is recommended to set the NPU power mode to **performan
 ```
 xrt-smi configure --pmode performance
 ```
-For more details, refer to the [AMD XRT SMI Documentation](https://ryzenai.docs.amd.com/en/latest/xrt_smi.html).
+> For more details, refer to the [AMD XRT SMI Documentation](https://ryzenai.docs.amd.com/en/latest/xrt_smi.html).
+
 ---
 
 ## 🧠 Local AI on Your NPU
