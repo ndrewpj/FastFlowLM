@@ -1,7 +1,7 @@
 ---
 title: CLI (Interactive Mode)
-nav_order: 2
-parent: FastFlowLM
+nav_order: 1
+parent: Instructions
 ---
 
 # ⚙️ CLI (Interactive Mode)
