@@ -2,12 +2,12 @@ title: FastFlowLM Documentation
 description: Documentation for the FastFlowLM project
 theme: just-the-docs
 
-url: "https://FastFlowLM.github.io"
-baseurl: "/FastFlowLM/"
+url: "https://fastflowlm.github.io"
+baseurl: "/FastFlowLM"
 
-# (Optional) Navigation structure
+plugins:
+  - just-the-docs
+
+# Navigation structure (optional — only needed if you want to override automatic nav)
 nav:
   - Home: index.md
-  - Getting Started: getting-started.md
-  - Guides:
-      - Advanced: guides/advanced.md
