@@ -1,7 +1,7 @@
 ---
 title: Local Server (Server Mode)
-nav_order: 3
-parent: FastFlowLM
+nav_order: 2
+parent: Instructions
 ---
 
 # 🌐 Local Server (Server Mode)
