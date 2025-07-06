@@ -7,8 +7,3 @@ has_children: true
 # 🧠 FastFlowLM
 
 AMD NPU-first runtime for local LLMs. Ultra-fast, power-efficient, 100% offline.
-
-## Sections
-
-- [CLI (Interactive Mode)](cli.md)
-- [Local Server (Server Mode)](server.md)
