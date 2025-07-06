@@ -9,3 +9,4 @@ Serve your models as a REST API:
 
 ```bash
 flm serve --model llama3.2-1b --port 11434
+```
