@@ -1,8 +1,13 @@
-title: Just the Docs Template
-description: A starter template for a Jeykll site using the Just the Docs theme!
+title: FastFlowLM Documentation
+description: Documentation for the FastFlowLM project
 theme: just-the-docs
 
-url: https://just-the-docs.github.io
+url: "https://FastFlowLM.github.io"
+baseurl: "/FastFlowLM/docs"
 
-aux_links:
-  Template Repository: https://github.com/just-the-docs/just-the-docs-template
+# (Optional) Navigation structure
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Guides:
+      - Advanced: guides/advanced.md
