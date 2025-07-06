@@ -1,6 +1,7 @@
 ---
 title: Local Server (Server Mode)
 nav_order: 3
+parent: FastFlowLM
 ---
 
 # 🌐 Local Server (Server Mode)
