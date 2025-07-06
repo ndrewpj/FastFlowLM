@@ -25,7 +25,7 @@ FastFlowLM supports full context lengths — up to 128K tokens with LLaMA 3.1 an
 
 FastFlowLM vs AMD’s official stack (Ryzen AI software 1.4) — **real-time speedup and power efficiency**: 
 
-- Same prompt (length: 1835 tokens), same model (LLaMA 3.2 1B model; weights int4; activation bf16), running on the same machine (AMD Ryzen AI 5 340 NPU with 16 GB SO-DIMM DDR5 5600 MHz memory)
+- Same prompt (length: 1835 tokens), same model (LLaMA 3.2 1B model; weights int4; activation bf16), running on the same machine (AMD Ryzen AI 5 340 NPU with 32 GB SO-DIMM DDR5 5600 MHz memory)
 - Real-time CPU, iGPU, NPU usage, and power consumption shown (Windows task manager + HWINFO)
 
 <table>
