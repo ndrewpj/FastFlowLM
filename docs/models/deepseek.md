@@ -1,5 +1,5 @@
 ---
-title: Models
+title: Deepseek Models
 nav_order: 2
 parant: Models
 ---
