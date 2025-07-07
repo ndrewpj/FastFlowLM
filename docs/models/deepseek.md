@@ -1,7 +1,7 @@
 ---
 title: Deepseek
 nav_order: 2
-parant: Models
+parent: Models
 ---
 
 ```
