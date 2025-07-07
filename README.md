@@ -51,9 +51,9 @@ FastFlowLM vs AMD’s official stack (Ryzen AI software 1.4) — **real-time spe
 
 A packaged Windows installer is available here: [**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/download/v0.1.3/flm-setup-v0.1.3.exe). For more details (available models, etc.), see the [release notes](https://github.com/FastFlowLM/FastFlowLM/releases/).
 
-After installation, open **PowerShell**.
+> ⚠️ Ensure NPU driver is **32.0.203.258** or later (check via Task Manager → Performance → NPU or Device Manager) — Download: [AMD Ryzen AI NPU Driver](https://www.amd.com/en/support).
 
-To run a model in terminal (Interactive Mode):
+After installation, open **PowerShell**. To run a model in terminal (Interactive Mode):
 ```
 flm run llama3.2:1B
 ```
