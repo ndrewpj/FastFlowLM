@@ -7,7 +7,7 @@ parent: Instructions
 
 # Local Server (Server Mode)
 
-Serve your models from CLI:
+First, serve your models from CLI:
 
 ```bash
 flm serve --model llama3.2-1b --port 11434
