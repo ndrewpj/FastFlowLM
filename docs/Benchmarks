@@ -1,3 +1,8 @@
+---
+title: Benchmarks
+nav_order: 2
+---
+
 ## ⚡ Performance and Efficiency Benchmarks
 
 This section reports the decoding speed and power usage of LLMs on different hardware: NPU (FastFlowLM), NPU (Ryzen AI Software), iGPU (LM Studio), and CPU (LM Studio).
