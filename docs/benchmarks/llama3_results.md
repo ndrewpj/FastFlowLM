@@ -1,5 +1,5 @@
 ---
-title: Llama 3 Benchmark Results
+title: LLaMA 3 Benchmark Results
 parent: Benchmarks
 nav_order: 1
 ---
