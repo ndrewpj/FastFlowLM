@@ -39,10 +39,13 @@ For version history and changelog, see the [release notes](https://github.com/Fa
 ## 🚀 NPU Power Mode
 
 For optimal performance, set the NPU power mode to **performance** or **turbo**.  
-Open **PowerShell** and run:
-
+Open **PowerShell** and go to:
 ```powershell
-xrt-smi configure --pmode performance
+cd C:\Windows\System32\AMD\
+```
+Then, run
+```powershell
+.\xrt-smi configure --pmode turbo
 ```
 > For more details about NPU power mode, refer to the [AMD XRT SMI Documentation](https://ryzenai.docs.amd.com/en/latest/xrt_smi.html).
 
@@ -57,4 +60,4 @@ flm run llama3.2:1B
 ```
 
 > Requires internet access to HuggingFace to pull (download) the optimized model kernel. The model will be automatically downloaded to the folder: ``C:\Users\<USER>\Documents\flm\models\``. 
->⚠️ If HuggingFace is not directly accessible in your region, you can manually download the model (e.g., [hf-mirror](https://hf-mirror.com/models?search=fastflowlm) and place it in the directory.
+>⚠️ If HuggingFace is not directly accessible in your region, you can manually download the model (e.g., [hf-mirror](https://hf-mirror.com/models?search=fastflowlm)) and place it in the directory.
