@@ -1,7 +1,7 @@
 ---
-title: LLaMA models
+title: LLaMA Models
 nav_order: 1
-parent: Local Server (Server Mode)
+parent: Models
 ---
 
 ```
