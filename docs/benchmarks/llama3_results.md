@@ -1,10 +1,8 @@
 ---
 title: Llama 3 Benchmark Results
-nav_order: 1
 parent: Benchmarks
-
+nav_order: 1
 ---
-
 
 ## ⚡ Performance and Efficiency Benchmarks
 
