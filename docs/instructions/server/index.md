@@ -10,5 +10,5 @@ has_children: true
 First, serve your models from CLI:
 
 ```bash
-flm serve --model llama3.2-1b --port 11434
+flm serve --model llama3.2:1B
 ```
