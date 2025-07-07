@@ -1,5 +1,5 @@
 ---
-title: LLaMA Models
+title: LLaMA
 nav_order: 1
 parent: Models
 ---
