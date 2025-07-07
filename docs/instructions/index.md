@@ -2,7 +2,6 @@
 title: Instructions
 nav_order: 2
 has_children: true
-parent: Overview
 ---
 
 # Instructions
