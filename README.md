@@ -49,7 +49,7 @@ FastFlowLM vs AMD’s official stack (Ryzen AI software 1.4) — **real-time spe
 
 ## ⚡ Quick Start
 
-A packaged Windows installer is available here: [**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/download/v0.1.3/flm-setup-v0.1.3.exe). For more details (available models, etc.), see the [release notes](https://github.com/FastFlowLM/FastFlowLM/releases/).
+A packaged Windows installer is available here: [**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/download/v0.1.3/flm-setup-v0.1.3.exe). For more details, see the [release notes](https://github.com/FastFlowLM/FastFlowLM/releases/).
 
 > ⚠️ Ensure NPU driver is **32.0.203.258** or later (check via Task Manager → Performance → NPU or Device Manager) — Download: [AMD Ryzen AI NPU Driver](https://www.amd.com/en/support).
 
