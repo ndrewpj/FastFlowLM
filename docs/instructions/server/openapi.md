@@ -1,4 +1,3 @@
-
 ---
 title: OpenAPI
 nav_order: 2
