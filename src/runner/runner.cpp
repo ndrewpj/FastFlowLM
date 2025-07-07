@@ -7,18 +7,13 @@
 *  \version 0.1.0
 */
 #include "runner.hpp"
-#include <chrono>
-#include <thread>
 #include <iostream>
-#include <conio.h>
 #include <sstream>
-#include <windows.h>
-#include <fcntl.h>
-#include <io.h>
 #include <filesystem>
 #include <map>
 #include <iomanip>
 #include <fstream>
+#include <algorithm>
 
 /// \brief Command map for command line input
 std::map<std::string, runner_cmd_t> cmd_map = {
@@ -45,181 +40,12 @@ Runner::Runner(model_list& supported_models, ModelDownloader& downloader, std::s
     }
     nlohmann::json model_info = this->supported_models.get_model_info(this->tag);
     this->chat_engine->load_model(this->supported_models.get_model_path(this->tag), model_info);
-    
-    // Set console to UTF-8 mode for proper Unicode handling
-    SetConsoleOutputCP(CP_UTF8);
-    SetConsoleCP(CP_UTF8);
-    // Note: We don't use _setmode here as it can interfere with _getch()
-    // The UTF-8 console mode should be sufficient for proper Unicode display
+    this->generate_limit = -1;
 }
 
-/// \brief Get interactive input
-/// \return the input string
-std::string Runner::get_interactive_input() {
-    std::string full_input;
-    std::string line;
-    bool is_first_line = true;
-    bool continue_line = true;
 
-    while (continue_line) {
-        // Print appropriate prompt
-        std::cout << (is_first_line ? ">>> " : "... ");
 
-        // Use _getch() to detect individual key presses
-        std::string current_line;
-        bool waiting_for_more_input = false;
-        
-        while (true) {
-            int ch = _getch();
-            
-            // Handle special keys
-            if (ch == 0 || ch == 224) {
-                // Extended key code - read the next byte
-                int ext_ch = _getch();
-                // Handle arrow keys, function keys, etc. if needed
-                continue;
-            }
-            
-            // Handle Enter key
-            if (ch == '\r' || ch == '\n') {
-                std::cout << std::endl;
-                if (current_line.empty()) {
-                    // Empty line - check if this is end of input
-                    if (full_input.empty()) {
-                        return "";  // no input at all → exit
-                    }
-                    continue_line = false;  // partial input + empty line = finish
-                    break;
-                }
-                // Line with content + Enter - check if more input is coming
-                waiting_for_more_input = true;
-                break;  // Break out of inner loop to check for paste
-            }
-            
-            // Handle backspace
-            if (ch == '\b') {
-                if (!current_line.empty()) {
-                    // Handle UTF-8 backspace properly
-                    size_t last_char_size = 1;
-                    if (current_line.size() >= 2) {
-                        unsigned char last_byte = static_cast<unsigned char>(current_line.back());
-                        if ((last_byte & 0xC0) == 0x80) {
-                            // This is a continuation byte, find the start of the character
-                            size_t pos = current_line.size() - 1;
-                            while (pos > 0 && (static_cast<unsigned char>(current_line[pos-1]) & 0xC0) == 0x80) {
-                                pos--;
-                            }
-                            if (pos > 0 && (static_cast<unsigned char>(current_line[pos-1]) & 0xC0) != 0x80) {
-                                last_char_size = current_line.size() - pos;
-                            }
-                        }
-                    }
-                    
-                    // Remove the character from the line
-                    for (size_t i = 0; i < last_char_size; i++) {
-                        if (!current_line.empty()) {
-                            current_line.pop_back();
-                        }
-                    }
-                    
-                    // Move cursor back and clear the character(s)
-                    for (size_t i = 0; i < last_char_size; i++) {
-                        std::cout << "\b \b";
-                    }
-                }
-                continue;
-            }
-            
-            // Handle Ctrl+C
-            if (ch == 3) {
-                std::cout << "^C\n";
-                return "/bye";
-            }
-            
-            // Handle Ctrl+D (EOF equivalent on Windows)
-            if (ch == 4) {
-                if (full_input.empty()) {
-                    return "/bye";
-                }
-                continue_line = false;
-                break;
-            }
-            
-            // Handle UTF-8 characters
-            if (ch >= 0) {
-                // Start of a UTF-8 sequence
-                std::string utf8_char;
-                utf8_char += static_cast<char>(ch);
-                
-                // Check if this is a multi-byte UTF-8 sequence
-                if ((ch & 0x80) != 0) {
-                    // Determine how many continuation bytes we need
-                    int continuation_bytes = 0;
-                    if ((ch & 0xE0) == 0xC0) continuation_bytes = 1;      // 2-byte sequence
-                    else if ((ch & 0xF0) == 0xE0) continuation_bytes = 2; // 3-byte sequence
-                    else if ((ch & 0xF8) == 0xF0) continuation_bytes = 3; // 4-byte sequence
-                    
-                    // Read continuation bytes
-                    for (int i = 0; i < continuation_bytes; i++) {
-                        int cont_ch = _getch();
-                        if (cont_ch >= 0) {
-                            utf8_char += static_cast<char>(cont_ch);
-                        }
-                    }
-                }
-                
-                // Add the complete UTF-8 character to the line
-                current_line += utf8_char;
-                std::cout << utf8_char;
-            }
-        }
-        
-        // If this is the first line and it's empty, continue
-        if (is_first_line && current_line.empty()) {
-            continue;
-        }
-        
-        // Check if this is a command (starts with /)
-        if (!current_line.empty() && current_line[0] == '/') {
-            return current_line;  // Commands are always single-line
-        }
-        
-        // Append this line
-        if (!is_first_line) full_input += "\n";
-        full_input += current_line;
-        is_first_line = false;
-        
-        // Check for backslash continuation
-        if (!current_line.empty() && current_line.back() == '\\') {
-            full_input.pop_back();  // drop the '\'
-            continue;  // go read another line
-        }
-        
-        // If we were waiting for more input, check if it's a paste
-        if (waiting_for_more_input) {
-            // wait for 30ms
-            std::this_thread::sleep_for(std::chrono::milliseconds(30));
-            if (_kbhit()) {
-                // More input is coming - this is a paste operation
-                // Continue to the next iteration to read more lines
-                // Ensure we're no longer on the first line
-                is_first_line = false;
-                continue;
-            } else {
-                // No more input - this was just a single Enter
-                continue_line = false;
-                break;
-            }
-        }
-        
-        // If we get here and continue_line is still true, we need to break
-        if (!continue_line) {
-            break;
-        }
-    }
 
-    return full_input;
-}
 
 /// \brief Run the runner
 void Runner::run() {
@@ -227,11 +53,17 @@ void Runner::run() {
     std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8conv;
     wstream_buf obuf(std::cout);
     std::ostream ostream(&obuf);
-    
+    header_print("FLM", "Type /? for help");
+    int empty_line_count = 0;
     while (true) {
-        std::string input = get_interactive_input();
+        std::string input = cli.get_interactive_input();
         
         if (input.empty()) {
+            empty_line_count++;
+            if (empty_line_count > 2) {
+                header_print("FLM", "Type /? for help");
+                empty_line_count = 0;
+            }
             continue;
         }
 
@@ -313,7 +145,7 @@ void Runner::run() {
             chat_meta_info meta_info;
             this->chat_engine->insert(meta_info, prompts);
             this->chat_engine->stop_ttft_timer();
-            this->chat_engine->generate(meta_info, -1, ostream);
+            this->chat_engine->generate(meta_info, this->generate_limit, ostream);
             this->chat_engine->stop_total_timer();
             std::cout << std::endl;
             if (verbose) {
@@ -411,6 +243,7 @@ void Runner::cmd_set(std::vector<std::string>& input_list) {
         std::cout << "  /set frequency_penalty [value] - set the frequency penalty" << std::endl;
         std::cout << "  /set system_prompt [value] - set the system prompt" << std::endl;
         std::cout << "  /set context_length [value] - set the context length" << std::endl;
+        std::cout << "  /set generate_limit [value] - set the generate limit" << std::endl;
         return;
     }
     
@@ -454,6 +287,9 @@ void Runner::cmd_set(std::vector<std::string>& input_list) {
     else if (set_context == "context_length"){
         this->chat_engine->set_max_length(std::stoi(set_value));
     }
+    else if (set_context == "generate_limit"){
+        this->generate_limit = std::stoi(set_value);
+    }
     else{
         std::cout << "Invalid context: " << set_context << std::endl;
         std::cout << "Available parameters: " << std::endl;
@@ -478,6 +314,10 @@ void Runner::cmd_help(std::vector<std::string>& input_list) {
     std::cout << "  /status - show the history" << std::endl;
     std::cout << "  /history - show the history" << std::endl;
     std::cout << "  /verbose - toggle the verbose" << std::endl;
+    std::cout << "  /set [context] [value] - set the context" << std::endl;
+    std::cout << "  /pull [model_name] - pull a model" << std::endl;
+    std::cout << "  /list - list all the models" << std::endl;
+    std::cout << "  /remove [model_name] - remove a model" << std::endl;
     std::cout << "  /bye - exit the program" << std::endl;
     std::cout << "  /? - show this help" << std::endl;
     std::cout << std::endl;
@@ -493,3 +333,5 @@ void Runner::cmd_help(std::vector<std::string>& input_list) {
 void Runner::cmd_help_shotcut(std::vector<std::string>& input_list) {
     std::cout << "Help shotcut" << std::endl;
 }
+
+

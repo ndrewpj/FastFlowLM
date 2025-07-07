@@ -478,6 +478,7 @@ void chat_bot::set_frequency_penalty(float frequency_penalty){
 /// \note The function will check if the system prompt is valid
 void chat_bot::set_system_prompt(std::string system_prompt){
     this->system_prompt = system_prompt;
+    this->clear_context();
 }
 
 /// \brief Tokenize the text

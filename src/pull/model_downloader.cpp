@@ -191,4 +191,54 @@ std::vector<std::pair<std::string, std::string>> ModelDownloader::build_download
     }
     
     return downloads;
+}
+
+/// \brief Remove a model and all its files
+/// \param model_tag the model tag
+/// \return true if the model was successfully removed, false otherwise
+bool ModelDownloader::remove_model(const std::string& model_tag) {
+    try {
+        // Check if model exists in supported models by trying to get its info
+        try {
+            supported_models.get_model_info(model_tag);
+        } catch (const std::exception& e) {
+            header_print("ERROR", "Model not found: " + model_tag);
+            model_not_found(model_tag);
+            return false;
+        }
+        
+        // Get model path
+        std::string model_path = supported_models.get_model_path(model_tag);
+        
+        // Check if model directory exists
+        if (!std::filesystem::exists(model_path)) {
+            header_print("FLM", "Model directory does not exist: " + model_path);
+            return true; // Consider it already removed
+        }
+        
+        header_print("FLM", "Removing model: " + model_tag);
+        header_print("FLM", "Path: " + model_path);
+        
+        // Remove all files in the model directory
+        size_t removed_files = 0;
+        for (const auto& entry : std::filesystem::directory_iterator(model_path)) {
+            if (entry.is_regular_file()) {
+                std::filesystem::remove(entry.path());
+                removed_files++;
+            }
+        }
+        
+        // Remove the model directory itself
+        if (std::filesystem::remove(model_path)) {
+            header_print("FLM", "Successfully removed " + std::to_string(removed_files) + " files and model directory.");
+            return true;
+        } else {
+            header_print("ERROR", "Failed to remove model directory: " + model_path);
+            return false;
+        }
+        
+    } catch (const std::exception& e) {
+        header_print("ERROR", "Exception during model removal: " + std::string(e.what()));
+        return false;
+    }
 } 
