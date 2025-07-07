@@ -53,7 +53,7 @@ A packaged Windows installer is available here: [**flm-setup.exe**](https://gith
 
 > ⚠️ Ensure NPU driver is **32.0.203.258** or later (check via Task Manager→Performance→NPU or Device Manager) — [Driver Download](https://www.amd.com/en/support).
 
-After installation, open **PowerShell**. To run a model in terminal (Interactive Mode):
+After installation, open **PowerShell**. To run a model in terminal (CLI or Interactive Mode):
 ```
 flm run llama3.2:1B
 ```
