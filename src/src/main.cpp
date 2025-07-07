@@ -96,9 +96,12 @@ int main(int argc, char* argv[]) {
         std::cout << "Usage: " << argv[0] << " <command: serve <model_tag>" << std::endl;
         std::cout << "Usage: " << argv[0] << " <command: pull <model_tag> [--force]" << std::endl;
         std::cout << "Commands:" << std::endl;
-        std::cout << "  run   - Run the model interactively" << std::endl;
-        std::cout << "  serve - Start the Ollama-compatible server" << std::endl;
-        std::cout << "  pull  - Download model files if not present" << std::endl;
+        std::cout << "  run    - Run the model interactively" << std::endl;
+        std::cout << "  serve  - Start the Ollama-compatible server" << std::endl;
+        std::cout << "  pull   - Download model files if not present" << std::endl;
+        std::cout << "  help   - Show the help" << std::endl;
+        std::cout << "  remove - Remove a model" << std::endl;
+        std::cout << "  list   - List all the models" << std::endl;
         std::cout << "Options:" << std::endl;
         std::cout << "  --force - Force re-download even if model exists (for pull command)" << std::endl;
         return 1;
@@ -133,6 +136,34 @@ int main(int argc, char* argv[]) {
             force_redownload = true;
         }
 
+    }
+    else if (command == "help") {
+        std::cout << "Usage: " << argv[0] << " <command: run <model_tag> <file_name>" << std::endl;
+        std::cout << "Usage: " << argv[0] << " <command: serve <model_tag>" << std::endl;
+        std::cout << "Usage: " << argv[0] << " <command: pull <model_tag> [--force]" << std::endl;
+        std::cout << "Usage: " << argv[0] << " <command: help" << std::endl;
+        std::cout << "Usage: " << argv[0] << " <command: remove <model_tag>" << std::endl;
+        std::cout << "Usage: " << argv[0] << " <command: list" << std::endl;
+        std::cout << "Commands:" << std::endl;
+        std::cout << "  run    - Run the model interactively" << std::endl;
+        std::cout << "  serve  - Start the Ollama-compatible server" << std::endl;
+        std::cout << "  pull   - Download model files if not present" << std::endl;
+        std::cout << "  help   - Show the help" << std::endl;
+        std::cout << "  remove - Remove a model" << std::endl;
+        return 0;
+    }
+    else if (command == "remove") {
+        if (argc < 3) {
+            std::cout << "Usage: " << argv[0] << " remove <model_tag>" << std::endl;
+            return 1;
+        }
+        tag = argv[2];
+    }
+    else if (command == "list") {
+        if (argc < 2) {
+            std::cout << "Usage: " << argv[0] << " list" << std::endl;
+            return 1;
+        }
     }
 
     // Get the command, model tag, and force flag
@@ -235,6 +266,18 @@ int main(int argc, char* argv[]) {
                     header_print("ERROR", "Failed to pull model: " + tag);
                     return 1;
                 }
+            }
+        }
+        else if (command == "remove") {
+            // Remove the model, this will be used to remove the model
+            downloader.remove_model(tag);
+        }
+        else if (command == "list") {
+            // List the models, this will be used to list the models
+            std::cout << "Models:" << std::endl;
+            nlohmann::json models = supported_models.get_all_models();
+            for (const auto& model : models["models"]) {
+                std::cout << "  - " << model["name"].get<std::string>() << std::endl;
             }
         }
         else {

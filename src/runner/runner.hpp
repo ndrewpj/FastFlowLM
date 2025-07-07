@@ -13,7 +13,9 @@
 #include "model_list.hpp"
 #include "wstream_buf.hpp"
 #include "model_downloader.hpp"
+#include "cli_wide.hpp"
 #include <codecvt>
+#include <vector>
 
 using json = nlohmann::json;
 
@@ -41,6 +43,9 @@ class Runner {
         model_list supported_models;
         ModelDownloader& downloader;
         std::unique_ptr<chat_bot> chat_engine;
+        int generate_limit;
+        // CLI instance for interactive input
+        CLIWide cli;
 
         /// \brief Command functions
         void cmd_set(std::vector<std::string>& input_list);
@@ -51,7 +56,4 @@ class Runner {
         void cmd_help(std::vector<std::string>& input_list);
         void cmd_help_shotcut(std::vector<std::string>& input_list);
         void cmd_status(std::vector<std::string>& input_list);
-        
-        /// \brief Interactive input functions
-        std::string get_interactive_input();
 };
