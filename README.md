@@ -65,7 +65,7 @@ flm serve llama3.2:1B
 ```
 > The model tag (e.g., `llama3.2:1B`) sets the initial model, which is optional. If another model is requested, FastFlowLM will automatically switch to it. Local server is on port 11434 (default).
 
-For best performance, it is recommended to set the NPU power mode to **performance** or **turbo**. Open **PowerShell** and god to:
+For best performance, it is recommended to set the NPU power mode to **performance** or **turbo**. Open **PowerShell** and change path to:
 ```powershell
 cd C:\Windows\System32\AMD\
 ```
@@ -80,7 +80,7 @@ Then, run
 ## 🧠 Local AI on Your NPU
 
 FastFlowLM makes it easy to run modern LLMs locally with:
-- ⚡ High performance and low power
+- ⚡ Fast and low power
 - 🧰 Simple CLI and API
 - 🔐 Fully private and offline
 
@@ -91,7 +91,7 @@ No model rewrites, no tuning — it just works.
 ## ✅ Features
 
 - **Runs fully on AMD Ryzen™ NPU** — no GPU or CPU load  
-- **CLI-first developer flow** — like Ollama, but optimized for NPU  
+- **Developer-first flow** — like Ollama, but optimized for NPU  
 - **Support for long context windows** — up to 128k tokens (e.g., LLaMA 3.1/3.2)  
 - **No low-level tuning required** — You focus on your app, we handle the rest
 
@@ -116,7 +116,7 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 ### Benchmarks
 <p style="font-size:85%; margin:0;">
 📊 View the detailed results here:
-<a href="benchmarks/llama3_results.md" style="text-decoration:none;">
+<a href="https://docs.fastflowlm.com/benchmarks/" style="text-decoration:none;">
 <strong>[Benchmark results]</strong>
 </a>
 </p>

@@ -1,3 +1,11 @@
+---
+title: Llama 3 Benchmark Results
+nav_order: 1
+parent: Benchmarks
+
+---
+
+
 ## ⚡ Performance and Efficiency Benchmarks
 
 This section reports the decoding speed and power usage of LLMs on different hardware: NPU (FastFlowLM), NPU (Ryzen AI Software), iGPU (LM Studio), and CPU (LM Studio).

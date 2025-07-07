@@ -32,16 +32,6 @@ flm run llama3.2:1B
 
 ---
 
-### 🌐 Start Server Mode
-
-Launch FastFlowLM as a local REST API server (also support OpenAI API):
-
-```powershell
-flm serve llama3.2:1B
-```
-
----
-
 ### ⬇️ Pull a Model (Download Only)
 
 Download a model from Hugging Face without launching it:
@@ -78,6 +68,16 @@ Load input from a local text file:
 
 ```powershell
 flm run llama3.2:1B "C:\Users\Public\Desktop\alice_in_wonderland.txt"
+```
+
+---
+
+### 🌐 Start Server Mode
+
+Launch FastFlowLM as a local REST API server (also support OpenAI API):
+
+```powershell
+flm serve llama3.2:1B
 ```
 
 ---
