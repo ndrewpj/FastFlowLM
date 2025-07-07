@@ -1,8 +1,8 @@
 ---
 title: Local Server (Server Mode)
+parent: Instructions
 nav_order: 2
 has_children: true
-parent: Instructions
 ---
 
 # Local Server (Server Mode)
