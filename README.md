@@ -143,7 +143,7 @@ flm run deepseek
 
 ## 🛠️ Instructions
 
-Documentation and example workflows coming soon. Like Ollama, you can:
+Documentation and example workflows [Link](https://docs.fastflowlm.com/). Like Ollama, you can:
 - Load and run models locally via CLI (Interactive Mode)
 - Integrate into your app via a simple REST API via a local server (Server Mode)
 > Compatible with tools like **Microsoft AI Toolkit**, **Open WebUI**, and more.
