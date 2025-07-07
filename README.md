@@ -75,7 +75,7 @@ Then, run
 ```
 > For more details about NPU power mode, refer to the [AMD XRT SMI Documentation](https://ryzenai.docs.amd.com/en/latest/xrt_smi.html).
 
-For more detailed instructions and video guides, click [Documentation](https://docs.fastflowlm.com/).
+For detailed instructions and video guides, click [Documentation](https://docs.fastflowlm.com/).
 
 ---
 
