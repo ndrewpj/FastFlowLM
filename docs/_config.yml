@@ -1,6 +1,7 @@
 title: FastFlowLM Docs
 description: Documentation for the AMD-NPU-first LLM runtime
 remote_theme: just-the-docs/just-the-docs
+logo: "/assets/logo.png"
 
 color_scheme: dark
 search_enabled: true
