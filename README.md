@@ -123,27 +123,9 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 
 ---
 
-## 🧪 Model Support
-
-```
-flm run llama3.1:8B
-```
-```
-flm run llama3.2:1B
-```
-```
-flm run llama3.2:3B
-```
-```
-flm run deepseek
-```
-*...with more models coming soon.*
-
----
-
 ## 🛠️ Instructions
 
-Documentation and example workflows [Link](https://docs.fastflowlm.com/). Like Ollama, you can:
+[Documentation and example workflows](https://docs.fastflowlm.com/). Like Ollama, you can:
 - Load and run models locally via CLI (Interactive Mode)
 - Integrate into your app via a simple REST API via a local server (Server Mode)
 > Compatible with tools like **Microsoft AI Toolkit**, **Open WebUI**, and more.
