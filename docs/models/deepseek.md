@@ -1,5 +1,5 @@
 ---
-title: Deepseek Models
+title: Deepseek
 nav_order: 2
 parant: Models
 ---
@@ -7,4 +7,6 @@ parant: Models
 ```
 flm run deepseek
 ```
-> distill to LLaMA 3.1 8B model
+> distilled to LLaMA 3.1 8B model
+
+---
