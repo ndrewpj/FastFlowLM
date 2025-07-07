@@ -75,7 +75,8 @@ Then, run
 ```
 > For more details about NPU power mode, refer to the [AMD XRT SMI Documentation](https://ryzenai.docs.amd.com/en/latest/xrt_smi.html).
 
-Find detailed instructions here [Documentation](https://docs.fastflowlm.com/)
+Find detailed instructions here [Documentation](https://docs.fastflowlm.com/).
+
 ---
 
 ## 🧠 Local AI on Your NPU
