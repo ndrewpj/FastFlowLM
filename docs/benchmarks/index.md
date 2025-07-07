@@ -1,5 +1,6 @@
 ---
 title: Benchmarks
-nav_order: 2
+parent: Overview
+nav_order: 3
 has_children: true
 ---
