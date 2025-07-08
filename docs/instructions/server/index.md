@@ -7,7 +7,7 @@ has_children: true
 
 # Local Server (Server Mode)
 
-First, serve your models from CLI:
+To activate "server mode," simply open PowerShell and enter:
 
 ```bash
 flm serve llama3.2:1B
