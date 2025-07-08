@@ -22,13 +22,7 @@ This structure makes it easy to build multi-turn conversations with consistent b
 
 ### 📚 Developer Support
 
-OpenAI provides [official libraries](https://platform.openai.com/docs/libraries/python-library#install-an-official-sdk) in multiple programming languages to help developers follow the standard easily:
-
-- **Python**
-- **JavaScript (Node.js)**
-- **.NET**
-- **Java**
-- **Go**
+OpenAI provides [official libraries](https://platform.openai.com/docs/libraries/python-library#install-an-official-sdk) in multiple programming languages to help developers follow the standard easily: **Python**, **JavaScript**, **.NET**, **Java**, and **Go**.
 
 These libraries make it easy to send prompts, receive completions, and integrate with local or cloud-based OpenAI-compatible servers.
 
@@ -36,8 +30,7 @@ These libraries make it easy to send prompts, receive completions, and integrate
 
 ## 🚀 Quick Test: Use OpenAI SDK with FastFlowLM in Python
 
-You can try this instantly in any Python environment — including Jupyter Notebook. 
-Follow the steps below by copying each block into a notebook cell.
+You can try this instantly in any Python environment — including Jupyter Notebook. Follow the steps below by copying each block into a notebook cell.
 
 ---
 
@@ -103,8 +96,6 @@ print(response.choices[0].message.content)
 🚀 Ah — that was easy, right?  
 Now let’s kick things up a notch with some awesome next-level examples!
 
-With just a few lines of code, you can unlock powerful interactions — like multi-turn conversations, real-time streaming responses, and loading prompts directly from files.
-
 ---
 
 ### 💬 Example: Multi-turn Chat (Conversation History)
@@ -168,9 +159,7 @@ for chunk in stream:
 
 You can load a full `.txt` file as a prompt — useful for long documents or testing large context windows.
 
-👉 [Click here to download the sample prompt](../../../assets/alice_in_wonderland.txt)  
-
-This file contains the full text of *Alice in Wonderland* (~38,000 tokens), so it may take longer to process.
+👉 [Download the sample prompt](https://github.com/FastFlowLM/FastFlowLM/blob/main/assets/alice_in_wonderland.txt)  
 
 Download to Downloads folder. This contains over 38k token, thus may take longer to prompt. FastFlowLM supports full context length (32k–128k), making it ideal for this kind of task.
 
