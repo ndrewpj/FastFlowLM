@@ -57,6 +57,7 @@ flm serve llama3.2:1B
 ### ✅ Step 2: Send a Chat Request to FastFlowLM
 
 ```python
+# Quick Start
 from openai import OpenAI
 
 # Connect to local FastFlowLM server
@@ -76,6 +77,11 @@ response = client.chat.completions.create(
 
 # Show the model's response
 print(response.choices[0].message.content)
+
+# cleanup
+del response, client
+import gc
+gc.collect()
 ```
 
 ---
@@ -103,6 +109,9 @@ Now let’s kick things up a notch with some awesome next-level examples!
 Use this pattern when you want the model to remember previous turns in the conversation:
 
 ```python
+# Multi-turn conversation
+from openai import OpenAI
+
 messages = [
     {"role": "system", "content": "You are a creative writing assistant."},
     {"role": "user", "content": "Write the beginning of a fantasy story."},
@@ -118,6 +127,11 @@ messages.append({"role": "user", "content": "Continue the story with a twist."})
 response = client.chat.completions.create(model="llama3.2:1B", messages=messages)
 
 print(response.choices[0].message.content)
+
+# cleanup
+del response, client
+import gc
+gc.collect()
 ```
 
 > ⚠️ The OpenAI API (and FastFlowLM server mode) is **stateless** — you must resend the full conversation each time. No KV cache is kept between turns.
@@ -137,7 +151,11 @@ print(response.choices[0].message.content)
 Display the model’s output as it generates, token-by-token:
 
 ```python
-client = OpenAI(base_url="http://localhost:11434/v1", api_key="flm")
+# Streaming
+from openai import OpenAI
+import gc, sys
+
+client = OpenAI(base_url="http://localhost:11434/v1/", api_key="flm")
 
 stream = client.chat.completions.create(
     model="llama3.2:1B",
@@ -148,9 +166,19 @@ stream = client.chat.completions.create(
     stream=True
 )
 
-for chunk in stream:
-    if chunk.choices[0].delta.content:
-        print(chunk.choices[0].delta.content, end="", flush=True)
+print("=== STREAMING BEGIN ===")
+try:
+    for chunk in stream:
+        content = chunk.choices[0].delta.content
+        if content:
+            print(content, end="", flush=True)
+    print("\n=== STREAMING END ===")
+except Exception as e:
+    sys.stderr.write(f"\n[STREAM ERROR] {e}\n")
+
+#cleanup
+del stream, client
+gc.collect()
 ```
 
 ---
@@ -161,13 +189,17 @@ You can load a full `.txt` file as a prompt — useful for long documents or tes
 
 👉 [Download the sample prompt](https://github.com/FastFlowLM/FastFlowLM/blob/main/assets/alice_in_wonderland.txt)  
 
-Download to Downloads folder. This contains over 38k token, thus may take longer to prompt. FastFlowLM supports full context length (32k–128k), making it ideal for this kind of task.
+Download to Downloads folder. This contains over 38k token, thus may take longer to prompt. FastFlowLM supports full context length (32k–128k), making it ideal for processing long documents like this
 
 ```python
+# Use a text file to prompt
+from openai import OpenAI
+
 with open("C:\\Users\\<username>\\Downloads\\alice_in_wonderland.txt", "r", encoding="utf-8") as f:
     user_prompt = f.read()
 
 client = OpenAI(base_url="http://localhost:11434/v1", api_key="flm")
+
 response = client.chat.completions.create(
     model="llama3.2:1B",
     messages=[
@@ -177,6 +209,11 @@ response = client.chat.completions.create(
 )
 
 print(response.choices[0].message.content)
+
+# cleanup
+del response, client
+import gc
+gc.collect()
 ```
 
 ---
@@ -186,11 +223,16 @@ print(response.choices[0].message.content)
 Loop over a list of prompts and generate answers — useful for eval or bulk testing.
 
 ```python
+# Batched prompts
+from openai import OpenAI
+
 prompts = [
     "Summarize the causes of World War I.",
     "Describe how a transistor works.",
     "What are the key themes in ‘To Kill a Mockingbird’?",
 ]
+
+client = OpenAI(base_url="http://localhost:11434/v1", api_key="flm")
 
 for prompt in prompts:
     response = client.chat.completions.create(
@@ -201,6 +243,11 @@ for prompt in prompts:
         ]
     )
     print(f"\n📝 Prompt: {prompt}\n🔍 Answer: {response.choices[0].message.content}")
+
+# cleanup
+del response, client
+import gc
+gc.collect()
 ```
 
 ---
@@ -210,6 +257,11 @@ for prompt in prompts:
 Control randomness and creativity — for brainstorming or open-ended tasks.
 
 ```python
+# Change hyper parameters
+from openai import OpenAI
+
+client = OpenAI(base_url="http://localhost:11434/v1", api_key="flm")
+
 response = client.chat.completions.create(
     model="llama3.2:1B",
     messages=[
@@ -222,6 +274,11 @@ response = client.chat.completions.create(
 )
 
 print(response.choices[0].message.content)
+
+# cleanup
+del response, client
+import gc
+gc.collect()
 ```
 
 ---
