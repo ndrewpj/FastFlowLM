@@ -23,7 +23,7 @@ Fast, power-efficient, and 100% offline.
 > Upload your own `.txt` files to test extended context prompts.  
 > Try three optimized LLaMA models: `llama3.2:1B`, `llama3.2:3B`, and `llama3.1:8B` — all accelerated on NPU.
 
-📝 *Note: Large prompts (30k+ tokens) may take a few seconds longer on the 8B model — but it works.*
+📝 *Note: Large prompts (30k+ tokens) may take longer on the 8B model — but it works.*
 
 ---
 
