@@ -5,7 +5,7 @@ parent: Models
 ---
 
 ```
-flm run deepseek
+flm run deepseek:8B
 ```
 > distilled to LLaMA 3.1 8B model
 
