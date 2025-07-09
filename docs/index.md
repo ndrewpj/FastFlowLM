@@ -20,10 +20,9 @@ Fast, power-efficient, and 100% offline.
 🔑 **Password**: `0000`
 
 > Real-time demo powered by **FastFlowLM + Open WebUI** — no downloads, no installs.  
-> Upload your own `.txt` files to test extended context prompts.  
 > Try three optimized LLaMA models: `llama3.2:1B`, `llama3.2:3B`, and `llama3.1:8B` — all accelerated on NPU.
 
-📝 *Note: Large prompts (30k+ tokens) may take longer on the 8B model — but it works. Try 👉 [Download a sample txt](https://github.com/FastFlowLM/FastFlowLM/blob/main/assets/alice_in_wonderland.txt), containing over 38k token.*
+📝 *Note: Large prompts (30k+ tokens) may take longer — but it works.*
 
 ---
 
