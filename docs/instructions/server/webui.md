@@ -16,7 +16,7 @@ This guide walks you through using `docker-compose.yaml` to run Open WebUI conne
    - During installation, enable **WSL2 backend**
    - Reboot if prompted
 
-2. [FastFlowLM](../install.md)
+2. [FastFlowLM](../../install.md)
 
 ---
 
