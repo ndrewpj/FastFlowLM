@@ -50,8 +50,9 @@ services:
     ports:
       - 3000:8080
     environment:
-      - OLLAMA_API_BASE_URL=http://host.docker.internal:11434
+      - OPENAI_API_BASE_URL=http://host.docker.internal:11434
       - WEBUI_AUTH=false
+      - WEBUI_SECRET_KEY=dummysecretkey
     volumes:
       - openwebui-data:/app/backend/data
     restart: unless-stopped
@@ -60,7 +61,7 @@ volumes:
   openwebui-data:
 ```
 
-> `OLLAMA_API_BASE_URL=http://host.docker.internal:11434` connects Open WebUI to local FastFlowLM  
+> `OPENAI_API_BASE_URL=http://host.docker.internal:11434` connects Open WebUI to local FastFlowLM  
 > `WEBUI_AUTH=false` disables login (optional)
 
 ---
