@@ -16,7 +16,6 @@ chat_bot::chat_bot(unsigned int device_id){
         this->profiler_list[i] = profiler();
     }
     this->last_prefill_time = {0, "us"};
-    this->system_prompt = "";
     this->token_history.reserve(MAX_L);
 }
 
@@ -44,7 +43,9 @@ void chat_bot::load_model(std::string model_path, json model_info){
         header_print("FLM", "Model already loaded: " << this->model_path);
         return;
     }
-    this->is_think_model = model_info["details"]["think"];
+    JSON_GET(this->is_think_model, model_info["details"], "think", false, bool);
+    JSON_GET(this->is_think_toggleable, model_info["details"], "think_toggleable", false, bool);
+    this->enable_think = this->is_think_model;
     this->model_path = model_path;
     for (const auto& model : default_models){
         if (model.second == model_path){
@@ -98,11 +99,6 @@ void chat_bot::load_model(std::string model_path, json model_info){
     for (size_t i = 0; i < PROFILER_TYPE_NUM; i++){
         this->profiler_list[i].reset();
     }
-    // insert the system prompt
-    std::vector<int> system_tokens = this->tokenizer->encode(this->get_system_prompt(true, this->system_prompt));
-    std::vector<int> system_prompts = this->apply_chat_template(system_tokens, SYSTEM, false);
-    chat_meta_info meta_info;
-    this->insert(meta_info, system_prompts, true);
 }
 
 /// \brief Set the sampler
@@ -193,21 +189,17 @@ std::string chat_bot::generate(chat_meta_info& meta_info, int length_limit, std:
 
     std::string result;
     meta_info.generated_tokens = 1;
-
-    if (this->is_think_model){
-        std::string think_result = this->tokenizer->run_time_decoder(128013);
+    if (this->enable_think){
+        std::string think_result = this->tokenizer->run_time_decoder(this->tokenizer->get_think_marker_id());
         result += think_result;
         os << think_result << std::flush;
-        think_result = this->tokenizer->run_time_decoder(198);
-        result += think_result;
-        os << think_result << std::flush;
-        meta_info.generated_tokens += 2;
     }
+
     stop_reason reason = EOT_DETECTED;
     int last_sampled_token = this->last_token;
     this->token_history.push_back(this->last_token);
     auto decoding_start_time = time_utils::now();
-    if (this->tokenizer->is_normal_token(last_sampled_token, this->is_think_model) && last_sampled_token != -1){
+    if (this->tokenizer->is_normal_token(last_sampled_token) && last_sampled_token != -1){
         std::string token_str = this->tokenizer->run_time_decoder(last_sampled_token);
         result += token_str;
         os << token_str << std::flush;
@@ -235,7 +227,7 @@ std::string chat_bot::generate(chat_meta_info& meta_info, int length_limit, std:
 
         this->profiler_list[TKOEN_DECODE_TIME].start();
         this->profiler_list[TKOEN_DECODE_TIME].stop(1);
-        if (this->tokenizer->is_normal_token(sampled_token, this->is_think_model)){ // filter out special tokens
+        if (this->tokenizer->is_normal_token(sampled_token)){ // filter out special tokens
             std::string token_str = this->tokenizer->run_time_decoder(sampled_token);
             os << token_str << std::flush;
             result += token_str;
@@ -290,10 +282,6 @@ void chat_bot::clear_context(){
         this->profiler_list[i].reset(); 
     }
     this->last_prefill_time = {0, "us"};
-    std::vector<int> system_tokens = this->tokenize(this->get_system_prompt(true, this->system_prompt));
-    std::vector<int> system_prompts = this->apply_chat_template(system_tokens, SYSTEM, false);
-    chat_meta_info meta_info;
-    this->insert(meta_info, system_prompts, true);
 }
 
 /// \brief Get the current context length
@@ -301,38 +289,6 @@ void chat_bot::clear_context(){
 /// \note The function will return the current context length
 int chat_bot::get_current_context_length(){
     return this->total_tokens;
-}
-
-std::string chat_bot::get_system_prompt(bool include_timestamp, const std::string& system_info) {
-    std::string template_ss = "";
-    
-    // Build system prompt with context information
-    std::stringstream system_prompt;
-    system_prompt << "You are a helpful assistant.\n";
-    
-    // Add timestamp if requested
-    if (include_timestamp) {
-        auto now = std::time(nullptr);
-        auto tm_ptr = std::localtime(&now);
-        if (tm_ptr != nullptr) {
-            system_prompt << "\nCurrent date and time: " 
-                         << std::put_time(tm_ptr, "%Y-%m-%d %H:%M:%S") 
-                         << ".\n";
-        } else {
-            system_prompt << "\nCurrent date and time: [unavailable]\n";
-        }
-    }
-    
-    // Add custom system information if provided
-    if (!system_info.empty()) {
-        system_prompt << system_info << " ";
-    }
-    // If we have system context, format it properly
-    if (system_prompt.str().length() > 0) {
-        // Add system message to provide context
-        template_ss += system_prompt.str();
-    }
-    return template_ss;
 }
 
 /// \brief Show the model info
@@ -472,24 +428,34 @@ void chat_bot::set_frequency_penalty(float frequency_penalty){
     this->sampler->freq_penalty = frequency_penalty;
 }
 
-/// \brief Set the system prompt
-/// \param system_prompt the system prompt
-/// \note The function will set the system prompt
-/// \note The function will check if the system prompt is valid
-void chat_bot::set_system_prompt(std::string system_prompt){
-    this->system_prompt = system_prompt;
-    this->clear_context();
-}
-
 /// \brief Tokenize the text
 /// \param text the text
 /// \note The function will tokenize the text
 /// \note The function will check if the text is valid
-std::vector<int> chat_bot::tokenize(const std::string& text){
+std::vector<int> chat_bot::tokenize(std::string& text, bool apply_chat_template, std::string role, bool add_generation_prompt){
     this->profiler_list[TKOEN_ENCODE_TIME].start();
-    std::vector<int> tokens = this->tokenizer->encode(text);
+    std::string new_text;
+    if (apply_chat_template){
+        nlohmann::ordered_json messages;
+        messages.push_back({{"role", role}, {"content", text}});
+        new_text = this->tokenizer->apply_chat_template(messages, add_generation_prompt);
+    }
+    else{
+        new_text = text;
+    }
+
+    std::vector<int> tokens = this->tokenizer->encode(new_text);
     this->profiler_list[TKOEN_ENCODE_TIME].stop(tokens.size());
     return tokens;
+}
+
+/// \brief Apply the chat template
+/// \param messages the messages
+/// \param add_generation_prompt the add generation prompt
+/// \return the chat template
+std::vector<int> chat_bot::tokenize(nlohmann::ordered_json& messages, bool add_generation_prompt){
+    std::string text = this->tokenizer->apply_chat_template(messages, add_generation_prompt);
+    return this->tokenizer->encode(text);
 }
 
 /// \brief Decode the tokens
@@ -498,56 +464,6 @@ std::vector<int> chat_bot::tokenize(const std::string& text){
 /// \note The function will check if the tokens are valid
 std::string chat_bot::decode(std::vector<int>& tokens){
     return this->tokenizer->decode(tokens);
-}
-
-/// \brief Apply the chat template
-/// \param tokens the tokens
-/// \param role the role
-/// \param append_assistant_prefix the append assistant prefix
-/// \note The function will apply the chat template
-/// \note The function will check if the tokens are valid
-std::vector<int> chat_bot::apply_chat_template(std::vector<int>& tokens, role_type role, bool append_assistant_prefix){
-    std::vector<int> new_tokens;
-    if (role == USER){
-        new_tokens.push_back(this->tokenizer->begin_of_header_id());
-        new_tokens.push_back(this->tokenizer->user_id());
-        new_tokens.push_back(this->tokenizer->end_of_header_id());
-        new_tokens.push_back(271); // \n\n
-    }
-    else if (role == ASSISTANT){
-        new_tokens.push_back(this->tokenizer->begin_of_header_id());
-        new_tokens.push_back(this->tokenizer->assistant_id());
-        new_tokens.push_back(this->tokenizer->end_of_header_id());
-        if (this->is_think_model){
-            new_tokens.push_back(128013); // <think>
-            new_tokens.push_back(198); // </think>
-        }
-        else{
-            new_tokens.push_back(271); // \n\n
-        }
-    }
-    else if (role == SYSTEM){ // system prompt header is added in the hardware
-        new_tokens.push_back(this->tokenizer->begin_of_text_id());
-        new_tokens.push_back(this->tokenizer->begin_of_header_id());
-        new_tokens.push_back(this->tokenizer->system_id());
-        new_tokens.push_back(this->tokenizer->end_of_header_id());
-        new_tokens.push_back(271); // \n\n
-    }
-    new_tokens.insert(new_tokens.end(), tokens.begin(), tokens.end());
-    new_tokens.push_back(128009); // eot
-    if (role == USER && append_assistant_prefix){
-        new_tokens.push_back(this->tokenizer->begin_of_header_id());
-        new_tokens.push_back(this->tokenizer->assistant_id());
-        new_tokens.push_back(this->tokenizer->end_of_header_id());
-        if (this->is_think_model){
-            new_tokens.push_back(128013); // <think>
-            new_tokens.push_back(198); // </think>
-        }
-        else{
-            new_tokens.push_back(271); // \n\n
-        }
-    }
-    return new_tokens;
 }
 
 /// \brief Start the ttft timer
@@ -584,4 +500,25 @@ void chat_bot::start_total_timer(){
 /// \note The function will check if the total timer is valid
 void chat_bot::stop_total_timer(){
     this->profiler_list[TOTAL_TIME].stop(this->total_tokens, true);
+}
+
+/// \brief Set the user system prompt
+/// \param user_system_prompt the user system prompt
+/// \note The function will set the user system prompt
+/// \note The function will check if the user system prompt is valid
+void chat_bot::set_user_system_prompt(const std::string& user_system_prompt){
+    this->tokenizer->set_user_system_prompt(user_system_prompt);
+}
+
+/// \brief Toggle the enable think
+/// \note The function will toggle the enable think
+/// \note The function will check if the enable think is valid
+void chat_bot::toggle_enable_think(){
+    if (this->is_think_toggleable){
+        this->enable_think = !this->enable_think;
+        header_print("FLM", "Think is " << (this->enable_think ? "enabled" : "disabled"));
+    }
+    else{
+        header_print("FLM", "Think is not toggleable for this model!");
+    }
 }

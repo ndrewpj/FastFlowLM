@@ -27,6 +27,9 @@ public:
     // Get list of missing files for a model
     std::vector<std::string> get_missing_files(const std::string& model_tag);
     
+    // Get list of present files for a model
+    std::vector<std::string> get_present_files(const std::string& model_tag);
+    
     // Remove a model and all its files
     bool remove_model(const std::string& model_tag);
     

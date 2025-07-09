@@ -4,6 +4,10 @@
 /// \date 2025-06-24
 /// \version 0.1.0
 #include "tokenizer/tokenizer.hpp"
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
 #include <cstdint>
 #include <unordered_map>
 #include <regex>
@@ -23,6 +27,37 @@ Tokenizer::Tokenizer(const std::string& model_path) {
     data.resize(size);
     fs.read(data.data(), size);
     this->tokenizer = tokenizers::Tokenizer::FromBlobJSON(data);
+    fs.close();
+    
+    // load tokenizer configurations
+    std::ifstream fs_config(model_path + "/tokenizer_config.json", std::ios::in | std::ios::binary);
+    if (fs_config.fail()) {
+        std::cerr << "Cannot open " << model_path + "/tokenizer_config.json" << std::endl;
+        exit(1);
+    }
+    std::string data_config;
+    fs_config.seekg(0, std::ios::end);
+    size_t size_config = static_cast<size_t>(fs_config.tellg());
+    fs_config.seekg(0, std::ios::beg);
+    data_config.resize(size_config);
+    fs_config.read(data_config.data(), size_config);
+    fs_config.close();
+    auto tokenizer_config = nlohmann::json::parse(data_config);
+
+    // load chat template
+    this->tmpl = std::make_unique<minja::chat_template>(
+        tokenizer_config["chat_template"],
+        tokenizer_config["bos_token"],
+        tokenizer_config["eos_token"]
+    );
+
+    this->bos_token_id = tokenizer_config["bos_token_id"].get<int>();
+    for (auto& token : tokenizer_config["eos_token_id"]) {
+        this->eos_token_ids.push_back(token.get<int>());
+    }
+    this->user_system_prompt = "";
+    this->extra_context["user_system_prompt"] = this->user_system_prompt;
+    JSON_GET(this->think_marker_id, tokenizer_config, "think_marker_id", 128013, int);
 }
 
 /// \brief Destructor
@@ -132,4 +167,23 @@ std::string Tokenizer::decode(const std::vector<int>& tokens) {
 /// \return the decoded text
 std::string Tokenizer::run_time_decoder(int answer_token) {
     return this->cpt_to_utf8(this->tokenizer->IdToToken(answer_token));
+}
+
+/// \brief Apply the chat template
+/// \param messages the messages
+/// \param add_generation_prompt the add generation prompt
+/// \return the chat template
+std::string Tokenizer::apply_chat_template(nlohmann::ordered_json& messages, bool add_generation_prompt) {
+    minja::chat_template_inputs inputs;
+    inputs.add_generation_prompt = add_generation_prompt;
+    inputs.messages = messages;
+    inputs.extra_context = this->extra_context;
+    return this->tmpl->apply(inputs);
+}
+
+/// \brief Set the user system prompt
+/// \param user_system_prompt the user system prompt
+void Tokenizer::set_user_system_prompt(const std::string& user_system_prompt) {
+    this->user_system_prompt = user_system_prompt;
+    this->extra_context["user_system_prompt"] = user_system_prompt;
 }

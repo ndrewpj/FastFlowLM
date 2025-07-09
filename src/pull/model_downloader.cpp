@@ -53,8 +53,19 @@ bool ModelDownloader::pull_model(const std::string& model_tag, bool force_redown
         }
         
         if (!missing_files.empty()) {
-            header_print("FLM", "Missing files:");
+            header_print("FLM", "Missing files (" + std::to_string(missing_files.size()) + "):");
             for (const auto& file : missing_files) {
+                std::cout << "  - " << file << std::endl;
+            }
+        } else {
+            header_print("FLM", "All required files are present.");
+        }
+        
+        // Show present files if any
+        auto present_files = get_present_files(model_tag);
+        if (!present_files.empty()) {
+            header_print("FLM", "Present files (" + std::to_string(present_files.size()) + "):");
+            for (const auto& file : present_files) {
                 std::cout << "  - " << file << std::endl;
             }
         }
@@ -62,11 +73,18 @@ bool ModelDownloader::pull_model(const std::string& model_tag, bool force_redown
         // Build download list
         auto downloads = build_download_list(model_tag);
         if (downloads.empty()) {
-            header_print("ERROR", "No files to download for model: " + model_tag);
-            return false;
+            header_print("FLM", "No files to download for model: " + model_tag);
+            return true; // Return true since all files are already present
         }
         
-        header_print("FLM", "Downloading " + std::to_string(downloads.size()) + " files...");
+        header_print("FLM", "Downloading " + std::to_string(downloads.size()) + " missing files...");
+        
+        // Show which files will be downloaded
+        header_print("FLM", "Files to download:");
+        for (const auto& download : downloads) {
+            std::string filename = std::filesystem::path(download.second).filename().string();
+            std::cout << "  - " << filename << std::endl;
+        }
         
         // Download files with progress
         bool success = download_utils::download_multiple_files(downloads, get_progress_callback());
@@ -133,6 +151,32 @@ std::vector<std::string> ModelDownloader::get_missing_files(const std::string& m
     return missing_files;
 }
 
+/// \brief Get present files
+/// \param model_tag the model tag
+/// \return the present files
+std::vector<std::string> ModelDownloader::get_present_files(const std::string& model_tag) {
+    std::vector<std::string> present_files;
+    
+    try {
+        auto model_info = supported_models.get_model_info(model_tag);
+        std::string model_name = model_info["name"];
+        
+        // Check each required file
+        for (int i = 0; i < model_list::model_files_count; ++i) {
+            std::string filename = model_list::model_files[i];
+            std::string file_path = get_model_file_path(model_tag, filename);
+            if (file_exists(file_path)) {
+                present_files.push_back(filename);
+            }
+        }
+        
+    } catch (const std::exception& e) {
+        header_print("ERROR", "Error checking present files: " + std::string(e.what()));
+    }
+    
+    return present_files;
+}
+
 /// \brief Get progress callback
 /// \return the progress callback
 std::function<void(size_t, size_t)> ModelDownloader::get_progress_callback() {
@@ -178,12 +222,16 @@ std::vector<std::pair<std::string, std::string>> ModelDownloader::build_download
         std::string model_path = supported_models.get_model_path(model_tag);
         std::filesystem::create_directories(model_path);
         
-        // Build download list for each required file
+        // Build download list only for missing files
         for (int i = 0; i < model_list::model_files_count; ++i) {
             std::string filename = model_list::model_files[i];
-            std::string url = base_url + "/resolve/main/" + filename + "?download=true";
             std::string local_path = get_model_file_path(model_tag, filename);
-            downloads.emplace_back(url, local_path);
+            
+            // Only add to download list if file doesn't exist
+            if (!file_exists(local_path)) {
+                std::string url = base_url + "/resolve/main/" + filename + "?download=true";
+                downloads.emplace_back(url, local_path);
+            }
         }
         
     } catch (const std::exception& e) {

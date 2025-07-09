@@ -10,6 +10,7 @@
 #include "model_list.hpp"
 #include "model_downloader.hpp"
 #include "utils/utils.hpp"
+#include "minja/chat-template.hpp"
 #include <iostream>
 #include <string>
 #include <thread>
@@ -83,7 +84,6 @@ std::unique_ptr<WebServer> create_lm_server(model_list& models, ModelDownloader&
 ///@param argv the arguments
 ///@return the exit code
 int main(int argc, char* argv[]) {
-    // Initialize Unicode support for the console
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
     std::string command;
@@ -212,10 +212,9 @@ int main(int argc, char* argv[]) {
                 // close the file
                 chat.start_ttft_timer();
                 chat.start_total_timer();
-                std::vector<int> tokens = chat.tokenize(file_content);
-                header_print("FLM", "Prefill starts, " << tokens.size() << " tokens");
+                std::vector<int> prompts = chat.tokenize(file_content, true, "user", true);
+                header_print("FLM", "Prefill starts, " << prompts.size() << " tokens");
                 std::cout << std::endl;
-                std::vector<int> prompts = chat.apply_chat_template(tokens, chat_bot::USER, true);
                 chat_meta_info meta_info;
                 chat.insert(meta_info, prompts);
                 chat.stop_ttft_timer();
@@ -227,6 +226,8 @@ int main(int argc, char* argv[]) {
         } else if (command == "serve") {
             // Create the server
             auto server = create_lm_server(supported_models, downloader, tag, 11434);
+            server->set_max_connections(1);           // Allow up to 2000 concurrent connections
+            server->set_request_timeout(std::chrono::seconds(600)); // 10 minute timeout for long requests
             // Start the server
             std::cout << "Starting server on port 11434..." << std::endl;
             server->start();
