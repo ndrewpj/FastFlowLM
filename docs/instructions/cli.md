@@ -42,9 +42,9 @@ flm pull llama3.2:3B
 
 ---
 
-### 📦 List Downloaded Models
+### 📦 List Supported and Downloaded Models
 
-Display all locally downloaded models:
+Display all available models and locally downloaded models:
 
 ```powershell
 flm list
@@ -168,6 +168,16 @@ Once inside the CLI, use the following commands:
 
 ---
 
+### 📦 List Models
+
+Display all available models and locally downloaded models:
+
+```text
+/list
+```
+
+---
+
 ### 👋 Quit Interactive Mode
 
 ```text
@@ -178,12 +188,13 @@ Once inside the CLI, use the following commands:
 
 ---
 
-### ⚙️ Set Hyperparameters
+### ⚙️ Set Variables
 
 ```text
 /set
 ```
 
-> Customize decoding parameters like `top_k`, `top_p`, `temperature`, etc.
+> Customize decoding parameters like `top_k`, `top_p`, `temperature`, `context length`, `generate_limit`, etc.
 
-> ⚠️ **Note:** Providing invalid or extreme values may cause inference errors.
+> ⚠️ **Note:** Providing invalid or extreme hyperparameter values may cause inference errors.
+> `generate_limit` sets an upper limit on the number of tokens that can be generated for each response.

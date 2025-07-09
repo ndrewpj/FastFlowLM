@@ -59,6 +59,7 @@ FastFlowLM vs AMD’s official stack (Ryzen AI software 1.4) — **real-time spe
 > Try three optimized LLaMA models: `llama3.2:1B`, `llama3.2:3B`, and `llama3.1:8B` — all accelerated on NPU.
 
 📝 *Note: Large prompts (30k+ tokens) may take longer — but it works.*
+
 ---
 
 ## ⚡ Quick Start

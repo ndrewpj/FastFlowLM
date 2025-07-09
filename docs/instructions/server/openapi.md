@@ -203,7 +203,7 @@ client = OpenAI(base_url="http://localhost:11434/v1", api_key="flm")
 response = client.chat.completions.create(
     model="llama3.2:1B",
     messages=[
-        {"role": "system", "content": "You are a precise assistant."},
+        {"role": "system", "content": "You are a story rewriter."},
         {"role": "user", "content": user_prompt}
     ]
 )
