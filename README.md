@@ -11,7 +11,7 @@
 
 Run large language models on AMD Ryzen™ AI NPUs — in minutes.
 
-FastFlowLM is a lightweight runtime for deploying LLMs like LLaMA and DeepSeek directly on AMD’s NPU — no GPU needed, faster and over 11x more power efficient than the integrated GPU or hybrid solutions.
+FastFlowLM is a lightweight runtime for deploying LLMs like LLaMA and DeepSeek directly on AMD’s NPU — no GPU needed, faster and over 11x more power efficient than the iGPU or hybrid (iGPU+NPU) solutions.
 
 FastFlowLM supports full context lengths — up to 128K tokens with LLaMA 3.1 and 3.2.
 
@@ -31,13 +31,13 @@ FastFlowLM vs AMD’s official stack (Ryzen AI software 1.4) — **real-time spe
 <table>
   <tr>
     <td valign="top">
-      <h3>🔹 FastFlowLM vs Ryzen AI SW 1.4 (NPU-only)</h3>
+      <h3>🔹 FastFlowLM vs Ryzen AI SW 1.4 (NPU-only)</h4>
       <a href="https://www.youtube.com/watch?v=kv31FZ_q0_I">
         <img src="https://img.youtube.com/vi/kv31FZ_q0_I/0.jpg" alt="Demo: FastFlowLM vs OGA" width="320">
       </a>
     </td>
     <td valign="top">
-      <h3>🔹 FastFlowLM vs Ryzen AI SW 1.4 (Hybrid)</h3>
+      <h3>🔹 FastFlowLM vs Ryzen AI SW 1.4 (Hybrid)</h4>
       <a href="https://www.youtube.com/watch?v=PFjH-L_Kr0w">
         <img src="https://img.youtube.com/vi/PFjH-L_Kr0w/0.jpg" alt="Demo: FastFlowLM vs GAIA" width="320">
       </a>
