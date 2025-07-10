@@ -25,7 +25,7 @@ flm help
 Run a model interactively from the terminal:
 
 ```powershell
-flm run llama3.2:1B
+flm run llama3.2:1b
 ```
 
 > `flm` is short for FastFlowLM. If the model isn't available locally, it will be downloaded automatically. This launches FastFlowLM in CLI mode.
@@ -37,7 +37,7 @@ flm run llama3.2:1B
 Download a model from Hugging Face without launching it:
 
 ```powershell
-flm pull llama3.2:3B
+flm pull llama3.2:3b
 ```
 
 ---
@@ -57,7 +57,7 @@ flm list
 Delete a model from local storage:
 
 ```powershell
-flm remove llama3.2:3B
+flm remove llama3.2:3b
 ```
 
 ---
@@ -67,7 +67,7 @@ flm remove llama3.2:3B
 Load input from a local text file:
 
 ```powershell
-flm run llama3.2:1B "C:\Users\Public\Desktop\alice_in_wonderland.txt"
+flm run llama3.2:1b "C:\Users\Public\Desktop\alice_in_wonderland.txt"
 ```
 
 ---
@@ -77,7 +77,7 @@ flm run llama3.2:1B "C:\Users\Public\Desktop\alice_in_wonderland.txt"
 Launch FastFlowLM as a local REST API server (also support OpenAI API):
 
 ```powershell
-flm serve llama3.2:1B
+flm serve llama3.2:1b
 ```
 
 ---

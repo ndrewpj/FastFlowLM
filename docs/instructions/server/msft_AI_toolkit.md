@@ -42,7 +42,7 @@ Download & install FastFlowLM: (../../install.md)
 3. Pull a base model:
 
 ```powershell
-flm pull llama3.2:1B
+flm pull llama3.2:1b
 ```
 
 4. Confirm it's installed:
@@ -51,7 +51,7 @@ flm pull llama3.2:1B
 flm list
 ```
 
-You should see models like `llama3.2:1B` listed.
+You should see models like `llama3.2:1b` listed.
 
 ---
 
@@ -68,12 +68,12 @@ http://localhost:11434/v1/chat/completions
 Click **Enter**
 6. Enter the exact model name as in the API:
 ```
-llama3.2:1B
+llama3.2:1b
 ```
 Click **Enter**
 7. Enter display model name:
 ```
-flm-llama3.2:1B
+flm-llama3.2:1b
 ```
 Click **Enter**
 8. Enter API key:
@@ -90,7 +90,7 @@ Click **Enter**
 Open powershell, enter
 
 ```powershell
-flm serve llama3.2:1B
+flm serve llama3.2:1b
 ```
 
 ---
@@ -116,7 +116,7 @@ To remove a previously added model from the **My Models** section in the AI Tool
 
 1. Navigate to **AI Toolkit → My Models**
 2. Expand the **Custom** section
-3. Right-click the model you wish to remove (e.g., `llama3.2:1B`)
+3. Right-click the model you wish to remove (e.g., `llama3.2:1b`)
 4. Select **Delete**
 
 > 🧹 This action removes the model's reference from the AI Toolkit interface but does **not** delete the model files from local disk.

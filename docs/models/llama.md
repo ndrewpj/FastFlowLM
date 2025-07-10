@@ -5,17 +5,17 @@ parent: Models
 ---
 
 ```
-flm run llama3.1:8B
+flm run llama3.1:8b
 ```
 
 ---
 
 ```
-flm run llama3.2:1B
+flm run llama3.2:1b
 ```
 
 ---
 
 ```
-flm run llama3.2:3B
+flm run llama3.2:3b
 ```

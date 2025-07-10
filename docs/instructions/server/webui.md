@@ -48,17 +48,25 @@ services:
     image: ghcr.io/open-webui/open-webui:main
     container_name: open-webui
     ports:
-      - 3000:8080
+      - "3000:8080"
+    volumes:
+      - open-webui-data:/app/backend/data
     environment:
       - OPENAI_API_BASE_URL=http://host.docker.internal:11434
-      - WEBUI_AUTH=false
+      - WEBUI_AUTH=false 
       - WEBUI_SECRET_KEY=dummysecretkey
-    volumes:
-      - openwebui-data:/app/backend/data
+      - ENABLE_TITLE_GENERATION=false
+      - ENABLE_FOLLOW_UP_GENERATION=false
+      - ENABLE_TAGS_GENERATION=false
+      - ENABLE_RETRIEVAL_QUERY_GENERATION=false
+      - ENABLE_IMAGE_PROMPT_GENERATION=false
+      - ENABLE_WEB_SEARCH=false
+      - ENABLE_SEARCH_QUERY_GENERATION=false
     restart: unless-stopped
 
 volumes:
-  openwebui-data:
+  open-webui-data:
+
 ```
 
 > `OPENAI_API_BASE_URL=http://host.docker.internal:11434` connects Open WebUI to local FastFlowLM  
@@ -71,6 +79,7 @@ volumes:
 ```powershell
 docker compose up -d
 ```
+> It could take up to 1 min before you can access Open WebUI.
 
 This starts the container in detached mode.  
 You can check logs with:
@@ -93,11 +102,11 @@ You should now see the Open WebUI interface.
 ## 🧪 Step 5: Serve FastFlowLM with Model
 
 ```powershell
-flm serve llama3.2:1B
+flm serve llama3.2:1b
 ```
 
 You can now use `FastFlowLM` directly in Open WebUI.
-
+> When switching models, it may take longer time to replace the model in memory.
 ---
 
 ## 🧼 Step 6: Stop or Clean Up (in PowerShell)

@@ -10,5 +10,5 @@ has_children: true
 To activate "server mode," simply open PowerShell and enter:
 
 ```bash
-flm serve llama3.2:1B
+flm serve llama3.2:1b
 ```

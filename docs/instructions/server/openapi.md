@@ -39,7 +39,7 @@ You can try this instantly in any Python environment — including Jupyter Noteb
 Open PowerShell or terminal and launch the model server:
 
 ```
-flm serve llama3.2:1B
+flm serve llama3.2:1b
 ```
 
 > 🧠 This loads the model and starts the FastFlowLM OpenAI-compatible API at `http://localhost:11434/v1`.
@@ -68,7 +68,7 @@ client = OpenAI(
 
 # Send a chat-style prompt using OpenAI API format
 response = client.chat.completions.create(
-    model="llama3.2:1B",  # Replace with any model you've launched with `flm serve`
+    model="llama3.2:1b",  # Replace with any model you've launched with `flm serve`
     messages=[
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "Why is the sky blue?"}
@@ -88,7 +88,7 @@ gc.collect()
 
 ### 📌 Notes
 
-- 🧠 You can replace `"llama3.2:1B"` with any other model available via `flm run` or `flm pull`.
+- 🧠 You can replace `"llama3.2:1b"` with any other model available via `flm run` or `flm pull`.
 - 🖥 Make sure the FastFlowLM server is running in the background (`flm serve ...`).
 - 🔒 No real API key is needed — just pass `"flm"` as a placeholder.
 - ⚡ FastFlowLM runs fully offline and is optimized for AMD Ryzen AI NPUs.
@@ -118,13 +118,13 @@ messages = [
 ]
 
 client = OpenAI(base_url="http://localhost:11434/v1", api_key="flm")
-response = client.chat.completions.create(model="llama3.2:1B", messages=messages)
+response = client.chat.completions.create(model="llama3.2:1b", messages=messages)
 print(response.choices[0].message.content)
 
 # Add the assistant response and continue the conversation
 messages.append({"role": "assistant", "content": response.choices[0].message.content})
 messages.append({"role": "user", "content": "Continue the story with a twist."})
-response = client.chat.completions.create(model="llama3.2:1B", messages=messages)
+response = client.chat.completions.create(model="llama3.2:1b", messages=messages)
 
 print(response.choices[0].message.content)
 
@@ -158,7 +158,7 @@ import gc, sys
 client = OpenAI(base_url="http://localhost:11434/v1/", api_key="flm")
 
 stream = client.chat.completions.create(
-    model="llama3.2:1B",
+    model="llama3.2:1b",
     messages=[
         {"role": "system", "content": "You are a fast, concise assistant."},
         {"role": "user", "content": "Summarize the plot of Hamlet in 3 sentences."}
@@ -201,7 +201,7 @@ with open("C:\\Users\\<username>\\Downloads\\alice_in_wonderland.txt", "r", enco
 client = OpenAI(base_url="http://localhost:11434/v1", api_key="flm")
 
 response = client.chat.completions.create(
-    model="llama3.2:1B",
+    model="llama3.2:1b",
     messages=[
         {"role": "system", "content": "You are a story rewriter."},
         {"role": "user", "content": user_prompt}
@@ -236,7 +236,7 @@ client = OpenAI(base_url="http://localhost:11434/v1", api_key="flm")
 
 for prompt in prompts:
     response = client.chat.completions.create(
-        model="llama3.2:1B",
+        model="llama3.2:1b",
         messages=[
             {"role": "system", "content": "You are a concise academic tutor."},
             {"role": "user", "content": prompt}
@@ -263,7 +263,7 @@ from openai import OpenAI
 client = OpenAI(base_url="http://localhost:11434/v1", api_key="flm")
 
 response = client.chat.completions.create(
-    model="llama3.2:1B",
+    model="llama3.2:1b",
     messages=[
         {"role": "system", "content": "You are a creative brainstorming partner."},
         {"role": "user", "content": "Give me 5 startup ideas that combine AI and education."}
