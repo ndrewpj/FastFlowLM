@@ -20,7 +20,7 @@ Fast, power-efficient, and 100% offline.
 🔑 **Password**: `0000`
 
 > Real-time demo powered by **FastFlowLM + Open WebUI** — no downloads, no installs.  
-> Try three optimized LLaMA models: `llama3.2:1B`, `llama3.2:3B`, and `llama3.1:8B` — all accelerated on NPU.
+> Try three optimized LLaMA models: `llama3.2:1b`, `llama3.2:3b`, and `llama3.1:8b` — all accelerated on NPU.
 
 📝 *Note: Large prompts (30k+ tokens) may take longer — but it works.*
 

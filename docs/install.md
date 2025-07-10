@@ -58,7 +58,7 @@ Then, run
 After installation, do a quick test to see if FastFlowLM is properly installed. Open **PowerShell**, and run a model in terminal (CLI or Interactive Mode):
 
 ```powershell
-flm run llama3.2:1B
+flm run llama3.2:1b
 ```
 
 > Requires internet access to HuggingFace to pull (download) the optimized model kernel. The model will be automatically downloaded to the folder: ``C:\Users\<USER>\Documents\flm\models\``. 
