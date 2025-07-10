@@ -16,7 +16,7 @@
 #include <nlohmann/json.hpp>
 #include "chat/chat_bot.hpp"
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 
 ///@brief Custom streambuf that captures tokens and sends them immediately
 ///@param model the model

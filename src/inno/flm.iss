@@ -4,7 +4,11 @@
 
 AppName=flm
 
-AppVersion=1.0
+AppVersion=0.1.5
+
+AppPublisher=FastFlowLM
+
+AppPublisherURL=www.fastflowlm.com
 
 DefaultDirName={pf64}\flm
 
@@ -54,12 +58,22 @@ Name: "{group}\flm"; \
     Comment: "Launch flm"
 
 ; Desktop shortcut (conditional based on user choice)
-Name: "{commondesktop}\flm"; \
+Name: "{commondesktop}\flm run"; \
     Filename: "{sys}\cmd.exe"; \
-    Parameters: "/K ""{app}\flm.exe"" run llama3.2:1B"; \
+    Parameters: "/K ""{app}\flm.exe"" run llama3.2:1b"; \
     WorkingDir: "{app}"; \
     IconFilename: "{app}\logo.ico"; \
-    Comment: "Launch flm with llama3.2:1B model"; \
+    Comment: "Launch flm with llama3.2:1b model"; \
+    Tasks: desktopicon
+    
+    
+; Desktop shortcut (conditional based on user choice)
+Name: "{commondesktop}\flm serve"; \
+    Filename: "{sys}\cmd.exe"; \
+    Parameters: "/K ""{app}\flm.exe"" serve"; \
+    WorkingDir: "{app}"; \
+    IconFilename: "{app}\logo.ico"; \
+    Comment: "Launch flm in serve mode"; \
     Tasks: desktopicon
 
 [Registry]

@@ -12,17 +12,115 @@
 #include <thread>
 #include <iostream>
 
+
+// Global NPU access control
+std::mutex g_npu_access_mutex;
+std::atomic<bool> g_npu_in_use{false};
+
+std::atomic<int> g_npu_active_requests{0};
+
+///@brief get current time string, format: hh:mm:ss mm:dd:yyyy
+///@return the current time string
+std::string get_current_time_string() {
+    auto now = std::chrono::system_clock::now();
+    auto in_time_t = std::chrono::system_clock::to_time_t(now);
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&in_time_t), "%H:%M:%S %m:%d:%Y");
+    return ss.str();
+}
+
+///@brief brief print request
+///@param request the request
+void brief_print_message_request(nlohmann::json request) {
+    // if request has "messages" or "message" field, the context in meassages shall be printed briefly
+    if (request.contains("messages")) {
+        for (auto& message : request["messages"]) {
+            if (message.contains("content")) {
+                std::string content = message["content"].get<std::string>();
+                if (content.size() > 20) {
+                    message["content"] = content.substr(0, 10) + "..." + content.substr(content.size() - 10);
+                }
+            }
+        }
+    }
+    if (request.contains("message")){
+        std::string content = request["message"]["content"].get<std::string>();
+        if (content.size() > 20) {
+            request["message"]["content"] = content.substr(0, 10) + "..." + content.substr(content.size() - 10);
+        }
+    }
+    header_print("LOG", "Body: ");
+    std::cout << request.dump(4) << std::endl;
+
+}
+// NPU Access Manager implementation
+bool NPUAccessManager::try_acquire_npu_access() {
+    std::lock_guard<std::mutex> lock(g_npu_access_mutex);
+    if (g_npu_in_use.load()) {
+        return false; // NPU is already in use
+    }
+    g_npu_in_use.store(true);
+    g_npu_active_requests.fetch_add(1);
+    return true;
+}
+
+void NPUAccessManager::release_npu_access() {
+    std::lock_guard<std::mutex> lock(g_npu_access_mutex);
+    g_npu_in_use.store(false);
+    g_npu_active_requests.fetch_sub(1);
+}
+
+bool NPUAccessManager::is_npu_available() {
+    return !g_npu_in_use.load();
+}
+
+int NPUAccessManager::get_active_npu_requests() {
+    return g_npu_active_requests.load();
+}
+
+// Helper function to check if an endpoint requires NPU access
+bool requires_npu_access(const std::string& method, const std::string& path) {
+    // NPU-intensive endpoints that should be restricted to one user at a time
+    if (method == "POST") {
+        return path == "/api/generate" || 
+               path == "/api/chat" || 
+               path == "/v1/chat/completions";
+    }
+    return false;
+}
+
 ///@brief HttpSession class implementation
 ///@param socket the socket
 ///@param server the server
 HttpSession::HttpSession(tcp::socket socket, WebServer& server)
     : socket_(std::move(socket))
     , server_(server)
-    , is_streaming_(false) {}
+    , is_streaming_(false) {
+    // Set socket timeout
+    socket_.set_option(tcp::socket::keep_alive(false));
+    socket_.set_option(tcp::socket::linger(true, 0));
+    
+    // Debug: Log TCP connection formation
+    header_print("🔗 ", "TCP connection established - Remote: " + socket_.remote_endpoint().address().to_string() + ":" + std::to_string(socket_.remote_endpoint().port()));
+}
 
 ///@brief start
 void HttpSession::start() {
     read_request();
+}
+
+///@brief close connection
+void HttpSession::close_connection() {
+    boost::system::error_code ec;
+    
+    // Debug: Log TCP connection disconnection
+    try {
+        header_print("🔒 ", "TCP connection closing - Remote: " + socket_.remote_endpoint().address().to_string() + ":" + std::to_string(socket_.remote_endpoint().port()));
+    } catch (const std::exception& e) {
+        header_print("🔒 ", "TCP connection closing - Remote endpoint unavailable");
+    }
+    socket_.shutdown(tcp::socket::shutdown_both, ec);
+    server_.active_connections_.fetch_sub(1);
 }
 
 ///@brief read request
@@ -30,9 +128,16 @@ void HttpSession::read_request() {
     auto self = shared_from_this();
 
     http::async_read(socket_, buffer_, req_,
-        [self](beast::error_code ec, std::size_t) {
+        [self](beast::error_code ec, std::size_t bytes_transferred) {
             if (!ec) {
+                // Log the bytes read to debug
+                header_print("TCP", "Read " + std::to_string(bytes_transferred) + " bytes from socket");
+                
                 self->handle_request();
+            } else {
+                // Connection closed or error, decrement connection counter
+                header_print("🔒 ", "TCP connection closed - Remote: " + self->socket_.remote_endpoint().address().to_string() + ":" + std::to_string(self->socket_.remote_endpoint().port()));
+                self->server_.active_connections_.fetch_sub(1);
             }
         });
 }
@@ -44,11 +149,18 @@ void HttpSession::handle_request() {
     res_.version(req_.version());
     res_.keep_alive(req_.keep_alive());
     
+    
     // Handle the request through the server
     server_.handle_request(req_, res_, socket_, shared_from_this());
     
+    // Clear the buffer after processing to prevent data accumulation
+    buffer_.consume(buffer_.size());
+    
     if (!is_streaming_) {
         write_response();
+    } else {
+        // For streaming responses, we need to handle connection cleanup differently
+        // The connection will be closed when streaming ends
     }
 }
 
@@ -56,15 +168,31 @@ void HttpSession::handle_request() {
 void HttpSession::write_response() {
     auto self = shared_from_this();
 
+    header_print("⬆️ ", "Outgoing Response: ");
+    header_print("LOG", "Time stamp: " << get_current_time_string()); // hh:mm:ss mm:dd:yyyy
+    try{
+        nlohmann::json response_json = json::parse(res_.body());
+        brief_print_message_request(response_json);
+    } catch (const std::exception& e) {
+        header_print("LOG", "Body: ");
+        std::cout << res_.body() << std::endl;
+    }
 
-    std::cout << "\n=== Outgoing Response ===" << std::endl;
-    std::cout << "Response: " << res_.body() << std::endl;
-    std::cout << "=====================\n" << std::endl;
+    std::cout << "================================================" << std::endl;
 
     http::async_write(socket_, res_,
         [self](beast::error_code ec, std::size_t) {
             if (!self->req_.keep_alive()) {
+                header_print("🔒  ", "Closing TCP connection (non-keep-alive)");
                 self->socket_.shutdown(tcp::socket::shutdown_both, ec);
+                // Decrement connection counter for non-keep-alive connections
+                self->server_.active_connections_.fetch_sub(1);
+            } else {
+                header_print("TCP", "Keeping TCP connection alive for next request");
+                // Clear the request object before reading the next request
+                self->req_ = {};
+                // For keep-alive connections, read the next request
+                self->read_request();
             }
         });
 }
@@ -121,7 +249,7 @@ void HttpSession::send_chunk_data(const json& data, bool is_final) {
         chunk_content = data.dump() + "\n";
     }
     
-    std::cout << "Chunk: " << chunk_content;
+    // std::cout << "Chunk: " << chunk_content;
     
     // HTTP chunked format: size in hex + \r\n + data + \r\n
     std::ostringstream chunk_size;
@@ -139,7 +267,18 @@ void HttpSession::send_chunk_data(const json& data, bool is_final) {
         net::write(socket_, net::buffer(final_chunk), ec);
         
         if (!req_.keep_alive()) {
+            header_print("🔒 ", "Closing TCP connection (streaming, non-keep-alive)");
             socket_.shutdown(tcp::socket::shutdown_both, ec);
+            // Decrement connection counter for non-keep-alive connections
+            server_.active_connections_.fetch_sub(1);
+        } else {
+            header_print("🔗 ", "Keeping TCP connection alive for next request (streaming)");
+            // Clear the buffer before reading the next request
+            buffer_.consume(buffer_.size());
+            // Clear the request object before reading the next request
+            req_ = {};
+            // For keep-alive connections, read the next request
+            read_request();
         }
     }
 }
@@ -158,22 +297,32 @@ void WebServer::start() {
     running = true;
     do_accept();
     
-    // Run the I/O service on a separate thread
-    std::thread([this]() {
-        try {
-            ioc.run();
-        } catch (const std::exception& e) {
-            std::cerr << "Error in WebServer: " << e.what() << std::endl;
-        }
-    }).detach();
+    // Run the I/O service on multiple threads for better concurrency
+    for (size_t i = 0; i < io_thread_count_; ++i) {
+        io_threads_.emplace_back([this]() {
+            try {
+                ioc.run();
+            } catch (const std::exception& e) {
+                header_print("LOG", "Error in WebServer I/O thread: " + std::string(e.what()));
+            }
+        });
+    }
     
-    std::cout << "WebServer started on port " << port << std::endl;
+    header_print("LOG", "WebServer started on port " + std::to_string(port) + " with " + std::to_string(io_thread_count_) + " I/O threads");
 }
 
 ///@brief stop
 void WebServer::stop() {
     running = false;
     ioc.stop();
+    
+    // Wait for all I/O threads to finish
+    for (auto& thread : io_threads_) {
+        if (thread.joinable()) {
+            thread.join();
+        }
+    }
+    io_threads_.clear();
 }
 
 ///@brief register active request
@@ -219,8 +368,19 @@ void WebServer::do_accept() {
     acceptor.async_accept(
         [this](beast::error_code ec, tcp::socket socket) {
             if (!ec) {
-                // Create a new session for this connection
-                std::make_shared<HttpSession>(std::move(socket), *this)->start();
+                // Check connection limit
+                if (active_connections_.load() >= max_connections_) {
+                    header_print("LOG", "Connection limit reached (" + std::to_string(max_connections_) + "), rejecting new connection");
+                    // Close the socket and continue accepting
+                    socket.close();
+                } else {
+                    // Increment connection counter
+                    active_connections_.fetch_add(1);
+                    
+                    // Create a new session for this connection
+                    auto session = std::make_shared<HttpSession>(std::move(socket), *this);
+                    session->start();
+                }
             }
             if (running) {
                 do_accept();
@@ -238,26 +398,44 @@ void WebServer::handle_request(http::request<http::string_body>& req,
                               tcp::socket& socket,
                               std::shared_ptr<HttpSession> session) {
     // Log request details
-    std::cout << "\n=== Incoming Request ===" << std::endl;
-    std::cout << "Method: " << req.method_string() << std::endl;
-    std::cout << "Target: " << req.target() << std::endl;
-    std::cout << "Version: " << req.version() << std::endl;
+    std::cout << "================================================" << std::endl;
+    header_print("⬇️ ", "Incoming Request: " << req.method_string());
+    header_print("LOG", "Time stamp: " << get_current_time_string()); // hh:mm:ss mm:dd:yyyy
+    header_print("LOG", "Target: " << req.target());
+    header_print("LOG", "Version: " << req.version());
+    header_print("LOG", "Keep-Alive: " << req.keep_alive());
     json request_json;
     try {
         if (!req.body().empty()) {
             request_json = json::parse(req.body());
         }
     } catch (const std::exception& e) {
-        std::cout << "Error parsing request body: " << e.what() << std::endl;
+        header_print("LOG", "Error parsing request body: " + std::string(e.what()));
     }
-    std::cout << "Body: " << std::endl;
-    std::cout << request_json.dump(4) << std::endl;
-
+    brief_print_message_request(request_json);
+    
     std::string key = std::string(req.method_string()) + " " + std::string(req.target());
-    std::cout << "==========================\n" << std::endl;
 
     auto it = routes.find(key);
     if (it != routes.end()) {
+        // Check if this endpoint requires NPU access
+        bool needs_npu = requires_npu_access(std::string(req.method_string()), std::string(req.target()));
+        
+        if (needs_npu) {
+            // Try to acquire NPU access using the shared manager
+            if (!NPUAccessManager::try_acquire_npu_access()) {
+                // NPU is currently in use by another request
+                res.result(http::status::service_unavailable);
+                res.body() = json{{"error", "NPU is currently in use by another request. Please try again later."}}.dump();
+                res.set(http::field::content_type, "application/json");
+                res.prepare_payload();
+                header_print("🚫 ", "NPU access denied for request: " + key);
+                return;
+            }
+            
+            header_print("LOG", "NPU access granted for request: " + key);
+        }
+        
         // Parse JSON request body
         json request_json;
         try {
@@ -289,21 +467,33 @@ void WebServer::handle_request(http::request<http::string_body>& req,
         register_active_request(request_id, cancellation_token);
         
         // Create response callback that unregisters the request when done
-        auto send_response = [&res, this, request_id](const json& response_data) {
+        auto send_response = [&res, this, request_id, needs_npu](const json& response_data) {
             res.result(http::status::ok);
             res.body() = response_data.dump();
             res.set(http::field::content_type, "application/json");
             res.prepare_payload();
             unregister_active_request(request_id);
+            
+            // Release NPU access if this was an NPU-intensive request
+            if (needs_npu) {
+                NPUAccessManager::release_npu_access();
+                header_print("LOG", "NPU access released for request: " + request_id);
+            }
         };
         
         // Create streaming response callback that uses the session
-        auto send_streaming_response = [session, this, request_id](const json& data, bool is_final) {
+        auto send_streaming_response = [session, this, request_id, needs_npu](const json& data, bool is_final) {
             if (session) {
                 session->write_streaming_response(data, is_final);
             }
             if (is_final) {
                 unregister_active_request(request_id);
+                
+                // Release NPU access if this was an NPU-intensive request
+                if (needs_npu) {
+                    NPUAccessManager::release_npu_access();
+                    header_print("LOG", "NPU access released for streaming request: " + request_id);
+                }
             }
         };
         
@@ -396,6 +586,21 @@ std::unique_ptr<WebServer> create_lm_server(model_list& models, ModelDownloader&
                       std::shared_ptr<CancellationToken> cancellation_token) {
             json request_json;
             rest_handler->handle_version(request_json, send_response, send_streaming_response);
+        });
+    
+    // Add NPU status endpoint
+    server->register_handler("GET", "/api/npu/status",
+        [](const http::request<http::string_body>& req,
+           std::function<void(const json&)> send_response,
+           std::function<void(const json&, bool)> send_streaming_response,
+           std::shared_ptr<HttpSession> session,
+           std::shared_ptr<CancellationToken> cancellation_token) {
+            json response = {
+                {"npu_available", NPUAccessManager::is_npu_available()},
+                {"active_requests", NPUAccessManager::get_active_npu_requests()},
+                {"message", NPUAccessManager::is_npu_available() ? "NPU is available" : "NPU is currently in use"}
+            };
+            send_response(response);
         });
     
     // Add other endpoints...

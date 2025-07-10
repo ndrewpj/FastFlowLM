@@ -61,7 +61,7 @@ services:
       - ENABLE_RETRIEVAL_QUERY_GENERATION=false
       - ENABLE_IMAGE_PROMPT_GENERATION=false
       - ENABLE_WEB_SEARCH=false
-      - ENABLE_SEARCH_QUERY_GENERATION
+      - ENABLE_SEARCH_QUERY_GENERATION=false
     restart: unless-stopped
 
 volumes:

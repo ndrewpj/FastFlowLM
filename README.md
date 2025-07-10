@@ -64,7 +64,7 @@ FastFlowLM vs AMD’s official stack (Ryzen AI software 1.4) — **real-time spe
 
 ## ⚡ Quick Start
 
-A packaged Windows installer is available here: [**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/download/v0.1.4/flm-setup-v0.1.4.exe). For more details, see the [release notes](https://github.com/FastFlowLM/FastFlowLM/releases/).
+A packaged Windows installer is available here: [**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/download/v0.1.5/flm-setup-v0.1.5.exe). For more details, see the [release notes](https://github.com/FastFlowLM/FastFlowLM/releases/).
 
 > ⚠️ Ensure NPU driver is **32.0.203.258** or later (check via Task Manager→Performance→NPU or Device Manager) — [Driver Download](https://www.amd.com/en/support).
 
@@ -183,4 +183,6 @@ This repository contains two types of components:
 
 - Powered by the advanced **AMD Ryzen™ AI NPU architecture**
 - Inspired by the widely adopted [Ollama](https://github.com/ollama/ollama)
+- Fast tokenizer implementation by [MLC-ai/tokenizers-cpp](https://github.com/mlc-ai/tokenizers-cpp)
+- Chat template implementation by [Google/minja](https://github.com/google/minja)
 - Low-level kernels optimized using the powerful [IRON](https://github.com/Xilinx/mlir-aie/tree/main/programming_guide)+[Riallto](https://riallto.ai/)+[AIE-MLIR](https://github.com/Xilinx/mlir-aie/tree/main/mlir_tutorials)

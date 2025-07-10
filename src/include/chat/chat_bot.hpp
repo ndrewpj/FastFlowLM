@@ -26,7 +26,7 @@
 #include "npu_utils/npu_utils.hpp"
 #include <nlohmann/json.hpp>
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 
 typedef enum {
     EOT_DETECTED,
@@ -69,6 +69,8 @@ private:
     std::string model_path = "";
     std::string current_model = "Llama-3.2-1B-Instruct";
     bool is_think_model = false;
+    bool is_think_toggleable = false;
+    bool enable_think = false;
     std::vector<int> token_history;
     std::unique_ptr<npu_manager> npu = nullptr;
 
@@ -91,15 +93,9 @@ private:
     std::vector<profiler> profiler_list;
 
     time_utils::time_with_unit last_prefill_time;
-    std::string system_prompt = "";
 
 public:
-    typedef enum{
-        USER,
-        ASSISTANT,
-        SYSTEM
-    } role_type;
-
+    
     chat_bot(unsigned int device_id);
 
     /// \brief Clear the context
@@ -144,12 +140,6 @@ public:
     /// \return the current model
     std::string get_current_model() const { return current_model; }
     
-    /// \brief Apply a chat template with system information
-    /// \param include_timestamp the include timestamp
-    /// \param system_info the system info
-    /// \return the chat template
-    std::string get_system_prompt(bool include_timestamp = true, const std::string& system_info = "");
-
     /// \brief Show the model info
     /// \return the model info
     std::string show_model_info();
@@ -171,20 +161,22 @@ public:
 
     /// \brief Tokenize the text
     /// \param text the text
+    /// \param apply_chat_template the apply chat template
+    /// \param role the role
+    /// \param add_generation_prompt the add generation prompt
     /// \return the tokens
-    std::vector<int> tokenize(const std::string& text);
+    std::vector<int> tokenize(std::string& text, bool apply_chat_template, std::string role, bool add_generation_prompt);
+
+    /// \brief Tokenize the messages
+    /// \param messages the messages, chat template is applied
+    /// \param add_generation_prompt the add generation prompt
+    /// \return the chat template
+    std::vector<int> tokenize(nlohmann::ordered_json& messages, bool add_generation_prompt);
 
     /// \brief Decode the tokens
     /// \param tokens the tokens
     /// \return the decoded text
     std::string decode(std::vector<int>& tokens);
-
-    /// \brief Apply the chat template
-    /// \param tokens the tokens
-    /// \param role the role
-    /// \param append_assistant_prefix the append assistant prefix
-    /// \return the tokens
-    std::vector<int> apply_chat_template(std::vector<int>& tokens, role_type role, bool append_assistant_prefix = false);
 
     /// \brief Set the topk
     /// \param topk the topk
@@ -206,10 +198,6 @@ public:
     /// \param frequency_penalty the frequency penalty
     void set_frequency_penalty(float frequency_penalty);
 
-    /// \brief Set the system prompt
-    /// \param system_prompt the system prompt
-    void set_system_prompt(std::string system_prompt);
-
     /// \brief Start the ttft timer
     /// \return the ttft timer
     void start_ttft_timer();
@@ -229,5 +217,13 @@ public:
     /// \brief Stop the total timer
     /// \return the total timer
     void stop_total_timer();
+
+    /// \brief Set the user system prompt
+    /// \param user_system_prompt the user system prompt
+    void set_user_system_prompt(const std::string& user_system_prompt);
+
+    /// \brief Toggle the enable think
+    /// \param enable_think the enable think
+    void toggle_enable_think();
 
 };
