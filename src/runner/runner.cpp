@@ -49,7 +49,11 @@ Runner::Runner(model_list& supported_models, ModelDownloader& downloader, std::s
 
 /// \brief Run the runner
 void Runner::run() {
+    
+    chat_meta_info meta_info;
     bool verbose = false;
+    this->system_prompt = "";
+    this->chat_engine->set_user_system_prompt(this->system_prompt);
     std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8conv;
     wstream_buf obuf(std::cout);
     std::ostream ostream(&obuf);
@@ -112,6 +116,24 @@ void Runner::run() {
             else if (first_token == "/set") {
                 this->cmd_set(input_list);
             }
+            else if (first_token == "/list") {
+                std::cout << "Models:" << std::endl;
+                nlohmann::json models = supported_models.get_all_models();
+                for (const auto& model : models["models"]) {
+                    bool is_present = downloader.is_model_downloaded(model["name"].get<std::string>());
+                    std::cout << "  - " << model["name"].get<std::string>();
+                    if (is_present){
+                        std::cout << " ✅";
+                    }
+                    else{
+                        std::cout << " ⏬";
+                    }
+                    std::cout << std::endl;
+                }
+            }
+            else if (first_token == "/think") {
+                this->chat_engine->toggle_enable_think();
+            }
             else if (first_token == "/help") {
                 this->cmd_help(input_list);
             }
@@ -140,10 +162,8 @@ void Runner::run() {
             std::cout << std::endl;  // Add newline before AI response
             this->chat_engine->start_ttft_timer();
             this->chat_engine->start_total_timer();
-            std::vector<int> tokens = this->chat_engine->tokenize(input);
-            std::vector<int> prompts = this->chat_engine->apply_chat_template(tokens, chat_bot::USER, true);
-            chat_meta_info meta_info;
-            this->chat_engine->insert(meta_info, prompts);
+            std::vector<int> user_tokens = this->chat_engine->tokenize(input, true, "user", true);
+            this->chat_engine->insert(meta_info, user_tokens, false);
             this->chat_engine->stop_ttft_timer();
             this->chat_engine->generate(meta_info, this->generate_limit, ostream);
             this->chat_engine->stop_total_timer();
@@ -177,6 +197,7 @@ void Runner::cmd_load(std::vector<std::string>& input_list) {
     }
     nlohmann::json model_info = this->supported_models.get_model_info(this->tag);
     this->chat_engine->load_model(this->supported_models.get_model_path(this->tag), model_info);
+    this->chat_engine->set_user_system_prompt(this->system_prompt);
 }
 
 /// \brief Save the history
@@ -257,7 +278,8 @@ void Runner::cmd_set(std::vector<std::string>& input_list) {
             if (i > 2) full_input += " ";
             full_input += input_list[i];
         }
-        this->chat_engine->set_system_prompt(full_input);
+        this->system_prompt = full_input;
+        this->chat_engine->set_user_system_prompt(this->system_prompt);
         return;
     }
     
@@ -314,17 +336,16 @@ void Runner::cmd_help(std::vector<std::string>& input_list) {
     std::cout << "  /status - show the history" << std::endl;
     std::cout << "  /history - show the history" << std::endl;
     std::cout << "  /verbose - toggle the verbose" << std::endl;
-    std::cout << "  /set [context] [value] - set the context" << std::endl;
-    std::cout << "  /pull [model_name] - pull a model" << std::endl;
+    std::cout << "  /think - toggle the think" << std::endl;
+    std::cout << "  /set [variable] [value] - set the variable" << std::endl;
     std::cout << "  /list - list all the models" << std::endl;
-    std::cout << "  /remove [model_name] - remove a model" << std::endl;
     std::cout << "  /bye - exit the program" << std::endl;
     std::cout << "  /? - show this help" << std::endl;
     std::cout << std::endl;
     std::cout << "Interactive input:" << std::endl;
     std::cout << "  - Press Enter to submit single-line input" << std::endl;
     std::cout << "  - Paste multi-line text and it will be detected automatically" << std::endl;
-    std::cout << "  - Use '\\' at the end of a line to explicitly continue on next line" << std::endl;
+    std::cout << "  - Use 'Shift + Enter' to explicitly continue on next line" << std::endl;
     std::cout << "  - Commands (starting with /) are processed immediately" << std::endl;
 }
 

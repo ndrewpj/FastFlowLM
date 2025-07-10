@@ -16,7 +16,7 @@
 #include <memory>
 #include <functional>
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 
 // Forward declaration
 struct CancellationToken;
@@ -86,7 +86,8 @@ public:
 
 private:
     void ensure_model_loaded(const std::string& model_tag);
-    std::vector<int> process_chat_message(const json& message);
+
+    
     
     std::unique_ptr<chat_bot> chat_engine;
     model_list& supported_models;

@@ -28,7 +28,8 @@ class model_list {
             "dequant.xclbin",
             "layer.xclbin",
             "lm_head.xclbin",
-            "model.q4nx"
+            "model.q4nx",
+            "tokenizer_config.json"
         };
         /// \brief number of model files
         static constexpr int model_files_count = sizeof(model_files) / sizeof(model_files[0]);
@@ -57,17 +58,18 @@ class model_list {
         /// \param tag the tag of the model
         /// \return the model info
         nlohmann::json get_model_info(const std::string& tag){
+            std::string new_tag = this->cut_tag(tag);
             bool model_found = false;
             // get model type, the string before ':' in the tag
             std::string model_type;
             std::string model_size;
 
-            if (tag.find(':') != std::string::npos) {
-                model_type = tag.substr(0, tag.find(':'));
-                model_size = tag.substr(tag.find(':') + 1);
+            if (new_tag.find(':') != std::string::npos) {
+                model_type = new_tag.substr(0, new_tag.find(':'));
+                model_size = new_tag.substr(new_tag.find(':') + 1);
             }
             else {
-                model_type = tag;
+                model_type = new_tag;
                 model_size = "";
             }
             
@@ -143,12 +145,26 @@ class model_list {
         /// \param tag the tag of the model
         /// \return the model path, string
         std::string get_model_path(const std::string& tag){
-            std::string model_name = this->get_model_info(tag)["name"];
+            std::string new_tag = this->cut_tag(tag);
+            std::string model_name = this->get_model_info(new_tag)["name"];
             std::string model_path = this->model_root_path + "/" + model_name;
             return model_path;
         }
+
+        /// \brief cut the tag, some program adds a prefix to the tag, like "Ollama/llama3.2-1B", we need to cut the prefix
+        /// \param tag the tag of the model
+        /// \return the model type, string
+        std::string cut_tag(const std::string& tag){
+            std::string new_tag = tag;
+            if (tag.find('/') != std::string::npos) {
+                new_tag = tag.substr(tag.find('/') + 1);
+            }
+            return new_tag;
+        }
+        
     private:
         std::string list_path;
         nlohmann::json config;
         std::string model_root_path;
+
 };

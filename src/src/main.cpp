@@ -10,6 +10,7 @@
 #include "model_list.hpp"
 #include "model_downloader.hpp"
 #include "utils/utils.hpp"
+#include "minja/chat-template.hpp"
 #include <iostream>
 #include <string>
 #include <thread>
@@ -62,7 +63,7 @@ void ensure_models_directory(const std::string& exe_dir) {
 void handle_user_input() {
     std::string input;
     while (!should_exit) {
-        std::cout << "Enter 'exit' to stop the server: ";
+        header_print("FLM", "Enter 'exit' to stop the server: ");
         std::getline(std::cin, input);
         if (input == "exit") {
             should_exit = true;
@@ -83,7 +84,6 @@ std::unique_ptr<WebServer> create_lm_server(model_list& models, ModelDownloader&
 ///@param argv the arguments
 ///@return the exit code
 int main(int argc, char* argv[]) {
-    // Initialize Unicode support for the console
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
     std::string command;
@@ -119,7 +119,7 @@ int main(int argc, char* argv[]) {
     }
     else if (command == "serve") {
         if (argc < 3) {
-            tag = "llama3.2:1B";
+            tag = "llama3.2:1b";
         }
         else {
             tag = argv[2];
@@ -212,10 +212,9 @@ int main(int argc, char* argv[]) {
                 // close the file
                 chat.start_ttft_timer();
                 chat.start_total_timer();
-                std::vector<int> tokens = chat.tokenize(file_content);
-                header_print("FLM", "Prefill starts, " << tokens.size() << " tokens");
+                std::vector<int> prompts = chat.tokenize(file_content, true, "user", true);
+                header_print("FLM", "Prefill starts, " << prompts.size() << " tokens");
                 std::cout << std::endl;
-                std::vector<int> prompts = chat.apply_chat_template(tokens, chat_bot::USER, true);
                 chat_meta_info meta_info;
                 chat.insert(meta_info, prompts);
                 chat.stop_ttft_timer();
@@ -227,8 +226,11 @@ int main(int argc, char* argv[]) {
         } else if (command == "serve") {
             // Create the server
             auto server = create_lm_server(supported_models, downloader, tag, 11434);
+            server->set_max_connections(5);           // Allow up to 2000 concurrent connections
+            server->set_io_threads(5);          // Allow up to 5 io threads
+            server->set_request_timeout(std::chrono::seconds(600)); // 10 minute timeout for long requests
             // Start the server
-            std::cout << "Starting server on port 11434..." << std::endl;
+            header_print("FLM", "Starting server on port 11434...");
             server->start();
 
             // Start a thread to handle user input, this thread will be used to handle the user input
@@ -240,7 +242,7 @@ int main(int argc, char* argv[]) {
             }
 
             // Cleanup, this will be used to stop the server
-            std::cout << "Stopping server..." << std::endl;
+            header_print("FLM", "Stopping server...");
             server->stop();
             input_thread.join();
         }
@@ -277,7 +279,15 @@ int main(int argc, char* argv[]) {
             std::cout << "Models:" << std::endl;
             nlohmann::json models = supported_models.get_all_models();
             for (const auto& model : models["models"]) {
-                std::cout << "  - " << model["name"].get<std::string>() << std::endl;
+                bool is_present = downloader.is_model_downloaded(model["name"].get<std::string>());
+                std::cout << "  - " << model["name"].get<std::string>();
+                if (is_present){
+                    std::cout << " ✅";
+                }
+                else{
+                    std::cout << " ⏬";
+                }
+                std::cout << std::endl;
             }
         }
         else {
