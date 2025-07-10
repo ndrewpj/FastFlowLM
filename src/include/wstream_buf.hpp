@@ -82,3 +82,15 @@ struct wstream_buf : std::streambuf {
         return ch;
     }
 };
+
+class nullbuf : public std::streambuf {
+protected:
+    int overflow(int c) override { return c; }  // Simply ignore input
+};
+
+class nullstream : public std::ostream {
+public:
+    nullstream() : std::ostream(&m_sb) {}
+private:
+    nullbuf m_sb;
+};

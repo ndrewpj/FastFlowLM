@@ -17,7 +17,7 @@
 #include <codecvt>
 #include <vector>
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 
 /// \brief Command types
 typedef enum {
@@ -44,6 +44,7 @@ class Runner {
         ModelDownloader& downloader;
         std::unique_ptr<chat_bot> chat_engine;
         int generate_limit;
+        std::string system_prompt;
         // CLI instance for interactive input
         CLIWide cli;
 

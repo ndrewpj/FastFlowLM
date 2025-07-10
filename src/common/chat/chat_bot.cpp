@@ -83,13 +83,13 @@ void chat_bot::load_model(std::string model_path, json model_info){
     this->total_tokens = 0;
     if (this->sampler == nullptr){
         sampler_config config;
-        config.rep_penalty = 0.05;
-        config.temperature = 0.8;
+        config.rep_penalty = 0.1;
+        config.temperature = 0.6;
         config.top_p = 0.9;
         config.top_k = 5;
-        config.rep_penalty_window = 64;
+        config.rep_penalty_window = 16;
         config.freq_penalty = 0.05;
-        config.freq_penalty_window = 128;
+        config.freq_penalty_window = 256;
         config.freq_penalty_decay = 0.9;
         this->set_sampler(config);
     }
@@ -278,6 +278,7 @@ void chat_bot::clear_context(){
     this->token_history.clear();
     this->lm_engine->clear_context();
     this->total_tokens = 0;
+    this->sampler->reset_penalties();
     for (size_t i = 0; i < PROFILER_TYPE_NUM; i++){
         this->profiler_list[i].reset(); 
     }

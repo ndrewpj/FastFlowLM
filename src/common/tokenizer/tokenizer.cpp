@@ -173,7 +173,7 @@ std::string Tokenizer::run_time_decoder(int answer_token) {
 /// \param messages the messages
 /// \param add_generation_prompt the add generation prompt
 /// \return the chat template
-std::string Tokenizer::apply_chat_template(nlohmann::ordered_json& messages, bool add_generation_prompt) {
+std::string Tokenizer::apply_chat_template(nlohmann::ordered_json& messages, bool add_generation_prompt, bool block_system_prompt) {
     minja::chat_template_inputs inputs;
     inputs.add_generation_prompt = add_generation_prompt;
     inputs.messages = messages;

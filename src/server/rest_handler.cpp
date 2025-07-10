@@ -61,9 +61,9 @@ void RestHandler::handle_generate(const json& request,
         bool stream = request.value("stream", false);
         std::string model = request.value("model", default_model_tag);
         json options = request.value("options", json::object());
-        int temperature = options.value("temperature", 0.7);
+        int temperature = options.value("temperature", 0.6);
         int top_p = options.value("top_p", 0.9);
-        int top_k = options.value("top_k", 10);
+        int top_k = options.value("top_k", 40);
         float frequency_penalty = options.value("frequency_penalty", 0.1);
         int length_limit = request.value("max_tokens", -1);
         chat_meta_info meta_info;
@@ -72,17 +72,18 @@ void RestHandler::handle_generate(const json& request,
         ensure_model_loaded(model);
         auto load_end_time = time_utils::now();
         meta_info.load_duration = (uint64_t)time_utils::duration_ns(load_start_time, load_end_time).first;
+        header_print("FLM", "Start generating...");
         
         if (stream) {
             // Streaming response using streaming_ostream
             auto total_start_time = time_utils::now();
             streaming_ostream ostream(model, send_streaming_response, false);
-            std::vector<int> tokens = chat_engine->tokenize(prompt);
-            std::vector<int> prompts = chat_engine->apply_chat_template(tokens, chat_bot::USER, true);
+            std::vector<int> prompts = chat_engine->tokenize(prompt, true, "user", true);
             chat_engine->insert(meta_info, prompts);
             chat_engine->generate(meta_info, length_limit, ostream);
             auto total_end_time = time_utils::now();
             auto history = this->chat_engine->get_history();
+            // std::cout << "history: " << history.first << std::endl;
             meta_info.total_duration = (uint64_t)time_utils::duration_ns(total_start_time, total_end_time).first;
             ostream.finalize_generate(meta_info, history.second);
         } else {
@@ -90,8 +91,7 @@ void RestHandler::handle_generate(const json& request,
             std::stringstream ss;
             wstream_buf obuf(ss);
             std::ostream ostream(&obuf);
-            std::vector<int> tokens = chat_engine->tokenize(prompt);
-            std::vector<int> prompts = chat_engine->apply_chat_template(tokens, chat_bot::USER, true);
+            std::vector<int> prompts = chat_engine->tokenize(prompt, true, "user", true);
             chat_engine->insert(meta_info, prompts);
             chat_engine->generate(meta_info, length_limit, ostream);
             std::string response_text = ss.str();
@@ -109,37 +109,13 @@ void RestHandler::handle_generate(const json& request,
                 {"eval_duration", meta_info.decoding_duration},
                 {"done_reason", stop_reason_to_string(meta_info.stop_reason)}
             };
+            // std::cout << "history: " << history.first << std::endl;
             send_response(response);
         }
     } catch (const std::exception& e) {
         json error_response = {{"error", e.what()}};
         send_response(error_response);
     }
-}
-
-///@brief Process the chat message
-///@param message the message
-///@return the prompts
-std::vector<int> RestHandler::process_chat_message(const json& message){
-    std::vector<int> prompts;
-    for (int i = 0; i < message.size() - 1; i++){
-        std::string role = message[i]["role"];
-        std::string content = message[i]["content"];
-        std::vector<int> tokens = chat_engine->tokenize(content);
-        std::vector<int> new_prompts;
-        if (role == "user"){
-            new_prompts = chat_engine->apply_chat_template(tokens, chat_bot::USER, false);
-        }
-        else if (role == "assistant"){
-            new_prompts = chat_engine->apply_chat_template(tokens, chat_bot::ASSISTANT, false);
-        }
-        prompts.insert(prompts.end(), new_prompts.begin(), new_prompts.end());
-    }
-    std::string content = message.back()["content"];
-    std::vector<int> tokens = chat_engine->tokenize(content);
-    std::vector<int> new_prompts = chat_engine->apply_chat_template(tokens, chat_bot::USER, true);
-    prompts.insert(prompts.end(), new_prompts.begin(), new_prompts.end());
-    return prompts;
 }
 
 ///@brief Handle the chat request
@@ -151,13 +127,13 @@ void RestHandler::handle_chat(const json& request,
                              StreamResponseCallback send_streaming_response,
                              std::shared_ptr<CancellationToken> cancellation_token) {
     try {
-        json messages = request["messages"];
+        nlohmann::ordered_json messages = request["messages"];
         bool stream = request.value("stream", false);
         std::string model = request.value("model", default_model_tag);
         json options = request.value("options", json::object());
-        float temperature = options.value("temperature", 0.7);
+        float temperature = options.value("temperature", 0.6);
         float top_p = options.value("top_p", 0.9);
-        int top_k = options.value("top_k", 10);
+        int top_k = options.value("top_k", 40);
         float frequency_penalty = options.value("frequency_penalty", 0.1);
         int length_limit = request.value("max_tokens", -1);
 
@@ -171,23 +147,27 @@ void RestHandler::handle_chat(const json& request,
         auto load_end_time = time_utils::now();
         meta_info.load_duration = (uint64_t)time_utils::duration_ns(load_start_time, load_end_time).first;
         
+        header_print("FLM", "Start generating...");
         if (stream) {
             // Streaming response using streaming_ostream
             auto total_start_time = time_utils::now();
             streaming_ostream ostream(model, send_streaming_response, true);  // true for chat format
-            std::vector<int> prompts = process_chat_message(messages);
+            std::vector<int> prompts = chat_engine->tokenize(messages, true);
             chat_engine->insert(meta_info, prompts);
             chat_engine->generate(meta_info, length_limit, ostream);
             auto total_end_time = time_utils::now();
             meta_info.total_duration = (uint64_t)time_utils::duration_ns(total_start_time, total_end_time).first;
             
             ostream.finalize_chat(meta_info);
+            // auto history = this->chat_engine->get_history();
+            // std::cout << "history: " << history.first << std::endl;
             this->chat_engine->clear_context();
         } else {
             // Non-streaming response
-            std::vector<int> prompts = process_chat_message(messages);
+            std::vector<int> prompts = chat_engine->tokenize(messages, true);
             auto total_start_time = time_utils::now();
-            std::string response_text = chat_engine->generate_with_prompt(meta_info, prompts, length_limit, std::cout);
+            nullstream nstream;
+            std::string response_text = chat_engine->generate_with_prompt(meta_info, prompts, length_limit, nstream);
             auto total_end_time = time_utils::now();
             meta_info.total_duration = (uint64_t)time_utils::duration_ns(total_start_time, total_end_time).first;
             
@@ -208,6 +188,9 @@ void RestHandler::handle_chat(const json& request,
                 {"done_reason", stop_reason_to_string(meta_info.stop_reason)}
             };
             send_response(response);
+            
+            // auto history = this->chat_engine->get_history();
+            // std::cout << "history: " << history.first << std::endl;
             this->chat_engine->clear_context();
         }
     } catch (const std::exception& e) {
@@ -283,7 +266,7 @@ void RestHandler::handle_ps(const json& request,
         std::stringstream expires_ss;
         expires_ss.imbue(std::locale::classic()); // Use C locale to avoid commas
         expires_ss << std::put_time(local_tm, "%Y-%m-%dT%H:%M:%S");
-        expires_ss << "." << std::setfill('0') << std::setw(5) << (fractional_seconds / 10); // 5 decimal places
+        expires_ss << "." << std::setfill('0') << std::setw(5) << (fractional_seconds / 40); // 5 decimal places
         
         // Format timezone offset
         int offset_hours = offset_minutes / 60;
@@ -306,7 +289,7 @@ void RestHandler::handle_ps(const json& request,
                 }
             })}
         };
-        std::cout << "response: " << response.dump(4) << std::endl;
+        // std::cout << "response: " << response.dump(4) << std::endl;
         send_response(response);
     } catch (const std::exception& e) {
         json error_response = {{"error", e.what()}};
@@ -389,15 +372,15 @@ void RestHandler::handle_openai_chat_completion(const json& request,
                                                StreamResponseCallback send_streaming_response,
                                                std::shared_ptr<CancellationToken> cancellation_token) {
     try {
-        json messages = request["messages"];
+        nlohmann::ordered_json messages = request["messages"];
         std::string model = request.value("model", default_model_tag);
         bool stream = request.value("stream", false);
         
         // Extract OpenAI-style parameters
         json options = request.value("options", json::object());
-        float temperature = request.value("temperature", 0.7);
+        float temperature = request.value("temperature", 0.6);
         float top_p = request.value("top_p", 0.9);
-        int top_k = request.value("top_k", 10);
+        int top_k = request.value("top_k", 40);
         float frequency_penalty = request.value("frequency_penalty", 0.1);
         int length_limit = request.value("max_tokens", -1);
 
@@ -407,6 +390,7 @@ void RestHandler::handle_openai_chat_completion(const json& request,
         chat_engine->set_frequency_penalty(frequency_penalty);
         chat_meta_info meta_info;
         ensure_model_loaded(model);
+        header_print("FLM", "Start generating...");
         if (stream){
             // Create a wrapper callback that passes the pre-formatted SSE string directly
             auto openai_stream_callback = [&send_streaming_response](const std::string& data, bool is_final) {
@@ -417,14 +401,17 @@ void RestHandler::handle_openai_chat_completion(const json& request,
             
             // Streaming response using streaming_ostream_openai
             streaming_ostream_openai ostream(model, openai_stream_callback);  // true for chat format
-            std::vector<int> prompts = process_chat_message(messages);
+            std::vector<int> prompts = chat_engine->tokenize(messages, true);
             std::string response_text = chat_engine->generate_with_prompt(meta_info, prompts, length_limit, ostream);
             ostream.finalize(meta_info);
+            // auto history = this->chat_engine->get_history();
+            // std::cout << "history: " << history.first << std::endl;
             this->chat_engine->clear_context();
         }
         else {
-            std::vector<int> prompts = process_chat_message(messages);
-            std::string response_text = chat_engine->generate_with_prompt(meta_info, prompts, length_limit, std::cout);
+            std::vector<int> prompts = chat_engine->tokenize(messages, true);
+            nullstream nstream;
+            std::string response_text = chat_engine->generate_with_prompt(meta_info, prompts, length_limit, nstream);
             json response = {
                 {"id", "fastflowlm-chat-completion"},
                 {"object", "chat.completion"},
@@ -446,6 +433,9 @@ void RestHandler::handle_openai_chat_completion(const json& request,
                 }}
             };
             send_response(response);
+            // auto history = this->chat_engine->get_history();
+            // std::cout << "history: " << history.first << std::endl;
+            this->chat_engine->clear_context();
         }
 
     } catch (const std::exception& e) {

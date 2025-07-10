@@ -19,7 +19,7 @@
 #include <nlohmann/json.hpp>
 #include "chat/chat_bot.hpp"
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 
 ///@brief Custom streambuf that captures tokens and sends them immediately
 ///@param model the model
@@ -154,7 +154,8 @@ private:
                 {"choices", json::array({
                     {
                         {"delta", {
-                            {"role", "assistant"}
+                            {"role", "assistant"},
+                            {"content", ""}
                         }},
                         {"index", 0}
                     }
@@ -220,7 +221,7 @@ private:
         };
         stream_callback("data: " + final_response.dump() + "\n\n", false);
         // Send the [DONE] message
-        stream_callback("data: [DONE]\n\n", false);
+        stream_callback("data: [DONE]\n\n", true);
     }
     
 

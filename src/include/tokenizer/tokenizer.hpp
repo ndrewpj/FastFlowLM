@@ -95,7 +95,7 @@ public:
     /// \param tokens the tokens
     /// \param role the role
     /// \return the tokens with template applied
-    std::string apply_chat_template(nlohmann::ordered_json& messages, bool add_generation_prompt);
+    std::string apply_chat_template(nlohmann::ordered_json& messages, bool add_generation_prompt, bool block_system_prompt = false);
 
     /// \brief Set the user system prompt
     /// \param user_system_prompt the user system prompt

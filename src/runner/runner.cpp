@@ -116,6 +116,21 @@ void Runner::run() {
             else if (first_token == "/set") {
                 this->cmd_set(input_list);
             }
+            else if (first_token == "/list") {
+                std::cout << "Models:" << std::endl;
+                nlohmann::json models = supported_models.get_all_models();
+                for (const auto& model : models["models"]) {
+                    bool is_present = downloader.is_model_downloaded(model["name"].get<std::string>());
+                    std::cout << "  - " << model["name"].get<std::string>();
+                    if (is_present){
+                        std::cout << " ✅";
+                    }
+                    else{
+                        std::cout << " ⏬";
+                    }
+                    std::cout << std::endl;
+                }
+            }
             else if (first_token == "/think") {
                 this->chat_engine->toggle_enable_think();
             }
@@ -264,7 +279,6 @@ void Runner::cmd_set(std::vector<std::string>& input_list) {
             full_input += input_list[i];
         }
         this->system_prompt = full_input;
-        this->cmd_clear(input_list);
         this->chat_engine->set_user_system_prompt(this->system_prompt);
         return;
     }
@@ -323,17 +337,15 @@ void Runner::cmd_help(std::vector<std::string>& input_list) {
     std::cout << "  /history - show the history" << std::endl;
     std::cout << "  /verbose - toggle the verbose" << std::endl;
     std::cout << "  /think - toggle the think" << std::endl;
-    std::cout << "  /set [context] [value] - set the context" << std::endl;
-    std::cout << "  /pull [model_name] - pull a model" << std::endl;
+    std::cout << "  /set [variable] [value] - set the variable" << std::endl;
     std::cout << "  /list - list all the models" << std::endl;
-    std::cout << "  /remove [model_name] - remove a model" << std::endl;
     std::cout << "  /bye - exit the program" << std::endl;
     std::cout << "  /? - show this help" << std::endl;
     std::cout << std::endl;
     std::cout << "Interactive input:" << std::endl;
     std::cout << "  - Press Enter to submit single-line input" << std::endl;
     std::cout << "  - Paste multi-line text and it will be detected automatically" << std::endl;
-    std::cout << "  - Use '\\' at the end of a line to explicitly continue on next line" << std::endl;
+    std::cout << "  - Use 'Shift + Enter' to explicitly continue on next line" << std::endl;
     std::cout << "  - Commands (starting with /) are processed immediately" << std::endl;
 }
 

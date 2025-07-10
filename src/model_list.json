@@ -2,7 +2,7 @@
     "model_path": "flm/models",
     "models": {
         "llama3.2": {
-            "1B": {
+            "1b": {
                 "name": "Llama-3.2-1B-NPU2",
                 "url": "https://huggingface.co/FastFlowLM/Llama-3.2-1B-NPU2",
                 "modified_at": "2025-05-30T00:00:00Z",
@@ -16,7 +16,7 @@
                     "quantization_level": "AWQ-asym-uint4-g32"
                 }
             },
-            "3B": {
+            "3b": {
                 "name": "Llama-3.2-3B-NPU2",
                 "url": "https://huggingface.co/FastFlowLM/Llama-3.2-3B-NPU2",
                 "modified_at": "2025-05-30T00:00:00Z",
@@ -32,7 +32,7 @@
             }
         },
         "llama3.1": {
-            "8B": {
+            "8b": {
                 "name": "Llama-3.1-8B-NPU2",
                 "url": "https://huggingface.co/FastFlowLM/Llama-3.1-8B-NPU2",
                 "modified_at": "2025-05-30T00:00:00Z",
@@ -48,14 +48,14 @@
             }
         },
         "deepseek": {
-            "8B": {
-                "name": "deepseek-distill-llama-8B-q4nx",
+            "8b": {
+                "name": "Deepseek-R1-Distill-Llama-8B-NPU2",
                 "url": "https://huggingface.co/FastFlowLM/Deepseek-R1-Distill-Llama-8B-NPU2",
                 "modified_at": "2025-05-30T00:00:00Z",
                 "size": 8000000000,
                 "default_context_length": 16384,
                 "details": {
-                    "format": "q4nx",
+                    "format": "NPU2",
                     "family": "llama",
                     "think": true,
                     "parameter_size": "8B",
