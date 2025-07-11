@@ -62,6 +62,7 @@ FastFlowLM vs AMD’s official stack (Ryzen AI software 1.4) — **real-time spe
 ⚠️ **Please note**:  
 - FastFlowLM is designed for **single-user local use**. This remote demo machine may experience short wait times when **multiple users** access it concurrently — please be patient.  
 - Some universities or companies may **block access** to the test drive site. If it doesn't load over Wi-Fi, try switching to a **cellular network**.
+- When switching models, it may take longer time to replace the model in memory.
 - Large prompts (30k+ tokens) may take longer — but it works.*
 
 ---

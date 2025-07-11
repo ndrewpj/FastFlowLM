@@ -107,6 +107,7 @@ flm serve llama3.2:1b
 
 You can now use `FastFlowLM` directly in Open WebUI.
 > When switching models, it may take longer time to replace the model in memory.
+
 ---
 
 ## 🧼 Step 6: Stop or Clean Up (in PowerShell)
