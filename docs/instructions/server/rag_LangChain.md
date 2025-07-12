@@ -85,7 +85,7 @@ rag_with_flm/
 │   ├── un_history.txt
 │   ├── peacekeeping.txt
 │   └── founding_charter.txt
-├── rag_demo_advanced.py
+├── rag_demo.py
 ├── rag-env/
 ```
 
