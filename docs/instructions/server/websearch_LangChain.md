@@ -48,7 +48,7 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 ### 3. 📦 Install Required Packages
 
 ```bash
-pip install -U langchain langchain-community langchainhub langchain-ollama langchain-huggingface sentence-transformers ddgs beautifulsoup4 requests
+pip install -U langchain langchain-community langchainhub langchain-ollama langchain-huggingface sentence-transformers ddgs beautifulsoup4 requests ollama
 ```
 
 ---

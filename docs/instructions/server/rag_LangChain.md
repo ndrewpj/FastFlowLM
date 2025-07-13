@@ -62,7 +62,7 @@ python -m venv rag-env
 ### 2. Install Python dependencies
 
 ```bash
-pip install -U langchain langchain-community langchain-huggingface sentence-transformers faiss-cpu tiktoken ollama
+pip install -U langchain langchain-community langchain-huggingface sentence-transformers faiss-cpu tiktoken ollama langchain-ollama
 ```
 
 > ✅ We still install `ollama` Python package because **LangChain’s `OllamaLLM` class can be pointed at any local REST backend like FastFlowLM**.  
