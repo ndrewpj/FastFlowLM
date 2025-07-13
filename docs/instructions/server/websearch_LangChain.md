@@ -224,6 +224,58 @@ python websearch_rag.py
 
 ---
 
+## 📤 Expected Output
+
+```
+🔍 Running web search for: 'Recent developments in AMD Ryzen AI chips'
+
+🌐 Raw Web Search Output:
+
+• AMD Introduces New Radeon Graphics Cards and Ryzen ...
+May 20, 2025 — AMD Introduces New Radeon Graphics Cards and Ryzen Threadripper Processors at COMPUTEX 2025 · AMD Powers Next-Gen Gaming Infused with AI · Pricing ...
+🔗 https://ir.amd.com/news-events/press-releases/detail/1253/amd-introduces-new-radeon-graphics-cards-and-ryzen-threadripper-processors-at-computex-2025
+
+• AMD Ryzen™ AI - Windows PCs with AI Built In
+A new era of AI PCs begins with AMD and Windows. AMD Ryzen™ AI 300 Series processor powered Copilot+ PCs deliver new, transformative AI experiences for your ...
+🔗 https://www.amd.com/en/products/processors/consumer/ryzen-ai.html
+
+• AMD launches Ryzen AI 300 and 200 series chips for laptops
+Jan 6, 2025 — AMD has launched its Ryzen AI 300 and Ryzen 200 series of mobile processors at CES 2025 at Las Vegas, debuting a total of 15 new models.
+🔗 https://www.tomshardware.com/pc-components/cpus/amd-launches-ryzen-ai-300-and-200-series-chips-for-laptops
+
+• AMD Announces Expanded Consumer and Commercial AI ...
+Jan 6, 2025 — The new Ryzen AI 300 Series processors, feature up to 8 “Zen 5” CPU cores and the latest RDNA 3.5 graphics architecture. With an industry- ...
+🔗 https://www.amd.com/en/newsroom/press-releases/2025-1-6-amd-announces-expanded-consumer-and-commercial-ai-.html
+
+• AMD Ryzen™ AI PCs: A Portfolio Built for the Future
+May 29, 2025 — Coming Soon. Exciting new systems featuring AMD Ryzen™ AI processors are on the horizon, offering a glimpse into the next generation of ...
+🔗 https://www.amd.com/en/blogs/2025/available-amd-ai-pcs.html
+
+
+🧠 Summary:
+
+The AMD Ryzen AI series has been launched, offering new features and enhancements in:
+
+* New Radeon Graphics Cards with up to 8 "Zen" CPU cores
+* Ryzen Threadripper Processors
+* Ryzen AI PCs, featuring the latest "Zen" CPU architecture
+
+🤖 RAG Answer:
+ The new Ryzen AI chips offer several features, including:
+
+* New Radeon Graphics Cards
+* Ryzen Threadripper Processors
+
+📄 Context Source:
+ The AMD Ryzen AI series has been launched, offering new features and enhancements in:
+
+* New Radeon Graphics Cards with up to 8 "Zen" CPU cores
+* Ryzen Threadripper Processors
+* Ryzen AI PCs, featuring the latest "Zen" CPU architecture
+```
+
+---
+
 ## 🧠 What’s Happening Behind the Scenes
 
 This Python script combines real-time web search with a local FastFlowLM model for Research-Augmented Generation (RAG). Here's how each step works:
