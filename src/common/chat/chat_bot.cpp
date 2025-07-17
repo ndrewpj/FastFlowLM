@@ -2,7 +2,7 @@
 /// \brief chat bot class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.1.0
+/// \version 0.1.6
 /// \note This is a header file for the chat bot class
 #pragma once
 #include "chat/chat_bot.hpp"
@@ -63,6 +63,9 @@ void chat_bot::load_model(std::string model_path, json model_info){
     if (this->lm_config->model_type == "llama"){
         this->lm_engine = std::make_unique<llama_npu>(*this->lm_config, this->npu.get(), this->MAX_L);
     }
+    else if (this->lm_config->model_type == "qwen3"){
+        this->lm_engine = std::make_unique<qwen_npu>(*this->lm_config, this->npu.get(), this->MAX_L);
+    }
     else {
         header_print("warning", "Model type not supported: " << this->lm_config->model_type);
         exit(1);
@@ -81,21 +84,19 @@ void chat_bot::load_model(std::string model_path, json model_info){
     this->lm_engine->clear_context();
     this->last_token = -1;
     this->total_tokens = 0;
-    if (this->sampler == nullptr){
-        sampler_config config;
-        config.rep_penalty = 0.1;
-        config.temperature = 0.6;
-        config.top_p = 0.9;
-        config.top_k = 5;
-        config.rep_penalty_window = 16;
-        config.freq_penalty = 0.05;
-        config.freq_penalty_window = 256;
-        config.freq_penalty_decay = 0.9;
-        this->set_sampler(config);
-    }
-    else{
-        this->sampler->reset_penalties();
-    }
+
+    this->sampler.reset();
+
+    sampler_config config;
+    config.rep_penalty = 0.1;
+    config.temperature = 0.6;
+    config.top_p = 0.95;
+    config.top_k = 5;
+    config.rep_penalty_window = 64;
+    config.freq_penalty = 0.1;
+    config.freq_penalty_window = 256;
+    config.freq_penalty_decay = 0.995;
+    this->set_sampler(config);
     for (size_t i = 0; i < PROFILER_TYPE_NUM; i++){
         this->profiler_list[i].reset();
     }
@@ -190,12 +191,15 @@ std::string chat_bot::generate(chat_meta_info& meta_info, int length_limit, std:
     std::string result;
     meta_info.generated_tokens = 1;
     if (this->enable_think){
-        std::string think_result = this->tokenizer->run_time_decoder(this->tokenizer->get_think_marker_id());
-        result += think_result;
-        os << think_result << std::flush;
+        int think_marker_id = this->tokenizer->get_think_marker_id();
+        if (think_marker_id != -1){
+            std::string think_result = this->tokenizer->run_time_decoder(this->tokenizer->get_think_marker_id());
+            result += think_result;
+            os << think_result << std::flush;
+        }
     }
 
-    stop_reason reason = EOT_DETECTED;
+    stop_reason_t reason = EOT_DETECTED;
     int last_sampled_token = this->last_token;
     this->token_history.push_back(this->last_token);
     auto decoding_start_time = time_utils::now();
@@ -214,7 +218,6 @@ std::string chat_bot::generate(chat_meta_info& meta_info, int length_limit, std:
         return "Error, max length reached";
     }
     while (this->total_tokens < this->MAX_L){
-
         this->profiler_list[DECODING_TIME].start();
         buffer<bf16> y = this->lm_engine->forward(last_sampled_token);
         this->profiler_list[DECODING_TIME].stop(1);
@@ -429,6 +432,15 @@ void chat_bot::set_frequency_penalty(float frequency_penalty){
     this->sampler->freq_penalty = frequency_penalty;
 }
 
+/// \brief Set the frequency penalty window
+/// \param frequency_penalty_window the frequency penalty window
+/// \note The function will set the frequency penalty window
+/// \note The function will check if the frequency penalty window is valid
+void chat_bot::set_frequency_penalty_window(int frequency_penalty_window){
+    this->sampler->freq_penalty_window = frequency_penalty_window;
+}
+
+
 /// \brief Tokenize the text
 /// \param text the text
 /// \note The function will tokenize the text
@@ -439,12 +451,11 @@ std::vector<int> chat_bot::tokenize(std::string& text, bool apply_chat_template,
     if (apply_chat_template){
         nlohmann::ordered_json messages;
         messages.push_back({{"role", role}, {"content", text}});
-        new_text = this->tokenizer->apply_chat_template(messages, add_generation_prompt);
+        new_text = this->tokenizer->apply_chat_template(messages, add_generation_prompt, this->enable_think);
     }
     else{
         new_text = text;
     }
-
     std::vector<int> tokens = this->tokenizer->encode(new_text);
     this->profiler_list[TKOEN_ENCODE_TIME].stop(tokens.size());
     return tokens;
@@ -455,7 +466,7 @@ std::vector<int> chat_bot::tokenize(std::string& text, bool apply_chat_template,
 /// \param add_generation_prompt the add generation prompt
 /// \return the chat template
 std::vector<int> chat_bot::tokenize(nlohmann::ordered_json& messages, bool add_generation_prompt){
-    std::string text = this->tokenizer->apply_chat_template(messages, add_generation_prompt);
+    std::string text = this->tokenizer->apply_chat_template(messages, add_generation_prompt, this->enable_think);
     return this->tokenizer->encode(text);
 }
 
@@ -518,6 +529,20 @@ void chat_bot::toggle_enable_think(){
     if (this->is_think_toggleable){
         this->enable_think = !this->enable_think;
         header_print("FLM", "Think is " << (this->enable_think ? "enabled" : "disabled"));
+    }
+    else{
+        header_print("FLM", "Think is not toggleable for this model!");
+    }
+}
+
+/// \brief Set the enable think
+/// \param enable_think the enable think
+/// \note The function will set the enable think
+/// \note The function will check if the enable think is valid
+void chat_bot::set_enable_think(bool enable_think){
+    if (this->is_think_toggleable){
+        this->enable_think = enable_think;
+        header_print("FLM", "Think is " << (this->enable_think ? "enabled!" : "disabled!"));
     }
     else{
         header_print("FLM", "Think is not toggleable for this model!");

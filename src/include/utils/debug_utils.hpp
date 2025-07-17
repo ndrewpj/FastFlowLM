@@ -2,7 +2,7 @@
 /// \brief debug_utils class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.1.0
+/// \version 0.1.6
 /// \note This file contains the debug utilities for the FastFlowLM project.
 #pragma once
 #include <iostream>
@@ -108,20 +108,10 @@
 /// \param header the header of the message
 /// \param msg the message to log
 #define header_print(header, msg) \
-do { \
-    std::ostringstream oss; \
-    oss << msg; \
-    std::cout << '[' << header << "]  " << oss.str() << std::endl; \
-} while (0)
-
-/// \brief header_print_emoji macro
-/// \param header the header of the message
-/// \param msg the message to log
-#define header_print_emoji(header, msg) \
     do { \
         std::ostringstream oss; \
         oss << msg; \
-        std::cout << '[' << header << " ]  " << oss.str() << std::endl; \
+        std::cout << '[' << header << "]  " << oss.str() << std::endl; \
     } while (0)
 
 /// \brief box_print macro

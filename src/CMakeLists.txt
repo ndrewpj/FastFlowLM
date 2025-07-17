@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(q4nx version 0.1.0 LANGUAGES CXX)
+project(q4nx LANGUAGES CXX VERSION 0.1.0)
 
 # Set build type to Release
 set(CMAKE_BUILD_TYPE Release)
@@ -76,6 +76,11 @@ target_link_libraries(flm PUBLIC
     xrt_coreutil
     q4_npu_eXpress
     llama_npu
+    qwen_npu
+    dequant
+    gemm
+    lm_head
+    npu_utils
     libcurl
 )
 

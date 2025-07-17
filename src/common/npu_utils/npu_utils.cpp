@@ -2,7 +2,7 @@
 /// \brief NPU manager and utility implementation
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.1.0
+/// \version 0.1.6
 #include "npu_utils/npu_utils.hpp"
 
 /// \brief Constructor

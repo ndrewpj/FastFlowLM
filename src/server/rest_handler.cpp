@@ -4,7 +4,7 @@
  * \brief RestHandler class and related declarations
  * \author FastFlowLM Team
  * \date 2025-06-24
- * \version 0.1.0
+ * \version 0.1.6
  */
 #include "rest_handler.hpp"
 #include "wstream_buf.hpp"
@@ -66,11 +66,13 @@ void RestHandler::handle_generate(const json& request,
         int top_k = options.value("top_k", 40);
         float frequency_penalty = options.value("frequency_penalty", 0.1);
         int length_limit = request.value("max_tokens", -1);
-        chat_meta_info meta_info;
-        
+        bool enable_thinking = request.value("think", false);
         auto load_start_time = time_utils::now();
         ensure_model_loaded(model);
         auto load_end_time = time_utils::now();
+        chat_engine->set_enable_think(enable_thinking);
+        chat_meta_info meta_info;
+        
         meta_info.load_duration = (uint64_t)time_utils::duration_ns(load_start_time, load_end_time).first;
         header_print("FLM", "Start generating...");
         
@@ -136,15 +138,17 @@ void RestHandler::handle_chat(const json& request,
         int top_k = options.value("top_k", 40);
         float frequency_penalty = options.value("frequency_penalty", 0.1);
         int length_limit = request.value("max_tokens", -1);
+        bool enable_thinking = request.value("think", false);
+        auto load_start_time = time_utils::now();
+        ensure_model_loaded(model);
+        auto load_end_time = time_utils::now();
 
         chat_engine->set_temperature(temperature);
         chat_engine->set_topp(top_p);
         chat_engine->set_topk(top_k);
         chat_engine->set_frequency_penalty(frequency_penalty);
+        chat_engine->set_enable_think(enable_thinking);
         chat_meta_info meta_info;
-        auto load_start_time = time_utils::now();
-        ensure_model_loaded(model);
-        auto load_end_time = time_utils::now();
         meta_info.load_duration = (uint64_t)time_utils::duration_ns(load_start_time, load_end_time).first;
         
         header_print("FLM", "Start generating...");
@@ -383,13 +387,14 @@ void RestHandler::handle_openai_chat_completion(const json& request,
         int top_k = request.value("top_k", 40);
         float frequency_penalty = request.value("frequency_penalty", 0.1);
         int length_limit = request.value("max_tokens", -1);
-
+        bool enable_thinking = request.value("think", false);
+        ensure_model_loaded(model);
+        chat_engine->set_enable_think(enable_thinking);
         chat_engine->set_temperature(temperature);
         chat_engine->set_topp(top_p);
         chat_engine->set_topk(top_k);
         chat_engine->set_frequency_penalty(frequency_penalty);
         chat_meta_info meta_info;
-        ensure_model_loaded(model);
         header_print("FLM", "Start generating...");
         if (stream){
             // Create a wrapper callback that passes the pre-formatted SSE string directly

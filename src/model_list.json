@@ -21,7 +21,7 @@
                 "url": "https://huggingface.co/FastFlowLM/Llama-3.2-3B-NPU2",
                 "modified_at": "2025-05-30T00:00:00Z",
                 "size": 3000000000,
-                "default_context_length": 32768,
+                "default_context_length": 65536,
                 "details": {
                     "format": "NPU2",
                     "family": "llama",
@@ -37,7 +37,7 @@
                 "url": "https://huggingface.co/FastFlowLM/Llama-3.1-8B-NPU2",
                 "modified_at": "2025-05-30T00:00:00Z",
                 "size": 8000000000,
-                "default_context_length": 16384,
+                "default_context_length": 32768,
                 "details": {
                     "format": "NPU2",
                     "family": "llama",
@@ -53,12 +53,29 @@
                 "url": "https://huggingface.co/FastFlowLM/Deepseek-R1-Distill-Llama-8B-NPU2",
                 "modified_at": "2025-05-30T00:00:00Z",
                 "size": 8000000000,
-                "default_context_length": 16384,
+                "default_context_length": 32768,
                 "details": {
                     "format": "NPU2",
                     "family": "llama",
                     "think": true,
                     "parameter_size": "8B",
+                    "quantization_level": "AWQ-asym-uint4-g32"
+                }
+            }
+        },
+        "qwen3": {
+            "4b": {
+                "name": "Qwen3-4B-NPU2",
+                "url": "https://huggingface.co/FastFlowLM/Qwen3-4B-NPU2",
+                "modified_at": "2025-05-30T00:00:00Z",
+                "size": 4000000000,
+                "default_context_length": 32768,
+                "details": {
+                    "format": "NPU2",
+                    "family": "qwen",
+                    "think": true,
+                    "think_toggleable": true,
+                    "parameter_size": "4B",
                     "quantization_level": "AWQ-asym-uint4-g32"
                 }
             }
