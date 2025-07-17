@@ -188,6 +188,14 @@ Display all available models and locally downloaded models:
 
 ---
 
+### 🧠 Think Mode Toggle
+
+Type `/think` to toggle Think Mode on or off interactively in the CLI.
+
+> 💡 **Note**: This feature is only supported on certain models, such as **Qwen3**.
+
+---
+
 ### ⚙️ Set Variables
 
 ```text
