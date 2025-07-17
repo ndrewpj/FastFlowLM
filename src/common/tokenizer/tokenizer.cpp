@@ -2,7 +2,7 @@
 /// \brief Tokenizer implementation for text encoding/decoding
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.1.0
+/// \version 0.1.6
 #include "tokenizer/tokenizer.hpp"
 #include <iostream>
 #include <fstream>
@@ -43,21 +43,34 @@ Tokenizer::Tokenizer(const std::string& model_path) {
     fs_config.read(data_config.data(), size_config);
     fs_config.close();
     auto tokenizer_config = nlohmann::json::parse(data_config);
-
+    // check if bos_token is null
+    if (tokenizer_config["bos_token"].is_null()) {
+        this->has_bos_token = false;
+    }
+    else {
+        this->has_bos_token = true;
+    }
     // load chat template
     this->tmpl = std::make_unique<minja::chat_template>(
         tokenizer_config["chat_template"],
-        tokenizer_config["bos_token"],
+        this->has_bos_token ? tokenizer_config["bos_token"] : "",
         tokenizer_config["eos_token"]
     );
-
-    this->bos_token_id = tokenizer_config["bos_token_id"].get<int>();
+    
+    if (this->has_bos_token) {
+        this->bos_token_id = tokenizer_config["bos_token_id"].get<int>();
+    }
+    else {
+        this->bos_token_id = -1;
+    }
+    this->eos_token = tokenizer_config["eos_token"].get<std::string>();
     for (auto& token : tokenizer_config["eos_token_id"]) {
         this->eos_token_ids.push_back(token.get<int>());
     }
     this->user_system_prompt = "";
     this->extra_context["user_system_prompt"] = this->user_system_prompt;
-    JSON_GET(this->think_marker_id, tokenizer_config, "think_marker_id", 128013, int);
+    this->extra_context["enable_thinking"] = false;
+    JSON_GET(this->think_marker_id, tokenizer_config, "think_marker_id", -1, int);
 }
 
 /// \brief Destructor
@@ -173,10 +186,11 @@ std::string Tokenizer::run_time_decoder(int answer_token) {
 /// \param messages the messages
 /// \param add_generation_prompt the add generation prompt
 /// \return the chat template
-std::string Tokenizer::apply_chat_template(nlohmann::ordered_json& messages, bool add_generation_prompt, bool block_system_prompt) {
+std::string Tokenizer::apply_chat_template(nlohmann::ordered_json& messages, bool add_generation_prompt, bool enable_thinking, bool block_system_prompt) {
     minja::chat_template_inputs inputs;
     inputs.add_generation_prompt = add_generation_prompt;
     inputs.messages = messages;
+    this->extra_context["enable_thinking"] = enable_thinking;
     inputs.extra_context = this->extra_context;
     return this->tmpl->apply(inputs);
 }

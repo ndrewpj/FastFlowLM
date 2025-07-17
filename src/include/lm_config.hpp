@@ -2,7 +2,7 @@
 /// \brief lm_config class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.1.0
+/// \version 0.1.6
 /// \note This class is used to store the model configuration.
 #pragma once
 
@@ -26,8 +26,6 @@ class LM_Config{
         f32 rms_norm_eps;
         f32 rope_theta;
         u32 vocab_size;
-        std::string layer_bin_name;
-        std::string lm_head_bin_name;
         u32 addr_qk;
         u32 addr_kv;
         u32 addr_l_begin_mha;
@@ -75,14 +73,12 @@ class LM_Config{
             JSON_GET(this->dequant_xclbin_name, this->_json_config, "dequant_xclbin_name", "dequant.xclbin", std::string);
             JSON_GET(this->mm_engine_xclbin_name, this->_json_config, "mm_engine_xclbin_name", "mm.xclbin", std::string);
             JSON_GET(this->mha_engine_xclbin_name, this->_json_config, "mha_engine_xclbin_name", "attn.xclbin", std::string);
-            assert(this->head_dim == this->hidden_size / this->num_attention_heads);
             assert(this->vocab_size > 0);
             assert(this->hidden_size > 0);
             assert(this->intermediate_size > 0);
             assert(this->num_attention_heads > 0);
             assert(this->num_hidden_layers > 0);
             assert(this->num_key_value_heads > 0);
-            assert(this->pretraining_tp > 0);
             assert(this->rms_norm_eps > 0);
             assert(this->addr_qk > 0);
             assert(this->addr_kv > 0);

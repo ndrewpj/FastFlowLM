@@ -4,7 +4,7 @@
  * \brief CLI interactive input handling using Windows Console API
  * \author FastFlowLM Team
  * \date 2025-06-24
- * \version 0.1.0
+ * \version 0.1.6
  */
 #pragma once
 #include <vector>

@@ -2,7 +2,7 @@
 /// \brief lm_head class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.1.0
+/// \version 0.1.6
 /// \note This is a header file for the lm_head class
 #pragma once
 #include "lm_config.hpp"
@@ -19,7 +19,7 @@ public:
     /// \param config the configuration
     /// \param xclbin_name the xclbin name
     /// \param npu the npu manager
-    LMHead(LM_Config config, std::string xclbin_name, npu_manager *npu);
+    LMHead(LM_Config config, npu_manager *npu);
     ~LMHead();
 
     /// \brief Load the weights

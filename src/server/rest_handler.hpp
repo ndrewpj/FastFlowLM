@@ -4,7 +4,7 @@
  * \brief RestHandler class and related declarations
  * \author FastFlowLM Team
  * \date 2025-06-24
- * \version 0.1.0
+ * \version 0.1.6
  */
 #pragma once
 

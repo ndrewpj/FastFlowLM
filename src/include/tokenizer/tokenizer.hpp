@@ -2,7 +2,7 @@
 /// \brief tokenizer class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.1.0
+/// \version 0.1.6
 /// \note This class is used to tokenize the text.
 #pragma once
 
@@ -95,7 +95,7 @@ public:
     /// \param tokens the tokens
     /// \param role the role
     /// \return the tokens with template applied
-    std::string apply_chat_template(nlohmann::ordered_json& messages, bool add_generation_prompt, bool block_system_prompt = false);
+    std::string apply_chat_template(nlohmann::ordered_json& messages, bool add_generation_prompt, bool enable_thinking = false, bool block_system_prompt = false);
 
     /// \brief Set the user system prompt
     /// \param user_system_prompt the user system prompt
@@ -112,6 +112,7 @@ private:
     std::unordered_map<uint32_t, uint8_t> inv_map;
     std::string bos_token;
     std::string eos_token;
+    bool has_bos_token;
     int bos_token_id;
     int think_marker_id;
     std::vector<int> eos_token_ids;

@@ -2,7 +2,7 @@
 /// \brief chat_bot class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.1.0
+/// \version 0.1.6
 /// \note This is a header file for the chat_bot class
 #pragma once
 
@@ -18,6 +18,7 @@
 #include "causal_lm.hpp"
 #include "lm_config.hpp"
 #include "llama/llama_npu.hpp"
+#include "qwen/qwen_npu.hpp"
 #include "tokenizer/tokenizer.hpp"
 #include "modules/sampler.hpp"
 #include "utils/utils.hpp"
@@ -32,9 +33,9 @@ typedef enum {
     EOT_DETECTED,
     MAX_LENGTH_REACHED,
     ERROR_DETECTED
-} stop_reason;
+} stop_reason_t;
 
-inline std::string stop_reason_to_string(stop_reason reason){
+inline std::string stop_reason_to_string(stop_reason_t reason){
     switch (reason){
         case EOT_DETECTED:
             return "stop";
@@ -54,7 +55,7 @@ typedef struct {
     uint64_t load_duration; // in nanoseconds
     uint64_t prefill_duration; // in nanoseconds
     uint64_t decoding_duration; // in nanoseconds
-    stop_reason stop_reason;
+    stop_reason_t stop_reason;
 } chat_meta_info;
 
 /// \brief chat_bot class
@@ -198,6 +199,10 @@ public:
     /// \param frequency_penalty the frequency penalty
     void set_frequency_penalty(float frequency_penalty);
 
+    /// \brief Set the frequency penalty window
+    /// \param frequency_penalty_window the frequency penalty window
+    void set_frequency_penalty_window(int frequency_penalty_window);
+
     /// \brief Start the ttft timer
     /// \return the ttft timer
     void start_ttft_timer();
@@ -225,5 +230,9 @@ public:
     /// \brief Toggle the enable think
     /// \param enable_think the enable think
     void toggle_enable_think();
+
+    /// \brief set think
+    /// \param enable_think the enable think
+    void set_enable_think(bool enable_think);
 
 };

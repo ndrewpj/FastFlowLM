@@ -2,7 +2,7 @@
 /// \brief Main entry point for the FLM application
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.1.0
+/// \version 0.1.6
 /// \note This is a header file for the main entry point
 #pragma once
 #include "runner.hpp"
@@ -18,6 +18,7 @@
 #include <windows.h>
 #include <filesystem>
 #include <shlobj.h>
+#include <cstdlib>
 
 
 // Global variables
@@ -79,6 +80,26 @@ void handle_user_input() {
 ///@return the server
 std::unique_ptr<WebServer> create_lm_server(model_list& models, ModelDownloader& downloader, const std::string& default_tag, int port);
 
+///@brief get_server_port gets the server port from environment variable FLM_SERVE_PORT
+///@return the server port, default is 11434 if environment variable is not set
+int get_server_port() {
+    char* port_env = nullptr;
+    size_t len = 0;
+    if (_dupenv_s(&port_env, &len, "FLM_SERVE_PORT") == 0 && port_env != nullptr) {
+        try {
+            int port = std::stoi(port_env);
+            free(port_env);
+            if (port > 0 && port <= 65535) {
+                return port;
+            }
+        } catch (const std::exception&) {
+            free(port_env);
+            // Invalid port number, use default
+        }
+    }
+    return 11434; // Default port
+}
+
 ///@brief main function
 ///@param argc the number of arguments
 ///@param argv the arguments
@@ -96,12 +117,13 @@ int main(int argc, char* argv[]) {
         std::cout << "Usage: " << argv[0] << " <command: serve <model_tag>" << std::endl;
         std::cout << "Usage: " << argv[0] << " <command: pull <model_tag> [--force]" << std::endl;
         std::cout << "Commands:" << std::endl;
-        std::cout << "  run    - Run the model interactively" << std::endl;
-        std::cout << "  serve  - Start the Ollama-compatible server" << std::endl;
-        std::cout << "  pull   - Download model files if not present" << std::endl;
-        std::cout << "  help   - Show the help" << std::endl;
-        std::cout << "  remove - Remove a model" << std::endl;
-        std::cout << "  list   - List all the models" << std::endl;
+        std::cout << "  run     - Run the model interactively" << std::endl;
+        std::cout << "  serve   - Start the Ollama-compatible server" << std::endl;
+        std::cout << "  pull    - Download model files if not present" << std::endl;
+        std::cout << "  help    - Show the help" << std::endl;
+        std::cout << "  remove  - Remove a model" << std::endl;
+        std::cout << "  list    - List all the models" << std::endl;
+        std::cout << "  version - Show the version" << std::endl;
         std::cout << "Options:" << std::endl;
         std::cout << "  --force - Force re-download even if model exists (for pull command)" << std::endl;
         return 1;
@@ -137,6 +159,10 @@ int main(int argc, char* argv[]) {
         }
 
     }
+    else if (command == "version") {
+        std::cout << "FLM version 0.1.6" << std::endl;
+        return 0;
+    }
     else if (command == "help") {
         std::cout << "Usage: " << argv[0] << " <command: run <model_tag> <file_name>" << std::endl;
         std::cout << "Usage: " << argv[0] << " <command: serve <model_tag>" << std::endl;
@@ -144,6 +170,7 @@ int main(int argc, char* argv[]) {
         std::cout << "Usage: " << argv[0] << " <command: help" << std::endl;
         std::cout << "Usage: " << argv[0] << " <command: remove <model_tag>" << std::endl;
         std::cout << "Usage: " << argv[0] << " <command: list" << std::endl;
+        std::cout << "Usage: " << argv[0] << " <command: version" << std::endl;
         std::cout << "Commands:" << std::endl;
         std::cout << "  run    - Run the model interactively" << std::endl;
         std::cout << "  serve  - Start the Ollama-compatible server" << std::endl;
@@ -225,12 +252,13 @@ int main(int argc, char* argv[]) {
             }
         } else if (command == "serve") {
             // Create the server
-            auto server = create_lm_server(supported_models, downloader, tag, 11434);
+            int port = get_server_port();
+            auto server = create_lm_server(supported_models, downloader, tag, port);
             server->set_max_connections(5);           // Allow up to 2000 concurrent connections
             server->set_io_threads(5);          // Allow up to 5 io threads
             server->set_request_timeout(std::chrono::seconds(600)); // 10 minute timeout for long requests
             // Start the server
-            header_print("FLM", "Starting server on port 11434...");
+            header_print("FLM", "Starting server on port " << port << "...");
             server->start();
 
             // Start a thread to handle user input, this thread will be used to handle the user input

@@ -4,7 +4,7 @@
  * \brief WebServer class and related declarations
  * \author FastFlowLM Team
  * \date 2025-06-24
- * \version 0.1.0
+ * \version 0.1.6
  */
 #include "server.hpp"
 #include "rest_handler.hpp"
@@ -412,7 +412,8 @@ void WebServer::handle_request(http::request<http::string_body>& req,
     } catch (const std::exception& e) {
         header_print("LOG", "Error parsing request body: " + std::string(e.what()));
     }
-    brief_print_message_request(request_json);
+    // brief_print_message_request(request_json);
+    std::cout << "request_json: " << request_json.dump() << std::endl;
     
     std::string key = std::string(req.method_string()) + " " + std::string(req.target());
 
