@@ -22,7 +22,7 @@ Fast, power-efficient, and 100% offline.
 > Alternatively, **sign up** with your own credentials instead of using the shared guest account.
 > ⚠️ Some universities or companies may **block access** to the test drive site. If it doesn't load over Wi-Fi, try switching to a **cellular network**.  
 > Real-time demo powered by **FastFlowLM + Open WebUI** — no downloads, no installs.  
-> Try three optimized LLaMA models: `llama3.2:1b`, `llama3.2:3b`, and `llama3.1:8b` — all accelerated on NPU.
+> Try three optimized LLaMA models: `llama3.2:1b`, `llama3.2:3b`, and `qwen3:4b` — all accelerated on NPU.
 
 ⚠️ **Please note**:  
 - FastFlowLM is designed for **single-user local use**. This remote demo machine may experience short wait times when **multiple users** access it concurrently — please be patient.  

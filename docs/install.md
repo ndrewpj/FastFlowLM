@@ -30,7 +30,7 @@ You must have AMD NPU driver **version 32.0.203.258 or later** installed for Fas
 ## 💾 Installation (Windows)
 
 A packaged Windows installer is available here:  
-[**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/download/v0.1.5/flm-setup-v0.1.5.exe)
+[**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/download/v0.1.6/flm-setup-v0.1.6.exe)
 
 If you see **"Windows protected your PC"**, click **More info**, then select **Run anyway**.
 
