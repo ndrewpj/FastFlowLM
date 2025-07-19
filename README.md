@@ -48,7 +48,7 @@ FastFlowLM vs AMD’s official stack (Ryzen AI software 1.4) — **real-time spe
   </tr>
 </table>
 
-🎥 More demo videos and comparisons with Ollama and LM Studio can be found [here on YouTube](https://www.youtube.com/watch?v=OZuLQcmFe9A&list=PLf87s9UUZrJp4r3JM4NliPEsYuJNNqFAJ).
+🎥 More demo videos (e.g., the new think/no_think qwen3 model, 4 power mode operation, etc.) and comparisons with Ollama, LM Studio, Lemonade, etc. can be found [here on YouTube](https://www.youtube.com/watch?v=OZuLQcmFe9A&list=PLf87s9UUZrJp4r3JM4NliPEsYuJNNqFAJ).
 
 ---
 
