@@ -64,6 +64,36 @@
             }
         },
         "qwen3": {
+            "0.6b": {
+                "name": "Qwen3-0.6B-NPU2",
+                "url": "https://huggingface.co/FastFlowLM/Qwen3-0.6B-NPU2",
+                "modified_at": "2025-05-30T00:00:00Z",
+                "size": 600000000,
+                "default_context_length": 32768,
+                "details": {
+                    "format": "NPU2",
+                    "family": "qwen",
+                    "think": true,
+                    "think_toggleable": true,
+                    "parameter_size": "0.6B",
+                    "quantization_level": "AWQ-asym-uint4-g32"
+                }
+            },
+            "1.7b": {
+                "name": "Qwen3-1.7B-NPU2",
+                "url": "https://huggingface.co/FastFlowLM/Qwen3-1.7B-NPU2",
+                "modified_at": "2025-05-30T00:00:00Z",
+                "size": 1700000000,
+                "default_context_length": 32768,
+                "details": {
+                    "format": "NPU2",
+                    "family": "qwen",
+                    "think": true,
+                    "think_toggleable": true,
+                    "parameter_size": "1.7B",
+                    "quantization_level": "AWQ-asym-uint4-g32"
+                }
+            },
             "4b": {
                 "name": "Qwen3-4B-NPU2",
                 "url": "https://huggingface.co/FastFlowLM/Qwen3-4B-NPU2",
@@ -76,6 +106,21 @@
                     "think": true,
                     "think_toggleable": true,
                     "parameter_size": "4B",
+                    "quantization_level": "AWQ-asym-uint4-g32"
+                }
+            },
+            "8b": {
+                "name": "Qwen3-8B-NPU2",
+                "url": "https://huggingface.co/FastFlowLM/Qwen3-8B-NPU2",
+                "modified_at": "2025-05-30T00:00:00Z",
+                "size": 8000000000,
+                "default_context_length": 40960,
+                "details": {
+                    "format": "NPU2",
+                    "family": "qwen",
+                    "think": true,
+                    "think_toggleable": true,
+                    "parameter_size": "8B",
                     "quantization_level": "AWQ-asym-uint4-g32"
                 }
             }
