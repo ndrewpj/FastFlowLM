@@ -19,11 +19,13 @@ flm run qwen3:1.7b
 ```
 flm run qwen3:4b
 ```
+
 ---
 
 ```
 flm run llama3.2:8b
 ```
+
 ---
 
 > Think Mode Toggle (new feature from qwen3)
