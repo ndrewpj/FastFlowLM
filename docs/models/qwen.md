@@ -23,7 +23,7 @@ flm run qwen3:4b
 ---
 
 ```
-flm run llama3.2:8b
+flm run qwen3:4b
 ```
 
 ---
