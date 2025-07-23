@@ -181,7 +181,7 @@ The rest of the stack — CLI, model runner, orchestration — is open and devel
 This repository contains two types of components:
 
 - **Open-source components** (e.g., CLI, orchestration code) are released under the **MIT License**.
-- **Proprietary binaries** (used for low-level NPU acceleration) are **not included** in this repository and are covered by **separate licensing terms**.
+- **Proprietary binaries** (used for low-level NPU acceleration; patent pending) are **not included** in this repository and are covered by **separate licensing terms**.
 
 ---
 
