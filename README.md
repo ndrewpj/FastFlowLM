@@ -63,7 +63,7 @@ FastFlowLM vs AMD’s official stack (Ryzen AI software 1.4) — **real-time spe
 > Alternatively, **sign up** with your own credentials instead of using the shared guest account.
 > ⚠️ Some universities or companies may **block access** to the test drive site. If it doesn't load over Wi-Fi, try switching to a **cellular network**.  
 > Real-time demo powered by **FastFlowLM + Open WebUI** — no downloads, no installs.  
-> Try three optimized LLaMA models: `llama3.2:1b`, `llama3.2:3b`, and `qwen3:4b` — all accelerated on NPU.
+> Try optimized LLM models: `llama3.2:1b`, `llama3.2:3b`, `qwen3:4b`, etc. — all accelerated on NPU.
 
 ⚠️ **Please note**:  
 - FastFlowLM is designed for **single-user local use**. This remote demo machine may experience short wait times when **multiple users** access it concurrently — please be patient.
@@ -171,7 +171,7 @@ The rest of the stack — CLI, model runner, orchestration — is open and devel
 ## 📝 Licensing & Contact
 
 - 🆓 **Deep-optimized FastFlowLM kernels** are **free for non-commercial use**  
-- 💼 **Interested in commercial use?** Email us at [info@fastflowlm.edu](mailto:info@fastflowlm.edu)  
+- 💼 **Interested in commercial use?** Email us at [info@fastflowlm.com](mailto:info@fastflowlm.com)  
 - 📦 **Want to bring your own model?** We can optimize it for FastFlowLM — just reach out!
 
 ---
@@ -181,7 +181,7 @@ The rest of the stack — CLI, model runner, orchestration — is open and devel
 This repository contains two types of components:
 
 - **Open-source components** (e.g., CLI, orchestration code) are released under the **MIT License**.
-- **Proprietary binaries** (used for low-level NPU acceleration) are **not included** in this repository and are covered by **separate licensing terms**.
+- **Proprietary binaries** (used for low-level NPU acceleration; patent pending) are **not included** in this repository and are covered by **separate licensing terms**.
 
 ---
 
