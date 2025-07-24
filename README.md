@@ -171,7 +171,7 @@ The rest of the stack — CLI, model runner, orchestration — is open and devel
 ## 📝 Licensing & Contact
 
 - 🆓 **Deep-optimized FastFlowLM kernels** are **free for non-commercial use**  
-- 💼 **Interested in commercial use?** Email us at [info@fastflowlm.edu](mailto:info@fastflowlm.edu)  
+- 💼 **Interested in commercial use?** Email us at [info@fastflowlm.edu](mailto:info@fastflowlm.com)  
 - 📦 **Want to bring your own model?** We can optimize it for FastFlowLM — just reach out!
 
 ---
