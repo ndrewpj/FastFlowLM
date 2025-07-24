@@ -4,7 +4,7 @@
 
 AppName=flm
 
-AppVersion=0.1.6
+AppVersion=0.1.8
 
 AppPublisher=FastFlowLM
 
@@ -22,8 +22,9 @@ Compression=lzma
 
 SolidCompression=yes
 
+LicenseFile=terms.txt
 
-
+SignTool=FastFlowLM_url $f
 
 
 [Files]

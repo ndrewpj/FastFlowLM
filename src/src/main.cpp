@@ -160,7 +160,7 @@ int main(int argc, char* argv[]) {
 
     }
     else if (command == "version") {
-        std::cout << "FLM version 0.1.6" << std::endl;
+        std::cout << "FLM v0.1.8" << std::endl;
         return 0;
     }
     else if (command == "help") {
