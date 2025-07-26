@@ -40,6 +40,14 @@ Download a model from Hugging Face without launching it:
 flm pull llama3.2:3b
 ```
 
+This code forces a re-download of the model, overwriting the current version.
+
+```powershell
+flm pull llama3.2:3b --force
+```
+
+> "force" is only needed when a major flm update is released and installed. Proceed with Caution.
+
 ---
 
 ### 📦 List Supported and Downloaded Models
