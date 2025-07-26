@@ -2,11 +2,12 @@
 /// \brief Model downloader class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.1.6
+/// \version 0.9.0
 /// \note This class is used to download models from the huggingface
 #pragma once
 
 #include "model_list.hpp"
+#include "lm_config.hpp"
 #include "download_model.hpp"
 #include "nlohmann/json.hpp"
 #include <filesystem>
@@ -50,4 +51,7 @@ private:
     
     // Build download URLs for model files
     std::vector<std::pair<std::string, std::string>> build_download_list(const std::string& model_tag);
+
+    // bool check_model_compatibility(const std::string& model_tag);
+    bool check_model_compatibility(const std::string& model_tag);
 }; 

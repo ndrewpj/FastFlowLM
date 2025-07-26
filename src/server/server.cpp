@@ -11,6 +11,8 @@
 #include <sstream>
 #include <thread>
 #include <iostream>
+#include <iomanip>
+#include <locale>
 
 
 // Global NPU access control
@@ -29,6 +31,30 @@ std::string get_current_time_string() {
     return ss.str();
 }
 
+// Helper: Truncate a UTF-8 string by code points, not bytes
+std::string utf8_truncate_middle(const std::string& input, size_t head_count, size_t tail_count) {
+    // Walk the string to count code points
+    size_t codepoints = 0;
+    std::vector<size_t> positions; // positions of codepoint starts
+    for (size_t i = 0; i < input.size();) {
+        positions.push_back(i);
+        unsigned char c = static_cast<unsigned char>(input[i]);
+        size_t char_len = 1;
+        if ((c & 0x80) == 0) char_len = 1;
+        else if ((c & 0xE0) == 0xC0) char_len = 2;
+        else if ((c & 0xF0) == 0xE0) char_len = 3;
+        else if ((c & 0xF8) == 0xF0) char_len = 4;
+        else char_len = 1; // fallback: treat as single byte
+        i += char_len;
+        codepoints++;
+    }
+    if (codepoints <= head_count + tail_count) return input;
+    // Get head and tail
+    std::string head = input.substr(0, positions[head_count]);
+    std::string tail = input.substr(positions[codepoints - tail_count]);
+    return head + "..." + tail;
+}
+
 ///@brief brief print request
 ///@param request the request
 void brief_print_message_request(nlohmann::json request) {
@@ -38,7 +64,7 @@ void brief_print_message_request(nlohmann::json request) {
             if (message.contains("content")) {
                 std::string content = message["content"].get<std::string>();
                 if (content.size() > 20) {
-                    message["content"] = content.substr(0, 10) + "..." + content.substr(content.size() - 10);
+                    message["content"] = utf8_truncate_middle(content, 10, 10);
                 }
             }
         }
@@ -46,7 +72,7 @@ void brief_print_message_request(nlohmann::json request) {
     if (request.contains("message")){
         std::string content = request["message"]["content"].get<std::string>();
         if (content.size() > 20) {
-            request["message"]["content"] = content.substr(0, 10) + "..." + content.substr(content.size() - 10);
+            request["message"]["content"] = utf8_truncate_middle(content, 10, 10);
         }
     }
     header_print("LOG", "Body: ");
@@ -173,6 +199,7 @@ void HttpSession::write_response() {
     try{
         nlohmann::json response_json = json::parse(res_.body());
         brief_print_message_request(response_json);
+        // std::cout << "response_json: " << response_json.dump(4) << std::endl;
     } catch (const std::exception& e) {
         header_print("LOG", "Body: ");
         std::cout << res_.body() << std::endl;
@@ -412,8 +439,8 @@ void WebServer::handle_request(http::request<http::string_body>& req,
     } catch (const std::exception& e) {
         header_print("LOG", "Error parsing request body: " + std::string(e.what()));
     }
-    // brief_print_message_request(request_json);
-    std::cout << "request_json: " << request_json.dump() << std::endl;
+    brief_print_message_request(request_json);
+    // std::cout << "request_json: " << request_json.dump(4) << std::endl;
     
     std::string key = std::string(req.method_string()) + " " + std::string(req.target());
 

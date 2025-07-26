@@ -2,7 +2,7 @@
 /// \brief Q4NX class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.1.6
+/// \version 0.9.0
 /// \note This class is used to quantize the model.
 #pragma once
 

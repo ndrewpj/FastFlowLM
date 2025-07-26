@@ -1,13 +1,8 @@
-/// \file npu_instr_utils.cpp
-/// \brief NPU instruction utilities implementation
-/// \author FastFlowLM Team
-/// \date 2025-06-24
-/// \version 0.1.6
 #include "npu_utils/npu_instr_utils.hpp"
 
-/// \brief Constructor
-/// \param npu_seq the npu sequence
-/// \note The function will copy the npu sequence and parse it
+///@brief constructor
+///@param npu_seq the npu sequence
+///@note The function will copy the npu sequence and parse it
 npu_sequence::npu_sequence(npu_device device_gen, xrt::device* device, xrt::kernel* kernel, std::string app_name){
     this->device_gen = device_gen;
     this->setup_device(device_gen);
@@ -20,12 +15,12 @@ npu_sequence::npu_sequence(npu_device device_gen, xrt::device* device, xrt::kern
 }
 
 
-/// \brief Constructor
-/// \param filename the filename of the npu sequence or the name of the npu sequence if it is not a file
-/// \param from_file default is true, if true, the function will read the npu sequence from the file; if false, the function will use the filename as the name of the npu sequence;
-/// \note The function will read the npu sequence from the file and parse it
-/// \note If the file is not found, the function will throw an error
-/// \warning If the from_file is false, the function will not check if the filename is valid, and the npu sequence is empty
+///@brief constructor
+///@param filename the filename of the npu sequence or the name of the npu sequence if it is not a file
+///@param from_file default is true, if true, the function will read the npu sequence from the file; if false, the function will use the filename as the name of the npu sequence;
+///@note The function will read the npu sequence from the file and parse it
+///@note If the file is not found, the function will throw an error
+///@warning If the from_file is false, the function will not check if the filename is valid, and the npu sequence is empty
 void npu_sequence::from_file(std::string filename, bool is_binary){
     if (!this->_check_bo_valid()){
         throw std::runtime_error("NPU sequence is not binded to a device and kernel!");
@@ -73,16 +68,16 @@ void npu_sequence::from_file(std::string filename, bool is_binary){
 }
 
 
-/// \brief Name the npu sequence
-/// \param instr_name the name of the npu sequence
-/// \note The function will set the name of the npu sequence
-/// \warning The name of the npu sequence is not used in the npu sequence, it is only for the user to identify the npu sequence
+///@brief name the npu sequence
+///@param instr_name the name of the npu sequence
+///@note The function will set the name of the npu sequence
+///@warning The name of the npu sequence is not used in the npu sequence, it is only for the user to identify the npu sequence
 void npu_sequence::name_instr(std::string instr_name){
     this->instr_name = instr_name;
 }
 
-/// \brief Parse the npu sequence
-/// \note The function will parse the npu sequence and set the npu major, minor, dev gen, rows, cols, mem tile rows, instruction counts, instruction lines
+///@brief parse the npu sequence
+///@note The function will parse the npu sequence and set the npu major, minor, dev gen, rows, cols, mem tile rows, instruction counts, instruction lines
 void npu_sequence::seq2cmds(){
     if (!this->_check_bo_valid()){
         throw std::runtime_error("NPU sequence is not binded to a device and kernel!");
@@ -99,7 +94,7 @@ void npu_sequence::seq2cmds(){
     this->npu_mem_tile_rows = (seq[1] >> dev_mem_tile_rows_shift) & dev_mem_tile_rows_mask;
     this->instruction_counts = seq[2];
     this->instruction_lines = seq[3] / 4;
-    size_t i = 4;
+    int i = 4;
     while (i < this->npu_seq->size()){
         if (seq[i] == op_headers::dma_block_write){
             LOG_VERBOSE(1, "DMA block write");
@@ -116,7 +111,7 @@ void npu_sequence::seq2cmds(){
             i += cmd->get_op_lines();
             this->cmds.push_back(std::move(cmd));
         }
-        else if (seq[i] == op_headers::dma_issue_token_write){
+        else if (seq[i] == op_headers::dma_mask_write){
             LOG_VERBOSE(1, "DMA issue token write");
             std::unique_ptr<npu_issue_token_cmd> cmd = std::make_unique<npu_issue_token_cmd>();
             cmd->dump_cmd(seq + i);
@@ -143,8 +138,8 @@ void npu_sequence::seq2cmds(){
     }
 }
 
-/// \brief Print the npu sequence
-/// \note The function will print the npu major, minor, dev gen, rows, cols, mem tile rows, instruction counts, instruction lines and the commands in the npu sequence
+///@brief print the npu sequence
+///@note The function will print the npu major, minor, dev gen, rows, cols, mem tile rows, instruction counts, instruction lines and the commands in the npu sequence
 void npu_sequence::interpret(){
     int line_number = 0;
     MSG_BONDLINE(INSTR_PRINT_WIDTH);
@@ -166,18 +161,18 @@ void npu_sequence::interpret(){
     instr_print(line_number, seq[line_number], "Instruction lines: " + std::to_string(seq[line_number] / 4));
     line_number++;
 
-    for (size_t i = 0; i < this->cmds.size(); i++){
+    for (int i = 0; i < this->cmds.size(); i++){
         line_number = this->cmds[i]->print_cmd(seq + line_number, line_number, i);
     }
     MSG_BONDLINE(INSTR_PRINT_WIDTH);
 }
 
-/// \brief Convert the npu sequence to the npu format
-/// \note The function will convert the npu sequence to the npu format
-/// \note If the npu sequence is pre-generated(created from a file or other vector), the function will compare the npu sequence with the pre-generated npu sequence and print the difference
-/// \note If the npu sequence is not pre-generated, the function will update the npu sequence inside the class
-/// \warning If a npu sequence is not pre-generated, this function must be called before the npu sequence is used by the npu_app
-/// \return the npu sequence in std::vector<uint32_t>
+///@brief convert the npu sequence to the npu format
+///@note The function will convert the npu sequence to the npu format
+///@note If the npu sequence is pre-generated(created from a file or other vector), the function will compare the npu sequence with the pre-generated npu sequence and print the difference
+///@note If the npu sequence is not pre-generated, the function will update the npu sequence inside the class
+///@warning If a npu sequence is not pre-generated, this function must be called before the npu sequence is used by the npu_app
+///@return the npu sequence in std::vector<uint32_t>
 void npu_sequence::cmds2seq(){
     std::vector<uint32_t> npu_seq_generated;
     
@@ -195,12 +190,12 @@ void npu_sequence::cmds2seq(){
 
     this->instruction_counts = this->cmds.size();
     this->instruction_lines = 4;
-    for (size_t i = 0; i < this->cmds.size(); i++){
+    for (int i = 0; i < this->cmds.size(); i++){
         this->instruction_lines += this->cmds[i]->get_op_lines();
     }
     npu_seq_generated.push_back(this->instruction_counts);
     npu_seq_generated.push_back(this->instruction_lines << 2);
-    for (size_t i = 0; i < this->cmds.size(); i++){
+    for (int i = 0; i < this->cmds.size(); i++){
         this->cmds[i]->to_npu(npu_seq_generated);
     }
 
@@ -214,10 +209,6 @@ void npu_sequence::cmds2seq(){
 }
 
 
-/// \brief Write the npu sequence to a file
-/// \param filename the filename of the npu sequence
-/// \note The function will write the npu sequence to a file
-/// \note The function will write the npu sequence to a file
 void npu_sequence::write_out_sequence(std::string filename){
     assert(this->is_valid);
     std::ofstream file(filename, std::ios::binary);
@@ -229,18 +220,16 @@ void npu_sequence::write_out_sequence(std::string filename){
     file.close();
 }
 
-/// \brief Dump the npu sequence
-/// \return the npu sequence
 buffer<uint32_t> npu_sequence::dump(){
     buffer<uint32_t> copy_buf = buffer<uint32_t>(this->npu_seq->size());
     copy_buf.copy_from(*(this->npu_seq));
     return copy_buf;
 }
 
-/// \brief Setup the npu device
-/// \param device the npu device
-/// \note The function will setup the npu device
-/// \warning The function is only used for the npu sequence that is not pre-generated
+///@brief setup the npu device
+///@param device the npu device
+///@note The function will setup the npu device
+///@warning The function is only used for the npu sequence that is not pre-generated
 void npu_sequence::setup_device(npu_device device){
     if (device == device_npu1){
         // Might be wrong
@@ -261,10 +250,13 @@ void npu_sequence::setup_device(npu_device device){
     }
 }
 
-/// \brief Generate a npu write command
-/// \param tile the tile of the NPU
-/// \param addr the address of the register
-/// \param value the value to write to the register
+///@{
+/**
+ *  @brief generate a npu write command  
+ *  @param tile: the tile of the NPU
+ *  @param addr: the address of the register
+ *  @param value: the value to write to the register
+ */
 void npu_sequence::rtp_write(npu_tiles tile, uint32_t addr, uint32_t value){
     std::unique_ptr<npu_write_cmd> cmd = std::make_unique<npu_write_cmd>();
     uint32_t row = (tile >> 4) & 0xF;
@@ -279,19 +271,23 @@ void npu_sequence::rtp_write(npu_tiles tile, uint32_t addr, uint32_t value){
 }
 
 
-/// \brief Generate a npu dma memory copy command
-/// \param elem_size the size of the element in bytes
-/// \param arg_idx the index of the argument in the kernel
-/// \param channel_direction the direction of the channel
-/// \param tile the tile of the NPU
-/// \param bd_id the BD ID of the NPU
-/// \param it_channel the IT channel of the NPU
-/// \param offset the offset of the memory in the DDR
-/// \param size the size of the memory in the DDR
-/// \param stride the stride of the memory in the DDR
-/// \param packet_id the ID of the packet, -1 is disable it
-/// \param packet_type the type of the packet, mostly 0
-/// \param issue_token whether to issue a token, MM2S is false, S2MM is true by default
+///@{
+/**
+ *  @brief generate a npu dma memory copy command  
+ *  @param elem_size: the size of the element in bytes
+ *  @param arg_idx: the index of the argument in the kernel
+ *  @param channel_direction: the direction of the channel
+ *  @param tile: the tile of the NPU
+ *  @param bd_id: the BD ID of the NPU
+ *  @param it_channel: the IT channel of the NPU
+ *  @param offset: the offset of the memory in the DDR
+ *  @param size: the size of the memory in the DDR
+ *  @param stride: the stride of the memory in the DDR
+ *  @param packet_id: the ID of the packet, -1 is disable it
+ *  @param packet_type: the type of the packet, mostly 0
+ *  @param issue_token: whether to issue a token, MM2S is false, S2MM is true by default
+ *  @return void
+ */
 void npu_sequence::npu_dma_memcpy_nd(
     int elem_size,
     int arg_idx,
@@ -397,7 +393,7 @@ void npu_sequence::npu_dma_memcpy_nd(
     }
     cmd->issue_token = issue_token;
 
-    cmd->get_lock_rel_val = 128;
+    cmd->get_lock_rel_val = 0;
     cmd->get_lock_rel_id = 0;
     cmd->get_lock_acq_enable = 0;
     cmd->get_lock_acq_val = 0;
@@ -417,7 +413,6 @@ void npu_sequence::npu_dma_memcpy_nd(
     ddr_cmd->arg_offset *= elem_size;
     ddr_cmd->arg_idx = arg_idx;
 
-    this->cmds.push_back(std::move(ddr_cmd));
     // add issue token
     if (issue_token){
         std::unique_ptr<npu_issue_token_cmd> issue_token_cmd = std::make_unique<npu_issue_token_cmd>();
@@ -429,6 +424,7 @@ void npu_sequence::npu_dma_memcpy_nd(
         this->cmds.push_back(std::move(issue_token_cmd));
     }
     
+    this->cmds.push_back(std::move(ddr_cmd));
     // queue write
     std::unique_ptr<npu_write_cmd> queue_cmd = std::make_unique<npu_write_cmd>();
     queue_cmd->row = row;
@@ -442,11 +438,14 @@ void npu_sequence::npu_dma_memcpy_nd(
     this->cmds.push_back(std::move(queue_cmd));
 }
 
-/// \brief Generate a npu wait command
-/// \param tile the tile of the NPU
-/// \param channel_direction the direction of the channel
-/// \param it_channel the IT channel of the NPU
-/// \return void
+///@{
+/**
+ *  @brief generate a npu wait command  
+ *  @param tile: the tile of the NPU
+ *  @param channel_direction: the direction of the channel
+ *  @param it_channel: the IT channel of the NPU
+ *  @return void
+ */
 void npu_sequence::npu_dma_wait(npu_tiles tile, dma_direction channel_direction, npu_it_channel it_channel){
     this->is_valid = false;
     std::unique_ptr<npu_wait_cmd> wait_cmd = std::make_unique<npu_wait_cmd>();
@@ -459,18 +458,34 @@ void npu_sequence::npu_dma_wait(npu_tiles tile, dma_direction channel_direction,
     this->cmds.push_back(std::move(wait_cmd));
 }
 
-/// \brief Get the buffer object of the npu sequence
-/// \return the buffer object of the npu sequence
+///@{
+/**
+ *  @brief generate a npu maskwrite command  
+ *  @param tile: the tile of the NPU
+ *  @param addr: the address of the register
+ *  @param value: the value to write to the register
+ *  @param mask: the mask of the register
+ *  @return void
+ */
+void npu_sequence::npu_maskwrite(npu_tiles tile, uint32_t addr, uint32_t value, uint32_t mask){
+    this->is_valid = false;
+    std::unique_ptr<npu_maskwrite_cmd> maskwrite_cmd = std::make_unique<npu_maskwrite_cmd>();
+    uint32_t row = (tile >> 4) & 0xF;
+    uint32_t col = tile & 0xF;
+    maskwrite_cmd->row = row;
+    maskwrite_cmd->col = col;
+    maskwrite_cmd->addr = addr;
+    maskwrite_cmd->value = value;
+    maskwrite_cmd->mask = mask;
+    this->cmds.push_back(std::move(maskwrite_cmd));
+}
+
 xrt::bo& npu_sequence::bo(){
     assert(this->is_valid);
     assert(this->npu_seq != nullptr);
     return this->npu_seq->bo();
 }
 
-/// \brief Clear the commands in the npu sequence
-/// \note The function will clear the commands in the npu sequence
-/// \note The function will set the is_valid to false
-/// \warning The function will not clear the buffer object of the npu sequence
 void npu_sequence::clear_cmds(){
     this->cmds.clear();
     this->is_valid = false;
