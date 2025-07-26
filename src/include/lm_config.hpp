@@ -2,7 +2,7 @@
 /// \brief lm_config class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.1.6
+/// \version 0.9.0
 /// \note This class is used to store the model configuration.
 #pragma once
 
@@ -36,6 +36,7 @@ class LM_Config{
         std::string dequant_xclbin_name;
         std::string mm_engine_xclbin_name;
         std::string mha_engine_xclbin_name;
+        std::string flm_version;
         nlohmann::json _json_config;
 
         /// \brief from pretrained
@@ -73,6 +74,7 @@ class LM_Config{
             JSON_GET(this->dequant_xclbin_name, this->_json_config, "dequant_xclbin_name", "dequant.xclbin", std::string);
             JSON_GET(this->mm_engine_xclbin_name, this->_json_config, "mm_engine_xclbin_name", "mm.xclbin", std::string);
             JSON_GET(this->mha_engine_xclbin_name, this->_json_config, "mha_engine_xclbin_name", "attn.xclbin", std::string);
+            JSON_GET(this->flm_version, this->_json_config, "flm_version", "0.0.0", std::string);
             assert(this->vocab_size > 0);
             assert(this->hidden_size > 0);
             assert(this->intermediate_size > 0);
@@ -91,16 +93,17 @@ class LM_Config{
         std::string _str(){
             std::stringstream ss;
             ss << "  Model: "  << std::endl;
-            ss << "    model_name:           " << this->model_name << std::endl;
-            ss << "    head_dim:             " << this->head_dim << std::endl;
-            ss << "    hidden_size:          " << this->hidden_size << std::endl;
-            ss << "    hidden_act:           " << this->hidden_act << std::endl;
-            ss << "    intermediate_size:    " << this->intermediate_size << std::endl;
-            ss << "    num_attention_heads:  " << this->num_attention_heads << std::endl;
-            ss << "    num_hidden_layers:    " << this->num_hidden_layers << std::endl;
-            ss << "    num_key_value_heads:  " << this->num_key_value_heads << std::endl;
-            ss << "    pretraining_tp:       " << this->pretraining_tp << std::endl;
-            ss << "    rms_norm_eps:         " << this->rms_norm_eps << std::endl;
+            ss << "    model_name:             " << this->model_name << std::endl;
+            ss << "    compatible_flm_version: >= " << this->flm_version << std::endl;
+            ss << "    head_dim:               " << this->head_dim << std::endl;
+            ss << "    hidden_size:            " << this->hidden_size << std::endl;
+            ss << "    hidden_act:             " << this->hidden_act << std::endl;
+            ss << "    intermediate_size:      " << this->intermediate_size << std::endl;
+            ss << "    num_attention_heads:    " << this->num_attention_heads << std::endl;
+            ss << "    num_hidden_layers:      " << this->num_hidden_layers << std::endl;
+            ss << "    num_key_value_heads:    " << this->num_key_value_heads << std::endl;
+            ss << "    pretraining_tp:         " << this->pretraining_tp << std::endl;
+            ss << "    rms_norm_eps:           " << this->rms_norm_eps << std::endl;
             return ss.str();
         }
         LM_Config(){}

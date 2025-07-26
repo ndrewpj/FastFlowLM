@@ -1,10 +1,5 @@
-/// \file npu_cmd.hpp
-/// \brief npu_cmd class
-/// \author FastFlowLM Team
-/// \date 2025-06-24
-/// \version 0.1.6
-/// \note This class is used to generate the npu command.
-#pragma once
+#ifndef __NPU_CMD_HPP__
+#define __NPU_CMD_HPP__
 
 #include <stdlib.h>
 #include <iostream>
@@ -23,7 +18,7 @@ const int INSTR_PRINT_WIDTH = 80;
 typedef enum: uint32_t{
     queue_write = 0x00,
     dma_block_write = 0x01,
-    dma_issue_token_write = 0x03,
+    dma_mask_write = 0x03,
     dma_sync_write = 0x80,
     dma_ddr_patch_write = 0x81,
 } op_headers;
@@ -77,3 +72,7 @@ struct npu_cmd{
     ///@return the number of lines of the command
     virtual int get_op_lines() = 0;
 };
+
+
+
+#endif

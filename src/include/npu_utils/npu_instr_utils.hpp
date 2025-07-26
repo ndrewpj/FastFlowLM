@@ -1,10 +1,5 @@
-/// \file npu_instr_utils.hpp
-/// \brief npu_instr_utils class
-/// \author FastFlowLM Team
-/// \date 2025-06-24
-/// \version 0.1.6
-/// \note This class is used to generate the npu instruction sequence.
-#pragma once
+#ifndef __NPU_INSTR_UTILS_HPP__
+#define __NPU_INSTR_UTILS_HPP__
 
 #include <cstdlib>
 #include <iostream>
@@ -23,6 +18,7 @@
 #include "instr_utils/npu_cmd_write_dma.hpp"
 #include "instr_utils/npu_cmd_issue_token.hpp"
 #include "instr_utils/npu_cmd_wait.hpp"
+#include "instr_utils/npu_cmd_maskwrite.hpp"
 
 // This function is used to interperate instructions
 // Useful files:
@@ -149,6 +145,7 @@ class npu_sequence{
             bool issue_token = false
         );
         void npu_dma_wait(npu_tiles tile, dma_direction channel_direction, npu_it_channel it_channel);
+        void npu_maskwrite(npu_tiles tile, uint32_t addr, uint32_t value, uint32_t mask);
         xrt::bo& bo();
         void clear_cmds();
         void sync() {this->npu_seq->sync_to_device();}
@@ -196,3 +193,5 @@ class npu_sequence{
             return true;
         }
 };
+
+#endif

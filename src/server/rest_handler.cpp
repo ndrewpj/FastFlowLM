@@ -63,7 +63,7 @@ void RestHandler::handle_generate(const json& request,
         json options = request.value("options", json::object());
         int temperature = options.value("temperature", 0.6);
         int top_p = options.value("top_p", 0.9);
-        int top_k = options.value("top_k", 40);
+        int top_k = options.value("top_k", 5);
         float frequency_penalty = options.value("frequency_penalty", 0.1);
         int length_limit = request.value("max_tokens", -1);
         bool enable_thinking = request.value("think", false);
@@ -135,9 +135,9 @@ void RestHandler::handle_chat(const json& request,
         json options = request.value("options", json::object());
         float temperature = options.value("temperature", 0.6);
         float top_p = options.value("top_p", 0.9);
-        int top_k = options.value("top_k", 40);
+        int top_k = options.value("top_k", 5);
         float frequency_penalty = options.value("frequency_penalty", 0.1);
-        int length_limit = request.value("max_tokens", -1);
+        int length_limit = options.value("num_predict", -1);
         bool enable_thinking = request.value("think", false);
         auto load_start_time = time_utils::now();
         ensure_model_loaded(model);
@@ -384,7 +384,7 @@ void RestHandler::handle_openai_chat_completion(const json& request,
         json options = request.value("options", json::object());
         float temperature = request.value("temperature", 0.6);
         float top_p = request.value("top_p", 0.9);
-        int top_k = request.value("top_k", 40);
+        int top_k = request.value("top_k", 5);
         float frequency_penalty = request.value("frequency_penalty", 0.1);
         int length_limit = request.value("max_tokens", -1);
         bool enable_thinking = request.value("think", false);

@@ -7,6 +7,7 @@
                 "url": "https://huggingface.co/FastFlowLM/Llama-3.2-1B-NPU2",
                 "modified_at": "2025-05-30T00:00:00Z",
                 "size": 1000000000,
+                "flm_min_version": "0.1.8",
                 "default_context_length": 131072,
                 "details": {
                     "format": "NPU2",
@@ -21,6 +22,7 @@
                 "url": "https://huggingface.co/FastFlowLM/Llama-3.2-3B-NPU2",
                 "modified_at": "2025-05-30T00:00:00Z",
                 "size": 3000000000,
+                "flm_min_version": "0.1.8",
                 "default_context_length": 65536,
                 "details": {
                     "format": "NPU2",
@@ -37,6 +39,7 @@
                 "url": "https://huggingface.co/FastFlowLM/Llama-3.1-8B-NPU2",
                 "modified_at": "2025-05-30T00:00:00Z",
                 "size": 8000000000,
+                "flm_min_version": "0.1.8",
                 "default_context_length": 32768,
                 "details": {
                     "format": "NPU2",
@@ -53,6 +56,7 @@
                 "url": "https://huggingface.co/FastFlowLM/Deepseek-R1-Distill-Llama-8B-NPU2",
                 "modified_at": "2025-05-30T00:00:00Z",
                 "size": 8000000000,
+                "flm_min_version": "0.1.8",
                 "default_context_length": 32768,
                 "details": {
                     "format": "NPU2",
@@ -69,6 +73,7 @@
                 "url": "https://huggingface.co/FastFlowLM/Qwen3-0.6B-NPU2",
                 "modified_at": "2025-05-30T00:00:00Z",
                 "size": 600000000,
+                "flm_min_version": "0.1.8",
                 "default_context_length": 32768,
                 "details": {
                     "format": "NPU2",
@@ -84,6 +89,7 @@
                 "url": "https://huggingface.co/FastFlowLM/Qwen3-1.7B-NPU2",
                 "modified_at": "2025-05-30T00:00:00Z",
                 "size": 1700000000,
+                "flm_min_version": "0.1.8",
                 "default_context_length": 32768,
                 "details": {
                     "format": "NPU2",
@@ -99,6 +105,7 @@
                 "url": "https://huggingface.co/FastFlowLM/Qwen3-4B-NPU2",
                 "modified_at": "2025-05-30T00:00:00Z",
                 "size": 4000000000,
+                "flm_min_version": "0.1.8",
                 "default_context_length": 32768,
                 "details": {
                     "format": "NPU2",
@@ -114,6 +121,7 @@
                 "url": "https://huggingface.co/FastFlowLM/Qwen3-8B-NPU2",
                 "modified_at": "2025-05-30T00:00:00Z",
                 "size": 8000000000,
+                "flm_min_version": "0.1.8",
                 "default_context_length": 40960,
                 "details": {
                     "format": "NPU2",

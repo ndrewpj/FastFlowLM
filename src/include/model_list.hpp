@@ -2,7 +2,7 @@
 /// \brief model_list class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.1.6
+/// \version 0.9.0
 /// \note This class is used to manage the model list.
 #pragma once
 #include "nlohmann/json.hpp"
@@ -12,10 +12,8 @@
 #include <vector>
 #include "utils/utils.hpp"
 
-/// \brief model_list class
-/// \author FastFlowLM Team
-/// \date 2025-06-24
-/// \version 0.1.6
+#define __FLM_VERSION__ "0.9.0"
+
 /// \note This class is used to manage the model list.
 class model_list {
     public:

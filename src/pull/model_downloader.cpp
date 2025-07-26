@@ -2,7 +2,7 @@
 /// \brief Model downloader class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.1.6
+/// \version 0.9.0
 /// \note This class is used to download models from the huggingface
 #include "model_downloader.hpp"
 #include "utils/utils.hpp"
@@ -22,9 +22,55 @@ ModelDownloader::ModelDownloader(model_list& models)
 /// \return true if the model is downloaded, false otherwise
 bool ModelDownloader::is_model_downloaded(const std::string& model_tag) {
     auto missing_files = get_missing_files(model_tag);
+    bool is_config_file_missing = std::find(missing_files.begin(), missing_files.end(), "config.json") != missing_files.end();
+    if (!is_config_file_missing) {
+        if (!check_model_compatibility(model_tag)) {
+            header_print("FLM", "Model is not compatible with the current FLM version. Force re-download.");
+            remove_model(model_tag);
+            return false;
+        }
+    }
     return missing_files.empty();
 }
 
+/// \brief Check if the model is compatible with the current FLM version
+/// \param model_tag the model tag
+/// \return true if the model is compatible, false otherwise
+bool ModelDownloader::check_model_compatibility(const std::string& model_tag) {
+    auto model_info = supported_models.get_model_info(model_tag);
+    LM_Config config;
+    config.from_pretrained(this->supported_models.get_model_path(model_tag));
+    std::string flm_version = config.flm_version;
+    std::string flm_min_version = model_info["flm_min_version"];
+    int l_l, m_l, r_l; //left, middle, right on local version
+    int l_r, m_r, r_r; //left, middle, right on requried version
+    int l_f, m_f, r_f; //left, middle, right on flm version
+    sscanf(__FLM_VERSION__, "%d.%d.%d", &l_f, &m_f, &r_f);
+    sscanf(flm_version.c_str(), "%d.%d.%d", &l_l, &m_l, &r_l);
+    sscanf(flm_min_version.c_str(), "%d.%d.%d", &l_r, &m_r, &r_r);
+    uint32_t local_version_u32 = l_l * 1000000 + m_l * 1000 + r_l;
+    uint32_t required_version_u32 = l_r * 1000000 + m_r * 1000 + r_r;
+    uint32_t flm_version_u32 = l_f * 1000000 + m_f * 1000 + r_f;
+    bool is_future_version = false;
+    if (local_version_u32 > flm_version_u32) {
+        is_future_version = true;
+    }
+    bool is_compatible = true;
+    if (local_version_u32 < required_version_u32) {
+        is_compatible = false;
+    }
+    if (is_future_version) {
+        header_print("WARNING", "Local model version: " + flm_version + " > " + __FLM_VERSION__);
+        header_print("WARNING", "This model may not be compatible with the current FLM version.");
+        header_print("WARNING", "Please update FLM to the latest version.");
+        exit(0);
+    }
+    if (!is_compatible) {
+        header_print("FLM", "Local model version: " + flm_version + " < " + flm_min_version);
+        return false;
+    }
+    return is_compatible;
+}
 /// \brief Pull the model
 /// \param model_tag the model tag
 /// \param force_redownload true if the model should be downloaded even if it is already downloaded
@@ -43,6 +89,11 @@ bool ModelDownloader::pull_model(const std::string& model_tag, bool force_redown
         if (!force_redownload && is_model_downloaded(model_tag)) {
             header_print("FLM", "Model already downloaded. Use --force to re-download.");
             return true;
+        }
+
+        // If force, remove the model first
+        if (force_redownload) {
+            remove_model(model_tag);
         }
         
         // Get missing files
