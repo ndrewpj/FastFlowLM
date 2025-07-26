@@ -8,6 +8,8 @@ nav_order: 1
 
 This section reports the decoding speed and power usage of LLMs on different hardware: NPU (FastFlowLM), NPU (Ryzen AI Software), iGPU (LM Studio), and CPU (LM Studio).
 
+> **Note:** Results are based on FastFlowLM v0.1.3. Newer versions may deliver up to 20% improved performance.
+
 ---
 
 ### 🚀 Decoding Speed (Tokens per Second, or TPS, at different sequence lengths)
