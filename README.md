@@ -76,6 +76,8 @@ FastFlowLM vs AMD’s official stack (Ryzen AI software 1.4) — **real-time spe
 
 A packaged Windows installer is available here: [**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/download/v0.1.8/flm-setup-v0.1.8.exe). For more details, see the [release notes](https://github.com/FastFlowLM/FastFlowLM/releases/).
 
+📺 [Watch the quick start video](https://www.youtube.com/watch?v=YkwFQ9-cc3I&list=PLf87s9UUZrJp4r3JM4NliPEsYuJNNqFAJ)
+
 > ⚠️ Ensure NPU driver is **32.0.203.258** or later (check via Task Manager→Performance→NPU or Device Manager) — [Driver Download](https://www.amd.com/en/support).
 
 After installation, open **PowerShell**. To run a model in terminal (CLI or Interactive Mode):
@@ -100,7 +102,7 @@ Then, run
 ```
 > For more details about NPU power mode, refer to the [AMD XRT SMI Documentation](https://ryzenai.docs.amd.com/en/latest/xrt_smi.html).
 
-For detailed instructions and video guides, click [Documentation](https://docs.fastflowlm.com/).
+For detailed instructions, click [Documentation](https://docs.fastflowlm.com/).
 
 ---
 
