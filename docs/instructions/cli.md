@@ -46,7 +46,7 @@ This code forces a re-download of the model, overwriting the current version.
 flm pull llama3.2:3b --force
 ```
 
-> "force" is only needed when a major flm update is released and installed. Proceed with Caution.
+> "force" is only needed when a major `flm` update is released and installed. Proceed with Caution.
 
 ---
 
