@@ -166,29 +166,12 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 
 ---
 
-## 🔒 Proprietary Kernel Optimizations
+## 📄 License
 
-FastFlowLM uses **proprietary low-level kernel code** optimized for AMD Ryzen™ NPUs.  
-> These kernels are **not open source**, but are included as binaries for seamless integration.
+- All orchestration code and CLI tools are open-source under the [MIT License](./LICENSE).
+- NPU-accelerated kernels are **proprietary binaries**, free for **non-commercial use** only — see [LICENSE_BINARY.txt](./LICENSE_BINARY.txt) and [TERMS.md](./TERMS.md) for details.
 
-The rest of the stack — CLI, model runner, orchestration — is open and developer-friendly.
-
----
-
-## 📝 Licensing & Contact
-
-- 🆓 **Deep-optimized FastFlowLM kernels** are **free for non-commercial use**  
-- 💼 **Interested in commercial use?** Email us at [info@fastflowlm.com](mailto:info@fastflowlm.com)  
-- 📦 **Want to bring your own model?** We can optimize it for FastFlowLM — just reach out!
-
----
-
-## License
-
-This repository contains two types of components:
-
-- **Open-source components** (e.g., CLI, orchestration code) are released under the **MIT License**.
-- **Proprietary binaries** (used for low-level NPU acceleration; patent pending) are **not included** in this repository and are covered by **separate licensing terms**.
+For commercial use or licensing inquiries, email us: info@fastflowlm.com
 
 ---
 
