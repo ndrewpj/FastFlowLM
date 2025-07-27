@@ -76,7 +76,7 @@ FastFlowLM vs AMD’s official stack (Ryzen AI software 1.4) — **real-time spe
 
 ## ⚡ Quick Start
 
-A packaged Windows installer is available here: [**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/download/v0.9.0/flm-setup-v0.9.0.exe). For more details, see the [release notes](https://github.com/FastFlowLM/FastFlowLM/releases/).
+A packaged Windows installer is available here: [**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/latest/download/flm-setup.exe). For more details, see the [release notes](https://github.com/FastFlowLM/FastFlowLM/releases/).
 
 📺 [Watch the quick start video](https://www.youtube.com/watch?v=YkwFQ9-cc3I&list=PLf87s9UUZrJp4r3JM4NliPEsYuJNNqFAJ)
 
