@@ -3,7 +3,7 @@
 This project contains two types of components:
 
 ## 1. Open-Source Code (MIT License)
-All source code in this repository — including the command-line interface (CLI), orchestration scripts, and supporting utilities — is licensed under the [MIT License](./LICENSE). You are free to use, modify, and distribute this code for personal or commercial purposes.
+All source code in this repository — including the command-line interface (CLI), orchestration scripts, and supporting utilities — is licensed under the [MIT License](./LICENSE_RUNTIME.txt). You are free to use, modify, and distribute this code for personal or commercial purposes.
 
 ## 2. Proprietary Binaries (NPU Kernels)
 The binary components — including the AMD NPU-accelerated kernels — are **NOT open source** and are **protected by pending patents**. These binaries are provided under the following terms:
