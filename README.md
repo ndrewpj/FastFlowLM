@@ -193,6 +193,7 @@ This repository contains two types of components:
 ---
 
 💬 **Have feedback or want early access? [Open an issue](https://github.com/fastflowlm/fastflowlm/issues/new) or [Join our Discord community](https://discord.gg/Sze3Qsv5)
+
 ---
 
 ## 🙏 Acknowledgements
