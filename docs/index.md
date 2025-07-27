@@ -19,6 +19,8 @@ Fast, power-efficient, and 100% offline.
 🔐 **Login**: `guest@flm.npu`  
 🔑 **Password**: `0000`
 
+📺 [Watch this short video](https://www.youtube.com/watch?v=0AhkX2ZLu7Y&list=PLf87s9UUZrJp4r3JM4NliPEsYuJNNqFAJ&index=2) to see how to try the remote demo in just a few clicks.
+
 > Alternatively, **sign up** with your own credentials instead of using the shared guest account.
 > ⚠️ Some universities or companies may **block access** to the test drive site. If it doesn't load over Wi-Fi, try switching to a **cellular network**.  
 > Real-time demo powered by **FastFlowLM + Open WebUI** — no downloads, no installs.  
