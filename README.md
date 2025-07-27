@@ -21,6 +21,7 @@ FastFlowLM supports full context lengths — up to 128K tokens with LLaMA 3.1 an
 
 For full installation instructions, usage examples, and developer guides, please visit:  
 👉 [docs.fastflowlm.com](https://docs.fastflowlm.com/)
+💬 [Join our Discord community](https://discord.gg/Sze3Qsv5)
 
 ---
 
@@ -187,8 +188,7 @@ This repository contains two types of components:
 
 ---
 
-💬 **Have feedback or want early access? [Open an issue](https://github.com/fastflowlm/fastflowlm/issues/new) or reach out!**
-
+💬 **Have feedback or want early access? [Open an issue](https://github.com/fastflowlm/fastflowlm/issues/new) or [Join our Discord community](https://discord.gg/Sze3Qsv5)
 ---
 
 ## 🙏 Acknowledgements
