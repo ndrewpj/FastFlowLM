@@ -167,7 +167,7 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 
 ## 📄 License
 
-- All orchestration code and CLI tools are open-source under the [MIT License](./LICENSE).
+- All orchestration code and CLI tools are open-source under the [MIT License](./LICENSE_RUNTIME.txt).
 - NPU-accelerated kernels are **proprietary binaries**, free for **non-commercial use** only — see [LICENSE_BINARY.txt](./LICENSE_BINARY.txt) and [TERMS.md](./TERMS.md) for details.
 
 For commercial use or licensing inquiries, email us: info@fastflowlm.com
