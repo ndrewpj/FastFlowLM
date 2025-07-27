@@ -19,9 +19,8 @@ FastFlowLM supports full context lengths — up to 128K tokens with LLaMA 3.1 an
 
 > FastFlowLM supports all Ryzen™ AI Series chips with XDNA2 NPUs (Strix, Strix Halo, and Kraken).
 
-For full installation instructions, usage examples, and developer guides, please visit:  
-👉 [docs.fastflowlm.com](https://docs.fastflowlm.com/)
-💬 [Join our Discord community](https://discord.gg/Sze3Qsv5)
+📘 **Docs:** [docs.fastflowlm.com](https://docs.fastflowlm.com)  
+💬 **Discord:** [discord.gg/Sze3Qsv5](https://discord.gg/Sze3Qsv5)
 
 ---
 
