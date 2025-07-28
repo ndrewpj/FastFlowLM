@@ -91,7 +91,7 @@ gc.collect()
 - 🧠 You can replace `"llama3.2:1b"` with any other model available via `flm run` or `flm pull`.
 - 🖥 Make sure the FastFlowLM server is running in the background (`flm serve ...`).
 - 🔒 No real API key is needed — just pass `"flm"` as a placeholder.
-- ⚡ FastFlowLM runs fully offline and is optimized for AMD Ryzen AI NPUs.
+- ⚡ FastFlowLM runs fully offline and is optimized for AMD Ryzen™ AI NPUs.
 
 > ✅ This setup is perfect for quick offline LLM testing using standard OpenAI tooling.
 
