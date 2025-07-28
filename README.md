@@ -28,21 +28,21 @@ FastFlowLM supports full context lengths — up to 128K tokens with LLaMA 3.1 an
 
 ## 📺 Demo Videos
 
-FastFlowLM vs AMD’s official stack (Ryzen AI software 1.4) — **real-time speedup and power efficiency**: 
+FastFlowLM vs AMD’s official stack (Ryzen™ AI software 1.4) — **real-time speedup and power efficiency**: 
 
-- Same prompt (length: 1835 tokens), same model (LLaMA 3.2 1B model; weights int4; activation bf16), running on the same machine (AMD Ryzen AI 5 340 NPU with 32 GB SO-DIMM DDR5 5600 MHz memory)
+- Same prompt (length: 1835 tokens), same model (LLaMA 3.2 1B model; weights int4; activation bf16), running on the same machine (AMD Ryzen™ AI 5 340 NPU with 32 GB SO-DIMM DDR5 5600 MHz memory)
 - Real-time CPU, iGPU, NPU usage, and power consumption shown (Windows task manager + HWINFO)
 
 <table>
   <tr>
     <td valign="top">
-      <h4>🔹 FastFlowLM vs Ryzen AI SW 1.4 (NPU-only)</h4>
+      <h4>🔹 FastFlowLM vs Ryzen™ AI SW 1.4 (NPU-only)</h4>
       <a href="https://youtu.be/kv31FZ_q0_I?list=PLf87s9UUZrJp4r3JM4NliPEsYuJNNqFAJ">
         <img src="https://img.youtube.com/vi/kv31FZ_q0_I/0.jpg" alt="Demo: FastFlowLM vs OGA" width="320">
       </a>
     </td>
     <td valign="top">
-      <h4>🔹 FastFlowLM vs Ryzen AI SW 1.4 (Hybrid)</h4>
+      <h4>🔹 FastFlowLM vs Ryzen™ AI SW 1.4 (Hybrid)</h4>
       <a href="https://youtu.be/PFjH-L_Kr0w?list=PLf87s9UUZrJp4r3JM4NliPEsYuJNNqFAJ">
         <img src="https://img.youtube.com/vi/PFjH-L_Kr0w/0.jpg" alt="Demo: FastFlowLM vs GAIA" width="320">
       </a>
@@ -56,7 +56,7 @@ FastFlowLM vs AMD’s official stack (Ryzen AI software 1.4) — **real-time spe
 
 ## 🧪 Test Drive (Remote Demo)
 
-🚀 Don’t have a Ryzen AI PC? Instantly try FastFlowLM on a live AMD Ryzen™ AI 5 340 NPU with 32 GB memory ([spec](https://www.amazon.com/4X4-BOX-AI340-Display-Support-Copilot/dp/B0F2GFLF67/ref=sr_1_5?crid=1X16RDUCQ2497&dib=eyJ2IjoiMSJ9.C5GS4xMl_kkJ7Yr6dNFi6g.Dfj_l9Dk1yuIBjppqmKSqNAAPQc1F4Mu3zJ9-MDlszw&dib_tag=se&keywords=4x4+box+ai340&qid=1752010554&sprefix=www.amazon.com%2F4X4-BOX-AI340%2Caps%2C176&sr=8-5)) — no setup needed:
+🚀 Don’t have a Ryzen™ AI PC? Instantly try FastFlowLM on a live AMD Ryzen™ AI 5 340 NPU with 32 GB memory ([spec](https://www.amazon.com/4X4-BOX-AI340-Display-Support-Copilot/dp/B0F2GFLF67/ref=sr_1_5?crid=1X16RDUCQ2497&dib=eyJ2IjoiMSJ9.C5GS4xMl_kkJ7Yr6dNFi6g.Dfj_l9Dk1yuIBjppqmKSqNAAPQc1F4Mu3zJ9-MDlszw&dib_tag=se&keywords=4x4+box+ai340&qid=1752010554&sprefix=www.amazon.com%2F4X4-BOX-AI340%2Caps%2C176&sr=8-5)) — no setup needed:
 
 🌐 **Launch Now**: [https://open-webui.testdrive-fastflowlm.com/](https://open-webui.testdrive-fastflowlm.com/)  
 🔐 **Login**: `guest@flm.npu`  
