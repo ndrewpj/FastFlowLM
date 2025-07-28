@@ -7,7 +7,7 @@ has_children: false
 ## ⚙️ System Requirements
 
 - 🧠 **Memory:** 32 GB RAM or higher recommended  
-- ⚡ **CPU/NPU:** AMD Ryzen AI laptop with XDNA2 NPU  
+- ⚡ **CPU/NPU:** AMD Ryzen™ AI laptop with XDNA2 NPU  
 - 🖥️ **OS:** Windows 11
 
 > While FastFlowLM can run with 16 GB RAM, complex models (e.g., 3B or 8B) may require up to 32 GB for optimal performance and longer context length (more kv cache).

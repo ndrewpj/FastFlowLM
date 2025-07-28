@@ -14,7 +14,7 @@ FastFlowLM is a lightweight runtime for deploying LLMs like LLaMA, Qwen and Deep
 
 FastFlowLM supports full context lengths — up to 128K tokens with LLaMA 3.1 and 3.2.
 
-**Just like Ollama — but purpose-built and deeply optimized for the Ryzen™ NPU**
+**Just like Ollama — but purpose-built and deeply optimized for the Ryzen™ AI NPU**
 
 > FastFlowLM supports all Ryzen™ AI Series chips with XDNA2 NPUs (Strix, Strix Halo, and Kraken).
 
@@ -123,7 +123,7 @@ No model rewrites, no tuning — it just works.
 
 ## ✅ Features
 
-- **Runs fully on AMD Ryzen™ NPU** — no GPU or CPU load  
+- **Runs fully on AMD Ryzen™ AI NPU** — no GPU or CPU load  
 - **Developer-first flow** — like Ollama, but optimized for NPU  
 - **Support for long context windows** — up to 128k tokens (e.g., LLaMA 3.1/3.2)  
 - **No low-level tuning required** — You focus on your app, we handle the rest
