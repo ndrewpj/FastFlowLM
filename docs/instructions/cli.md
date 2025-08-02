@@ -80,10 +80,7 @@ flm run llama3.2:1b "C:\Users\Public\Desktop\alice_in_wonderland.txt"
 
 👉 [Download the sample prompt](https://github.com/FastFlowLM/FastFlowLM/blob/main/assets/alice_in_wonderland.txt)  
 
-```
-### Memory Requirements and Errors
-
-Please note that a model’s supported context length is limited by available DRAM capacity. For example, with **32 GB** of DRAM, **LLaMA 3.1:8B** cannot run beyond a **32K** context length. For the full **128K** context, we recommend larger memory system.
+> ⚠️ **Note:**: a model’s supported context length is limited by available DRAM capacity. For example, with **32 GB** of DRAM, **LLaMA 3.1:8B** cannot run beyond a **32K** context length. For the full **128K** context, we recommend larger memory system.
 
 If DRAM is heavily used by other programs while running **FastFlowLM**, you may encounter errors due to insufficient memory, such as:
 
@@ -92,6 +89,7 @@ If DRAM is heavily used by other programs while running **FastFlowLM**, you may 
 Even after the video memory manager split the DMA buffer, the video memory manager
 could not page-in all of the required allocations into video memory at the same time.
 The device is unable to continue.
+```
 
 ---
 
@@ -229,3 +227,20 @@ Type `/think` to toggle Think Mode on or off interactively in the CLI.
 
 > ⚠️ **Note:** Providing invalid or extreme hyperparameter values may cause inference errors.
 > `generate_limit` sets an upper limit on the number of tokens that can be generated for each response.
+
+---
+
+### 🛠 Change Default Context Length
+
+You can find more information about available models here:  
+
+```
+
+C:\Program Files\flm\model_list.json
+
+```
+
+You can also change the `default_context_length` setting.
+
+> ⚠️ **Note:** Be cautious! The system reserves DRAM space based on the context length you set.  
+> Setting a longer default context length may cause errors on systems with smaller DRAM.
