@@ -78,6 +78,21 @@ Load input from a local text file:
 flm run llama3.2:1b "C:\Users\Public\Desktop\alice_in_wonderland.txt"
 ```
 
+👉 [Download the sample prompt](https://github.com/FastFlowLM/FastFlowLM/blob/main/assets/alice_in_wonderland.txt)  
+
+```
+### Memory Requirements and Errors
+
+Please note that a model’s supported context length is limited by available DRAM capacity. For example, with **32 GB** of DRAM, **LLaMA 3.1:8B** cannot run beyond a **32K** context length. For the full **128K** context, we recommend larger memory system.
+
+If DRAM is heavily used by other programs while running **FastFlowLM**, you may encounter errors due to insufficient memory, such as:
+
+```error
+[XRT] ERROR: Failed to submit the command to the hw queue (0xc01e0200):
+Even after the video memory manager split the DMA buffer, the video memory manager
+could not page-in all of the required allocations into video memory at the same time.
+The device is unable to continue.
+
 ---
 
 ### 🌐 Start Server Mode
