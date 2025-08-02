@@ -91,6 +91,24 @@ could not page-in all of the required allocations into video memory at the same 
 The device is unable to continue.
 ```
 
+> 🤔 Interested in checking the DRAM usage?
+
+**Method 1 – Task Manager (Quick View)**  
+1. Press **Ctrl + Shift + Esc** (or **Ctrl + Alt + Del** and select **Task Manager**).  
+2. Go to the **Performance** tab.  
+3. Click **Memory** to see total, used, and available DRAM, as well as usage percentage.  
+
+**Method 2 – Resource Monitor (Detailed View)**  
+1. Press **Windows + R**.  
+2. Type:  
+
+   \`\`\`
+   resmon
+   \`\`\`
+
+3. Press **Enter**.  
+4. Go to the **Memory** tab to view detailed DRAM usage and a per-process breakdown.
+
 ---
 
 ### 🌐 Start Server Mode
