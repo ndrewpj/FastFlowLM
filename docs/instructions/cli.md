@@ -253,12 +253,13 @@ Type `/think` to toggle Think Mode on or off interactively in the CLI.
 You can find more information about available models here:  
 
 ```
-
 C:\Program Files\flm\model_list.json
-
 ```
 
 You can also change the `default_context_length` setting.
 
 > ⚠️ **Note:** Be cautious! The system reserves DRAM space based on the context length you set.  
 > Setting a longer default context length may cause errors on systems with smaller DRAM.
+> Also, each model has its own context length limit (examples below).  
+> - **Qwen3** → up to **32k** tokens  
+> - **LLaMA 3.1 / 3.2** → up to **128k** tokens
