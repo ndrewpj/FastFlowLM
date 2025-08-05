@@ -1,8 +1,8 @@
 /// \file main.cpp
 /// \brief Main entry point for the FLM application
 /// \author FastFlowLM Team
-/// \date 2025-06-24
-/// \version 0.9.0
+/// \date 2025-08-05
+/// \version 0.9.2
 /// \note This is a header file for the main entry point
 #pragma once
 #include "runner.hpp"
@@ -110,6 +110,7 @@ int main(int argc, char* argv[]) {
     std::string command;
     std::string tag;
     std::string filename = "";
+    int allowed_length = -1;
     bool force_redownload = false;
     // Parse the command line arguments
     if (argc < 2 || argc > 4) {
@@ -134,8 +135,11 @@ int main(int argc, char* argv[]) {
             std::cout << "Usage: " << argv[0] << " run <model_tag>" << std::endl;
             return 1;
         }
-        if (argc == 4){
+        if (argc >= 4){
             filename = argv[3];
+        }
+        if (argc >= 5){
+            allowed_length = std::stoi(argv[4]);
         }
         tag = argv[2];
     }
@@ -164,7 +168,7 @@ int main(int argc, char* argv[]) {
         return 0;
     }
     else if (command == "help") {
-        std::cout << "Usage: " << argv[0] << " <command: run <model_tag> <file_name>" << std::endl;
+        std::cout << "Usage: " << argv[0] << " <command: run <model_tag> <file_name> [length]" << std::endl;
         std::cout << "Usage: " << argv[0] << " <command: serve <model_tag>" << std::endl;
         std::cout << "Usage: " << argv[0] << " <command: pull <model_tag> [--force]" << std::endl;
         std::cout << "Usage: " << argv[0] << " <command: help" << std::endl;
@@ -243,9 +247,12 @@ int main(int argc, char* argv[]) {
                 header_print("FLM", "Prefill starts, " << prompts.size() << " tokens");
                 std::cout << std::endl;
                 chat_meta_info meta_info;
-                chat.insert(meta_info, prompts);
+                bool success = chat.insert(meta_info, prompts);
+                if (!success){
+                    return 1;
+                }
                 chat.stop_ttft_timer();
-                chat.generate(meta_info, -1, std::cout);
+                chat.generate(meta_info, allowed_length, std::cout);
                 chat.stop_total_timer();
                 std::cout << std::endl;
                 chat.verbose();

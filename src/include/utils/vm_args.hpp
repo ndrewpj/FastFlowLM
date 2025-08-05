@@ -2,7 +2,7 @@
 /// \brief vm_args class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.0
+/// \version 0.9.2
 /// \note This class is used to parse the command line arguments.
 #pragma once
 

@@ -4,7 +4,7 @@
  * \brief Main entry point for the FLM application
  * \author FastFlowLM Team
  * \date 2025-06-24
- * \version 0.1.6
+ * \version 0.9.2
  */
 #pragma once
 #include "utils/utils.hpp"

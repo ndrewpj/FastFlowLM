@@ -1,8 +1,8 @@
 /// \file tokenizer.hpp
 /// \brief tokenizer class
 /// \author FastFlowLM Team
-/// \date 2025-06-24
-/// \version 0.9.0
+/// \date 2025-08-05
+/// \version 0.9.2
 /// \note This class is used to tokenize the text.
 #pragma once
 
@@ -119,6 +119,7 @@ private:
     std::unique_ptr<minja::chat_template> tmpl;
     std::string user_system_prompt;
     nlohmann::json extra_context;
+    bool is_doubled_encoded;
 
     /// \brief Convert the cp1252 to utf8
     /// \param input the input string

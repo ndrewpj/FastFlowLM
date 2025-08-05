@@ -4,7 +4,7 @@
 
 AppName=flm
 
-AppVersion=0.9.0
+AppVersion=0.9.2
 
 AppPublisher=FastFlowLM
 
@@ -26,6 +26,14 @@ LicenseFile=terms.txt
 
 SignTool=FastFlowLM_url $f
 
+; Icon configuration to preserve original background
+SetupIconFile=logo.ico
+
+UninstallDisplayIcon={app}\logo.ico
+
+; Force icon usage without transparency effects
+UsePreviousAppDir=no
+
 
 [Files]
 
@@ -37,6 +45,7 @@ Source: "flm.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 Source: "libcurl.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "llama_npu.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "gemma_npu.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "qwen_npu.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "lm_head.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "dequant.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -61,6 +70,7 @@ Name: "{group}\flm"; \
     Filename: "{app}\flm.exe"; \
     WorkingDir: "{app}"; \
     IconFilename: "{app}\logo.ico"; \
+    IconIndex: 0; \
     Comment: "Launch flm"
 
 ; Desktop shortcut (conditional based on user choice)
@@ -69,6 +79,7 @@ Name: "{commondesktop}\flm run"; \
     Parameters: "/K ""{app}\flm.exe"" run llama3.2:1b"; \
     WorkingDir: "{app}"; \
     IconFilename: "{app}\logo.ico"; \
+    IconIndex: 0; \
     Comment: "Launch flm with llama3.2:1b model"; \
     Tasks: desktopicon
     
@@ -79,6 +90,7 @@ Name: "{commondesktop}\flm serve"; \
     Parameters: "/K ""{app}\flm.exe"" serve"; \
     WorkingDir: "{app}"; \
     IconFilename: "{app}\logo.ico"; \
+    IconIndex: 0; \
     Comment: "Launch flm in serve mode"; \
     Tasks: desktopicon
 

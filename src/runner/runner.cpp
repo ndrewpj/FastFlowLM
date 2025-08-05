@@ -3,8 +3,8 @@
 *  \file runner.cpp
 *  \brief Runner implementation for interactive model execution
 *  \author FastFlowLM Team
-*  \date 2025-06-24
-*  \version 0.1.6
+*  \date 2025-08-05
+*  \version 0.9.2
 */
 #include "runner.hpp"
 #include <iostream>
@@ -94,7 +94,7 @@ void Runner::run() {
         // Check if this is a command (starts with /)
         bool is_command = (first_token[0] == '/');
         
-        if (is_command) {
+        if (is_command && first_token != "/input") {
             if (first_token == "/bye") {
                 break;
             }
@@ -160,10 +160,32 @@ void Runner::run() {
         } else {
             // This is a regular message, not a command
             std::cout << std::endl;  // Add newline before AI response
+            if (first_token == "/input") {
+                std::string filename = input_list[1];
+                if (filename[0] == '\"'){
+                    filename = filename.substr(1, filename.size() - 2);
+                }
+                header_print("FLM", "Load from: " << filename);
+                std::ifstream file(filename);
+                if (!file.is_open()) {
+                    header_print("FLM", "Error: Could not open file: " << filename);
+                    continue;
+                }
+                std::string file_content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+                file.close();
+                input = file_content;
+                for (int i = 2; i < input_list.size(); i++) {
+                    input += " " + input_list[i];
+                }
+            }
             this->chat_engine->start_ttft_timer();
             this->chat_engine->start_total_timer();
             std::vector<int> user_tokens = this->chat_engine->tokenize(input, true, "user", true);
-            this->chat_engine->insert(meta_info, user_tokens, false);
+            bool success = this->chat_engine->insert(meta_info, user_tokens, false);
+            if (!success){
+                header_print("WARNING", "Max length reached, stopping generation...");
+                break;
+            }
             this->chat_engine->stop_ttft_timer();
             this->chat_engine->generate(meta_info, this->generate_limit, ostream);
             this->chat_engine->stop_total_timer();
