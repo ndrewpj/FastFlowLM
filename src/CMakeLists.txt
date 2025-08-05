@@ -77,6 +77,7 @@ target_link_libraries(flm PUBLIC
     q4_npu_eXpress
     llama_npu
     qwen_npu
+    gemma_npu
     dequant
     gemm
     lm_head

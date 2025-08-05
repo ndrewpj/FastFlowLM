@@ -39,7 +39,7 @@ struct npu_issue_token_cmd : public npu_cmd{
         this->controller_packet_id = bd[4] >> queue_pkt_id_shift;
         uint32_t op_size_read = bd[6] >> 2;
         if (op_size_read != op_size){
-            header_print("warning", "op_size mismatch: " + std::to_string(op_size_read) + " != " + std::to_string(op_size));
+            header_print("WARNING", "op_size mismatch: " + std::to_string(op_size_read) + " != " + std::to_string(op_size));
         }
     }
 

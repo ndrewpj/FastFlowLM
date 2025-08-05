@@ -60,7 +60,7 @@ struct npu_write_cmd : public npu_cmd{
         this->value = bd[4];
         uint32_t op_size_read = bd[5] >> 2;
         if (op_size_read != op_size){
-            header_print("warning", "op_size mismatch: " + std::to_string(op_size_read) + " != " + std::to_string(op_size));
+            header_print("WARNING", "op_size mismatch: " + std::to_string(op_size_read) + " != " + std::to_string(op_size));
         }
     }
 

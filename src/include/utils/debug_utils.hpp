@@ -2,7 +2,7 @@
 /// \brief debug_utils class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.0
+/// \version 0.9.2
 /// \note This file contains the debug utilities for the FastFlowLM project.
 #pragma once
 #include <iostream>

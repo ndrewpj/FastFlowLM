@@ -28,7 +28,7 @@ struct npu_ddr_cmd : public npu_cmd{
         // Address patch
         uint32_t op_size_read = bd[1] >> 2;
         if (op_size_read != op_size){
-            header_print("warning", "op_size mismatch: " + std::to_string(op_size_read) + " != " + std::to_string(op_size));
+            header_print("WARNING", "op_size mismatch: " + std::to_string(op_size_read) + " != " + std::to_string(op_size));
         }
         this->col = ((bd[6] >> bd_col_shift) & bd_col_mask);
         this->row = ((bd[6] >> bd_row_shift) & bd_row_mask);

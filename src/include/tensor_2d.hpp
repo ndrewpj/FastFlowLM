@@ -2,7 +2,7 @@
 /// \brief tensor_2d class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.0
+/// \version 0.9.2
 /// \note This class is a helper class for managing 2D buffers.
 #pragma once
 #include "typedef.hpp"

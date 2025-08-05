@@ -2,7 +2,7 @@
 /// \brief Tokenizer implementation for text encoding/decoding
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.0
+/// \version 0.9.2
 #include "tokenizer/tokenizer.hpp"
 #include <iostream>
 #include <fstream>
@@ -28,7 +28,15 @@ Tokenizer::Tokenizer(const std::string& model_path) {
     fs.read(data.data(), size);
     this->tokenizer = tokenizers::Tokenizer::FromBlobJSON(data);
     fs.close();
-    
+    std::string decoder_type;
+    nlohmann::json data_json = nlohmann::json::parse(data);
+    JSON_GET(decoder_type, data_json["decoder"], "type", "ByteLevel", std::string);
+    if (decoder_type == "ByteLevel") {
+        this->is_doubled_encoded = true;
+    }
+    else {
+        this->is_doubled_encoded = false;
+    }
     // load tokenizer configurations
     std::ifstream fs_config(model_path + "/tokenizer_config.json", std::ios::in | std::ios::binary);
     if (fs_config.fail()) {
@@ -111,7 +119,21 @@ std::string Tokenizer::cpt_to_utf8(const std::string& input) {
     static auto inv_map = this->make_inverse_byte_map();
     std::string output = "";
     size_t i = 0;
-
+    if (!this->is_doubled_encoded) { // simply do pattern substitution of "▁" to " ", temporary solution
+        std::string output = "";
+        static constexpr std::string pattern = "▁";
+        static constexpr size_t pattern_size = pattern.size();
+        for (size_t i = 0; i < input.size(); i++) {
+            if (i <= input.size() - pattern_size && input.substr(i, pattern_size) == pattern) {
+                output += " ";
+                i += pattern_size - 1; // -1 because the loop will increment i by 1
+            }
+            else {
+                output += input[i];
+            }
+        }
+        return output;
+    }
     while (i < input.size()) {
         unsigned char c = input[i];
         uint32_t cp;

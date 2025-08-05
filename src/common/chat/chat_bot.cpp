@@ -1,8 +1,8 @@
 /// \file chat_bot.cpp
 /// \brief chat bot class
 /// \author FastFlowLM Team
-/// \date 2025-06-24
-/// \version 0.9.0
+/// \date 2025-08-05
+/// \version 0.9.2
 /// \note This is a header file for the chat bot class
 #pragma once
 #include "chat/chat_bot.hpp"
@@ -56,7 +56,6 @@ void chat_bot::load_model(std::string model_path, json model_info){
     header_print("FLM", "Loading model: " << this->model_path);
     this->lm_config = std::make_unique<LM_Config>();
     this->lm_config->from_pretrained(this->model_path);
-
     this->npu = std::make_unique<npu_manager>(npu_device::device_npu2, device_id);
     this->MAX_L = model_info["default_context_length"];
     this->q4nx = std::make_unique<Q4NX>(this->model_path);
@@ -66,8 +65,11 @@ void chat_bot::load_model(std::string model_path, json model_info){
     else if (this->lm_config->model_type == "qwen3"){
         this->lm_engine = std::make_unique<qwen_npu>(*this->lm_config, this->npu.get(), this->MAX_L);
     }
+    else if (this->lm_config->model_type == "gemma3_text"){
+        this->lm_engine = std::make_unique<gemma_npu>(*this->lm_config, this->npu.get(), this->MAX_L);
+    }
     else {
-        header_print("warning", "Model type not supported: " << this->lm_config->model_type);
+        header_print("WARNING", "Model type not supported: " << this->lm_config->model_type);
         exit(1);
     }
     
@@ -130,14 +132,14 @@ void chat_bot::set_max_length(unsigned int MAX_L){
 /// \param is_system_prompt the is system prompt
 /// \note The function will insert the tokens
 /// \note The function will check if the tokens are valid
-void chat_bot::insert(chat_meta_info& meta_info, std::vector<int>& tokens, bool is_system_prompt){
+bool chat_bot::insert(chat_meta_info& meta_info, std::vector<int>& tokens, bool is_system_prompt){
     assert(this->lm_engine != nullptr);
     assert(this->lm_config != nullptr);
     assert(this->tokenizer != nullptr);
     assert(this->sampler != nullptr);
     if (this->total_tokens + tokens.size() >= this->MAX_L){
-        header_print("warning", "Max length reached, stopping prefilling...");
-        return;
+        header_print("WARNING", "Max length reached, stopping prefilling...");
+        return false;
     }
     for (int token : tokens){
         this->token_history.push_back(token);
@@ -149,9 +151,9 @@ void chat_bot::insert(chat_meta_info& meta_info, std::vector<int>& tokens, bool 
     auto prefill_end_time = this->profiler_list[PREFILL_TIME].stop(tokens.size());
     meta_info.prefill_duration = (uint64_t)time_utils::duration_ns(prefill_start_time, prefill_end_time).first;
     meta_info.prompt_tokens = tokens.size();
-    this->total_tokens += tokens.size();
+    this->total_tokens += tokens.size() + 1;
     if (this->total_tokens >= this->MAX_L){
-        header_print("warning", "Max length reached, stopping prefilling...");
+        header_print("WARNING", "Max length reached, stopping prefilling...");
     }
     this->profiler_list[SAMPLING_TIME].start();
     this->last_token = this->sampler->sample(y);
@@ -164,6 +166,7 @@ void chat_bot::insert(chat_meta_info& meta_info, std::vector<int>& tokens, bool 
         this->profiler_list[DECODING_TIME].reset();
         this->profiler_list[TOTAL_TIME].reset();
     }
+    return true;
 }
 
 /// \brief Generate the tokens
@@ -214,8 +217,9 @@ std::string chat_bot::generate(chat_meta_info& meta_info, int length_limit, std:
     }
     this->profiler_list[TKOEN_DECODE_TIME].stop(1);
     if (this->total_tokens >= this->MAX_L){
-        header_print("warning", "Max length reached, stopping generation...");
-        return "Error, max length reached";
+        header_print("WARNING", "Max length reached, stopping generation...");
+        reason = MAX_LENGTH_REACHED;
+        return result;
     }
     while (this->total_tokens < this->MAX_L){
         this->profiler_list[DECODING_TIME].start();
@@ -250,7 +254,7 @@ std::string chat_bot::generate(chat_meta_info& meta_info, int length_limit, std:
     meta_info.decoding_duration = (uint64_t)time_utils::duration_ns(decoding_start_time, decoding_end_time).first;
     meta_info.stop_reason = reason;
     if (this->total_tokens >= this->MAX_L){
-        header_print("warning", "Max length reached, stopping generation...");
+        header_print("WARNING", "Max length reached, stopping generation...");
     }
     return result;
 }
@@ -264,7 +268,9 @@ std::string chat_bot::generate(chat_meta_info& meta_info, int length_limit, std:
 /// \note The function will insert the tokens
 /// \note The function will check if the tokens are valid
 std::string chat_bot::generate_with_prompt(chat_meta_info& meta_info, std::vector<int>& tokens, int length_limit, std::ostream& os){
-    this->insert(meta_info, tokens);
+    if (!this->insert(meta_info, tokens)){
+        return "";
+    }
     std::string result = this->generate(meta_info, length_limit, os);
     return result;
 }
@@ -334,6 +340,7 @@ std::string chat_bot::show_profile(){
     ss << "    Average token encoding speed: " << this->profiler_list[TKOEN_ENCODE_TIME].get_average_speed() << " tokens/s" << std::endl;
     ss << "    Average token decoding speed: " << this->profiler_list[TKOEN_DECODE_TIME].get_average_speed() << " tokens/s" << std::endl;
     ss << "    Average overall speed:        " << this->profiler_list[TOTAL_TIME].get_average_speed() << " tokens/s" << std::endl;
+
     return ss.str();
 }
 
@@ -380,7 +387,7 @@ void chat_bot::verbose(){
 /// \note The function will check if the top-k is valid
 void chat_bot::set_topk(int topk){
     if (topk < 1){
-        header_print("warning", "Top-k must be greater than 0");
+        header_print("WARNING", "Top-k must be greater than 0");
         return;
     }
     this->sampler->top_k = topk;
@@ -392,7 +399,7 @@ void chat_bot::set_topk(int topk){
 /// \note The function will check if the top-p is valid
 void chat_bot::set_topp(float topp){
     if (topp < 0.0f || topp > 1.0f){
-        header_print("warning", "Top-p must be between 0.0 and 1.0");
+        header_print("WARNING", "Top-p must be between 0.0 and 1.0");
         return;
     }
     this->sampler->top_p = topp;
@@ -404,7 +411,7 @@ void chat_bot::set_topp(float topp){
 /// \note The function will check if the temperature is valid
 void chat_bot::set_temperature(float temperature){
     if (temperature < 0.0f){
-        header_print("warning", "Temperature must be greater than 0.0");
+        header_print("WARNING", "Temperature must be greater than 0.0");
         return;
     }
     this->sampler->temperature = temperature;
@@ -416,7 +423,7 @@ void chat_bot::set_temperature(float temperature){
 /// \note The function will check if the repetition penalty is valid
 void chat_bot::set_repetition_penalty(float repetition_penalty){
     if (repetition_penalty < 0.0f || repetition_penalty > 1.0f){
-        header_print("warning", "Repetition penalty must be between 0.0 and 1.0");
+        header_print("WARNING", "Repetition penalty must be between 0.0 and 1.0");
         return;
     }
     this->sampler->rep_penalty = repetition_penalty;
@@ -426,7 +433,7 @@ void chat_bot::set_repetition_penalty(float repetition_penalty){
 /// \param frequency_
 void chat_bot::set_frequency_penalty(float frequency_penalty){
     if (frequency_penalty < 0.0f){
-        header_print("warning", "Frequency penalty must be greater than 0.0");
+        header_print("WARNING", "Frequency penalty must be greater than 0.0");
         return;
     }
     this->sampler->freq_penalty = frequency_penalty;

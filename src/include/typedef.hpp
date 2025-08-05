@@ -2,7 +2,7 @@
 /// \brief typedef file for the FastFlowLM project
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.0
+/// \version 0.9.2
 /// \note This file contains the typedefs for the FastFlowLM project
 
 #pragma once
@@ -42,7 +42,7 @@ typedef enum: u8 {cpu, npu} device_t;
 //   default_value: the default value to assign if the key does not exist
 //   data_type: the data type of the output
 // Example: JSON_GET(this->model_desc.vocab_size, json_handler["config"], "vocab_size", 0, i32);
-#define JSON_GET(output, json_handler, key, default_value, data_type) if (json_handler.contains(key)) { \
+#define JSON_GET(output, json_handler, key, default_value, data_type) if (json_handler.contains(key) && !json_handler[key].is_null()) { \
     output = data_type(json_handler[key]); \
 } else { \
     output = default_value; \

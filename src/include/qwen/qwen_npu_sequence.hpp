@@ -2,7 +2,7 @@
 /// \brief qwen_npu_sequence class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.0
+/// \version 0.9.2
 /// \note This is a header file for the qwen_npu_sequence class
 #pragma once
 #include "npu_utils/npu_instr_utils.hpp"

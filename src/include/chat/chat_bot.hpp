@@ -1,8 +1,8 @@
 /// \file chat_bot.hpp
 /// \brief chat_bot class
 /// \author FastFlowLM Team
-/// \date 2025-06-24
-/// \version 0.9.0
+/// \date 2025-08-05
+/// \version 0.9.2
 /// \note This is a header file for the chat_bot class
 #pragma once
 
@@ -19,6 +19,7 @@
 #include "lm_config.hpp"
 #include "llama/llama_npu.hpp"
 #include "qwen/qwen_npu.hpp"
+#include "gemma/gemma_npu.hpp"
 #include "tokenizer/tokenizer.hpp"
 #include "modules/sampler.hpp"
 #include "utils/utils.hpp"
@@ -105,7 +106,8 @@ public:
     /// \brief Insert the tokens
     /// \param tokens the tokens
     /// \param is_system_prompt the is system prompt
-    void insert(chat_meta_info& meta_info, std::vector<int>& tokens, bool is_system_prompt = false);
+    /// \return true if the tokens are inserted successfully, false otherwise
+    bool insert(chat_meta_info& meta_info, std::vector<int>& tokens, bool is_system_prompt = false);
 
     /// \brief Generate the tokens
     /// \param os the output stream

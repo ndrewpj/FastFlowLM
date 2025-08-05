@@ -26,7 +26,7 @@ struct npu_wait_cmd : public npu_cmd{
     void dump_cmd(uint32_t *bd){
         uint32_t op_size_read = bd[1] >> 2;
         if (op_size_read != op_size){
-            header_print("warning", "op_size mismatch: " + std::to_string(op_size_read) + " != " + std::to_string(op_size));
+            header_print("WARNING", "op_size mismatch: " + std::to_string(op_size_read) + " != " + std::to_string(op_size));
         }
         if (((bd[2] >> wait_sync_direction_shift) & wait_sync_direction_mask) == 0){
             this->channel_direction = S2MM;

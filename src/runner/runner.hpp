@@ -4,7 +4,7 @@
  * \brief Main entry point for the FLM application
  * \author FastFlowLM Team
  * \date 2025-06-24
- * \version 0.1.6
+ * \version 0.9.2
  */
 #pragma once
 #include "utils/utils.hpp"
@@ -57,4 +57,10 @@ class Runner {
         void cmd_help(std::vector<std::string>& input_list);
         void cmd_help_shotcut(std::vector<std::string>& input_list);
         void cmd_status(std::vector<std::string>& input_list);
+        std::wstring utf8_to_wstring(const std::string& str) {
+            int size_needed = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), (int)str.size(), nullptr, 0);
+            std::wstring wstr(size_needed, 0);
+            MultiByteToWideChar(CP_UTF8, 0, str.c_str(), (int)str.size(), &wstr[0], size_needed);
+            return wstr;
+        }
 };
