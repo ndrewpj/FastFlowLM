@@ -111,18 +111,14 @@ The device is unable to continue.
 
 ---
 
-Sure! Here's a **simple and clear** version:
-
----
-
-### 📂 Load a Local Text File in CLI Mode
+### 📂 Load a Local Text File in CLI Mode (Preferred Method to Attach Text File)
 
 Use any file that can be opened in Notepad (like `.txt`, `.json`, `.csv`, etc.).
 
 #### ✅ Format (in CLI mode):
 
 ```powershell
-/input "<file_path>" <prompt>
+/input "<file_path>" prompt
 ```
 
 #### 🧪 Example:
