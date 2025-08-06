@@ -4,7 +4,7 @@
  * \brief WebServer class and related declarations
  * \author FastFlowLM Team
  * \date 2025-06-24
- * \version 0.1.6
+ * \version 0.9.2
  */
 #include "server.hpp"
 #include "rest_handler.hpp"
@@ -196,13 +196,20 @@ void HttpSession::write_response() {
 
     header_print("⬆️ ", "Outgoing Response: ");
     header_print("LOG", "Time stamp: " << get_current_time_string()); // hh:mm:ss mm:dd:yyyy
-    try{
-        nlohmann::json response_json = json::parse(res_.body());
-        brief_print_message_request(response_json);
-        // std::cout << "response_json: " << response_json.dump(4) << std::endl;
-    } catch (const std::exception& e) {
-        header_print("LOG", "Body: ");
-        std::cout << res_.body() << std::endl;
+    
+    // Check if this is one of the endpoints where we should skip printing the response body
+    std::string target = std::string(req_.target());
+    bool skip_body_print = (target == "/api/ps" || target == "/api/tags" || target == "/api/version");
+    
+    if (!skip_body_print) {
+        try{
+            nlohmann::json response_json = json::parse(res_.body());
+            brief_print_message_request(response_json);
+            // std::cout << "response_json: " << response_json.dump(4) << std::endl;
+        } catch (const std::exception& e) {
+            header_print("LOG", "Body: ");
+            std::cout << res_.body() << std::endl;
+        }
     }
 
     std::cout << "================================================" << std::endl;
@@ -461,7 +468,7 @@ void WebServer::handle_request(http::request<http::string_body>& req,
                 return;
             }
             
-            header_print("LOG", "NPU access granted for request: " + key);
+            header_print("🟢 ", "NPU access granted for request: " + key);
         }
         
         // Parse JSON request body
@@ -505,7 +512,7 @@ void WebServer::handle_request(http::request<http::string_body>& req,
             // Release NPU access if this was an NPU-intensive request
             if (needs_npu) {
                 NPUAccessManager::release_npu_access();
-                header_print("LOG", "NPU access released for request: " + request_id);
+                header_print("🔵 ", "NPU access released for request: " + request_id);
             }
         };
         
@@ -520,7 +527,7 @@ void WebServer::handle_request(http::request<http::string_body>& req,
                 // Release NPU access if this was an NPU-intensive request
                 if (needs_npu) {
                     NPUAccessManager::release_npu_access();
-                    header_print("LOG", "NPU access released for streaming request: " + request_id);
+                    header_print("🔵 ", "NPU access released for streaming request: " + request_id);
                 }
             }
         };

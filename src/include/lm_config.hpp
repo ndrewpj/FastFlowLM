@@ -1,8 +1,8 @@
 /// \file lm_config.hpp
 /// \brief lm_config class
 /// \author FastFlowLM Team
-/// \date 2025-06-24
-/// \version 0.9.0
+/// \date 2025-08-05
+/// \version 0.9.2
 /// \note This class is used to store the model configuration.
 #pragma once
 
@@ -26,6 +26,8 @@ class LM_Config{
         f32 rms_norm_eps;
         f32 rope_theta;
         u32 vocab_size;
+        u32 sliding_window;
+        u32 sliding_window_pattern;
         u32 addr_qk;
         u32 addr_kv;
         u32 addr_l_begin_mha;
@@ -52,6 +54,8 @@ class LM_Config{
             // read the json file as a string
             std::string json_str((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
             this->_json_config = nlohmann::json::parse(json_str);
+            JSON_GET(this->sliding_window, this->_json_config, "sliding_window", 0, u32);
+            JSON_GET(this->sliding_window_pattern, this->_json_config, "sliding_window_pattern", 0, u32);
             JSON_GET(this->model_type, this->_json_config, "model_type", "", std::string);
             JSON_GET(this->head_dim, this->_json_config, "head_dim", 0, u32);
             JSON_GET(this->hidden_size, this->_json_config, "hidden_size", 0, u32);
@@ -104,6 +108,10 @@ class LM_Config{
             ss << "    num_key_value_heads:    " << this->num_key_value_heads << std::endl;
             ss << "    pretraining_tp:         " << this->pretraining_tp << std::endl;
             ss << "    rms_norm_eps:           " << this->rms_norm_eps << std::endl;
+            if (this->sliding_window > 0){
+                ss << "    sliding_window:       " << this->sliding_window << std::endl;
+                ss << "    sliding_window_pattern: " << this->sliding_window_pattern << std::endl;
+            }
             return ss.str();
         }
         LM_Config(){}

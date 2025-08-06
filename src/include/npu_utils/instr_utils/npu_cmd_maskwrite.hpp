@@ -29,7 +29,7 @@ struct npu_maskwrite_cmd : public npu_cmd{
         this->mask = bd[5];
         uint32_t op_size_read = bd[6] >> 2;
         if (op_size_read != op_size){
-            header_print("warning", "op_size mismatch: " + std::to_string(op_size_read) + " != " + std::to_string(op_size));
+            header_print("WARNING", "op_size mismatch: " + std::to_string(op_size_read) + " != " + std::to_string(op_size));
         }
     }
 

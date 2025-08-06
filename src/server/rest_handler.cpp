@@ -3,8 +3,8 @@
  * \file rest_handler.cpp
  * \brief RestHandler class and related declarations
  * \author FastFlowLM Team
- * \date 2025-06-24
- * \version 0.1.6
+ * \date 2025-08-05
+ * \version 0.9.2
  */
 #include "rest_handler.hpp"
 #include "wstream_buf.hpp"
@@ -81,7 +81,12 @@ void RestHandler::handle_generate(const json& request,
             auto total_start_time = time_utils::now();
             streaming_ostream ostream(model, send_streaming_response, false);
             std::vector<int> prompts = chat_engine->tokenize(prompt, true, "user", true);
-            chat_engine->insert(meta_info, prompts);
+            bool success = chat_engine->insert(meta_info, prompts);
+            if (!success){
+                json error_response = {{"error", "Max length reached"}};
+                send_response(error_response);
+                return;
+            }
             chat_engine->generate(meta_info, length_limit, ostream);
             auto total_end_time = time_utils::now();
             auto history = this->chat_engine->get_history();
@@ -94,7 +99,12 @@ void RestHandler::handle_generate(const json& request,
             wstream_buf obuf(ss);
             std::ostream ostream(&obuf);
             std::vector<int> prompts = chat_engine->tokenize(prompt, true, "user", true);
-            chat_engine->insert(meta_info, prompts);
+            bool success = chat_engine->insert(meta_info, prompts);
+            if (!success){
+                json error_response = {{"error", "Max length reached"}};
+                send_response(error_response);
+                return;
+            }
             chat_engine->generate(meta_info, length_limit, ostream);
             std::string response_text = ss.str();
             auto history = this->chat_engine->get_history();
@@ -157,7 +167,12 @@ void RestHandler::handle_chat(const json& request,
             auto total_start_time = time_utils::now();
             streaming_ostream ostream(model, send_streaming_response, true);  // true for chat format
             std::vector<int> prompts = chat_engine->tokenize(messages, true);
-            chat_engine->insert(meta_info, prompts);
+            bool success = chat_engine->insert(meta_info, prompts);
+            if (!success){
+                json error_response = {{"error", "Max length reached"}};
+                send_response(error_response);
+                return;
+            }
             chat_engine->generate(meta_info, length_limit, ostream);
             auto total_end_time = time_utils::now();
             meta_info.total_duration = (uint64_t)time_utils::duration_ns(total_start_time, total_end_time).first;

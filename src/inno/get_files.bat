@@ -14,4 +14,3 @@ echo Copying model_list.json...
 copy "..\model_list.json" "model_list.json"
 
 echo Done!
-pause

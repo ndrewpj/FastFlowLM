@@ -102,7 +102,7 @@ struct npu_dma_block_cmd : public npu_cmd{
         // word 0: unknown yet
         uint32_t op_size_read = bd[3] >> 2; // 4 bytes per instruction
         if (op_size_read != this->op_size){
-            header_print("warning", "op_size_read: " + std::to_string(op_size_read) + " != " + std::to_string(this->op_size));
+            header_print("WARNING", "op_size_read: " + std::to_string(op_size_read) + " != " + std::to_string(this->op_size));
         }
         // word 1: Buffer length
         this->buffer_length = bd[4];
