@@ -111,6 +111,34 @@ The device is unable to continue.
 
 ---
 
+Sure! Here's a **simple and clear** version:
+
+---
+
+### 📂 Load a Local Text File in CLI Mode
+
+Use any file that can be opened in Notepad (like `.txt`, `.json`, `.csv`, etc.).
+
+#### ✅ Format (in CLI mode):
+
+```powershell
+/input "<file_path>" <prompt>
+```
+
+#### 🧪 Example:
+
+```powershell
+/input "C:\Users\Public\Desktop\alice_in_wonderland.txt" Can you rewrite the story in 2 sentences?
+```
+
+#### 🔎 Notes:
+
+* Use quotes **only around the file path**
+* **No quotes** around the prompt
+* File must be plain text (readable in Notepad)
+
+---
+
 ### 🌐 Start Server Mode
 
 Launch FastFlowLM as a local REST API server (also support OpenAI API):
