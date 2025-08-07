@@ -80,6 +80,12 @@ flm run llama3.2:1b "C:\Users\Public\Desktop\alice_in_wonderland.txt"
 
 👉 [Download the sample prompt](https://github.com/FastFlowLM/FastFlowLM/blob/main/assets/alice_in_wonderland.txt)  
 
+> Specify the maximum generation length directly after the file path/name. For example,
+
+```powershell
+flm run llama3.2:1b "C:\Users\Public\Desktop\alice_in_wonderland.txt" 1024
+```
+
 > ⚠️ **Note:**: a model’s supported context length is limited by available DRAM capacity. For example, with **32 GB** of DRAM, **LLaMA 3.1:8B** cannot run beyond a **32K** context length. For the full **128K** context, we recommend larger memory system.
 
 If DRAM is heavily used by other programs while running **FastFlowLM**, you may encounter errors due to insufficient memory, such as:
@@ -102,9 +108,9 @@ The device is unable to continue.
 1. Press **Windows + R**.  
 2. Type:  
 
-   \`\`\`
-   resmon
-   \`\`\`
+```
+resmon
+```
 
 3. Press **Enter**.  
 4. Go to the **Memory** tab to view detailed DRAM usage and a per-process breakdown.
