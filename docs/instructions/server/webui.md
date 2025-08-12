@@ -143,3 +143,13 @@ This removes the container and persistent volume data.
 
 ---
 
+> **Note (When using Open WebUI):**  
+> The **Open WebUI** sends multiple background requests to the **server**.  
+> To improve stability and performance, disable these in **Settings → Chat**:
+> - **Title Auto-Generation**
+> - **Follow-Up Auto-Generation**
+> - **Chat Tags Auto-Generation**
+> 
+> Toggle them **off**, then refresh the page.
+
+---
