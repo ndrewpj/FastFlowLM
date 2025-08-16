@@ -10,7 +10,7 @@ has_children: false
 - ⚡ **CPU/NPU:** AMD Ryzen™ AI laptop with XDNA2 NPU  
 - 🖥️ **OS:** Windows 11
 
-> While FastFlowLM can run with 16 GB RAM, complex models (e.g., 3B or 8B) may require up to 32 GB for optimal performance and longer context length (more kv cache).
+> While FastFlowLM can run with 16 GB RAM, complex models (e.g., 3B or 8B) may require >= 32 GB for optimal performance and longer context length (more kv cache).
 
 ---
 
@@ -43,14 +43,12 @@ For version history and changelog, see the [release notes](https://github.com/Fa
 ## 🚀 NPU Power Mode
 
 For optimal performance, set the NPU power mode to **performance** or **turbo**.  
-Open **PowerShell** and go to:
+Open **PowerShell** and enter:
+
 ```powershell
-cd C:\Windows\System32\AMD\
+cd C:\Windows\System32\AMD\; .\xrt-smi configure --pmode turbo
 ```
-Then, run
-```powershell
-.\xrt-smi configure --pmode turbo
-```
+
 > For more details about NPU power mode, refer to the [AMD XRT SMI Documentation](https://ryzenai.docs.amd.com/en/latest/xrt_smi.html).
 
 ---
