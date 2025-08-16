@@ -2,7 +2,7 @@
 /// \brief chat bot class
 /// \author FastFlowLM Team
 /// \date 2025-08-05
-/// \version 0.9.2
+/// \version 0.9.4
 /// \note This is a header file for the chat bot class
 #pragma once
 #include "chat/chat_bot.hpp"
@@ -121,7 +121,7 @@ void chat_bot::set_sampler(sampler_config& sampler_config){
 /// \note The function will set the max length
 /// \note The function will update the max length
 void chat_bot::set_max_length(unsigned int MAX_L){
-    this->MAX_L = MAX_L;
+    this->MAX_L = std::max(MAX_L, this->MAX_L);
     if (this->lm_engine != nullptr){
         this->lm_engine->update_max_length(MAX_L);
     }
@@ -132,7 +132,7 @@ void chat_bot::set_max_length(unsigned int MAX_L){
 /// \param is_system_prompt the is system prompt
 /// \note The function will insert the tokens
 /// \note The function will check if the tokens are valid
-bool chat_bot::insert(chat_meta_info& meta_info, std::vector<int>& tokens, bool is_system_prompt){
+bool chat_bot::insert(chat_meta_info& meta_info, std::vector<int>& tokens, bool is_system_prompt, void* payload){
     assert(this->lm_engine != nullptr);
     assert(this->lm_config != nullptr);
     assert(this->tokenizer != nullptr);
@@ -147,7 +147,7 @@ bool chat_bot::insert(chat_meta_info& meta_info, std::vector<int>& tokens, bool 
     buffer<bf16> y;
 
     auto prefill_start_time = this->profiler_list[PREFILL_TIME].start();
-    y = this->lm_engine->prefill(tokens);
+    y = this->lm_engine->prefill(tokens, payload);
     auto prefill_end_time = this->profiler_list[PREFILL_TIME].stop(tokens.size());
     meta_info.prefill_duration = (uint64_t)time_utils::duration_ns(prefill_start_time, prefill_end_time).first;
     meta_info.prompt_tokens = tokens.size();
@@ -267,8 +267,8 @@ std::string chat_bot::generate(chat_meta_info& meta_info, int length_limit, std:
 /// \note The function will generate the tokens
 /// \note The function will insert the tokens
 /// \note The function will check if the tokens are valid
-std::string chat_bot::generate_with_prompt(chat_meta_info& meta_info, std::vector<int>& tokens, int length_limit, std::ostream& os){
-    if (!this->insert(meta_info, tokens)){
+std::string chat_bot::generate_with_prompt(chat_meta_info& meta_info, std::vector<int>& tokens, int length_limit, std::ostream& os, void* payload){
+    if (!this->insert(meta_info, tokens, false, payload)){
         return "";
     }
     std::string result = this->generate(meta_info, length_limit, os);
@@ -452,12 +452,24 @@ void chat_bot::set_frequency_penalty_window(int frequency_penalty_window){
 /// \param text the text
 /// \note The function will tokenize the text
 /// \note The function will check if the text is valid
-std::vector<int> chat_bot::tokenize(std::string& text, bool apply_chat_template, std::string role, bool add_generation_prompt){
+std::vector<int> chat_bot::tokenize(std::string& text, bool apply_chat_template, std::string role, bool add_generation_prompt, int num_images){
     this->profiler_list[TKOEN_ENCODE_TIME].start();
     std::string new_text;
+    nlohmann::ordered_json messages;
     if (apply_chat_template){
-        nlohmann::ordered_json messages;
-        messages.push_back({{"role", role}, {"content", text}});
+        if (num_images == 0){
+            messages.push_back({{"role", role}, {"content", text}});
+        }
+        else {
+            nlohmann::ordered_json content;
+            content["role"] = role;
+            content["content"] = text;
+            content["images"] = nlohmann::ordered_json::array();
+            for (int i = 0; i < num_images; i++){
+                content["images"].push_back("placeholder");
+            }
+            messages.push_back(content);
+        }
         new_text = this->tokenizer->apply_chat_template(messages, add_generation_prompt, this->enable_think);
     }
     else{

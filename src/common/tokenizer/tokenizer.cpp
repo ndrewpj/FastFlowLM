@@ -2,7 +2,7 @@
 /// \brief Tokenizer implementation for text encoding/decoding
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.2
+/// \version 0.9.4
 #include "tokenizer/tokenizer.hpp"
 #include <iostream>
 #include <fstream>
@@ -79,6 +79,16 @@ Tokenizer::Tokenizer(const std::string& model_path) {
     this->extra_context["user_system_prompt"] = this->user_system_prompt;
     this->extra_context["enable_thinking"] = false;
     JSON_GET(this->think_marker_id, tokenizer_config, "think_marker_id", -1, int);
+    JSON_GET(this->boi_token, tokenizer_config, "boi_token", "", std::string);
+    JSON_GET(this->eoi_token, tokenizer_config, "eoi_token", "", std::string);
+    JSON_GET(this->image_token, tokenizer_config, "image_token", "", std::string);
+    if (!this->boi_token.empty()) {
+        assert(!this->eoi_token.empty());
+        assert(!this->image_token.empty());
+        this->extra_context["boi_token"] = this->boi_token;
+        this->extra_context["eoi_token"] = this->eoi_token;
+        this->extra_context["image_token"] = this->image_token;
+    }
 }
 
 /// \brief Destructor

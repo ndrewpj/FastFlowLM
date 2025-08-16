@@ -2,7 +2,7 @@
 /// \brief npu write command
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.1.0
+/// \version 0.9.4
 /// \note This is a class for the npu write command
 #pragma once
 

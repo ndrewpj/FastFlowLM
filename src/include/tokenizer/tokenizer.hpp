@@ -2,7 +2,7 @@
 /// \brief tokenizer class
 /// \author FastFlowLM Team
 /// \date 2025-08-05
-/// \version 0.9.2
+/// \version 0.9.4
 /// \note This class is used to tokenize the text.
 #pragma once
 
@@ -112,6 +112,9 @@ private:
     std::unordered_map<uint32_t, uint8_t> inv_map;
     std::string bos_token;
     std::string eos_token;
+    std::string boi_token;
+    std::string eoi_token;
+    std::string image_token;
     bool has_bos_token;
     int bos_token_id;
     int think_marker_id;

@@ -59,9 +59,11 @@ void Runner::run() {
     std::ostream ostream(&obuf);
     header_print("FLM", "Type /? for help");
     int empty_line_count = 0;
+    bool is_image = false;
+    bytes image;
     while (true) {
         std::string input = cli.get_interactive_input();
-        
+        is_image = false;
         if (input.empty()) {
             empty_line_count++;
             if (empty_line_count > 2) {
@@ -160,12 +162,15 @@ void Runner::run() {
         } else {
             // This is a regular message, not a command
             std::cout << std::endl;  // Add newline before AI response
+            this->chat_engine->start_ttft_timer();
+            int last_file_name_idx = 0;
             if (first_token == "/input") {
                 std::string filename;
                 if (input_list[1][0] == '\"'){
                     for (int i = 1; i < input_list.size(); i++) {
                         filename += input_list[i];
                         if (input_list[i][input_list[i].size() - 1] == '\"') {
+                            last_file_name_idx = i;
                             break;
                         }
                         filename += " ";
@@ -174,30 +179,56 @@ void Runner::run() {
                 }
                 else{
                     filename = input_list[1];
+                    last_file_name_idx = 1;
                 }
-                header_print("FLM", "Load from: " << filename);
-                std::wifstream file(utf8_to_wstring(filename));
-                //std::ifstream file(filename);
-                if (!file.is_open()) {
-                    header_print("FLM", "Error: Could not open file: " << filename);
-                    header_print("FLM", "Please check if the file exists and is readable.");
-                    continue;
+
+                if (filename.find(".jpg") != std::string::npos || filename.find(".png") != std::string::npos) {
+                    header_print("FLM", "Loading image: " << filename);
+                    auto start_time = std::chrono::high_resolution_clock::now();
+                    image = load_image(filename);
+                    if (image.size() == 0){
+                        header_print("FLM", "Error: Could not load image: " << filename);
+                        header_print("FLM", "Please check if the file exists and is readable.");
+                        continue;
+                    }
+                    
+                    image = preprocess_image(image);
+                    if (image.size() == 0){
+                        header_print("FLM", "Error: Could not preprocess image: " << filename);
+                        header_print("FLM", "Please check if the image is valid.");
+                        continue;
+                    }
+                    auto end_time = std::chrono::high_resolution_clock::now();
+                    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+                    header_print("FLM", "Image loaded in " << duration.count() << "ms");
+                    is_image = true;
+                    input = "";
                 }
-                file.imbue(std::locale(file.getloc(), new std::codecvt_utf8<wchar_t>));  // treat file content as UTF-8
-                std::wstring file_content_original((std::istreambuf_iterator<wchar_t>(file)), std::istreambuf_iterator<wchar_t>());
-                std::string file_content = utf8conv.to_bytes(file_content_original);
-                file.close();
-                input = file_content;
-                for (int i = 2; i < input_list.size(); i++) {
-                    input += " " + input_list[i];
+                else{
+                    header_print("FLM", "Loading file: " << filename);
+                    std::wifstream file(utf8_to_wstring(filename));
+                    //std::ifstream file(filename);
+                    if (!file.is_open()) {
+                        header_print("FLM", "Error: Could not open file: " << filename);
+                        header_print("FLM", "Please check if the file exists and is readable.");
+                        continue;
+                    }
+                    file.imbue(std::locale(file.getloc(), new std::codecvt_utf8<wchar_t>));  // treat file content as UTF-8
+                    std::wstring file_content_original((std::istreambuf_iterator<wchar_t>(file)), std::istreambuf_iterator<wchar_t>());
+                    std::string file_content = utf8conv.to_bytes(file_content_original);
+                    file.close();
+                    input = file_content + "\n";
                 }
+                for (int i = last_file_name_idx + 1; i < input_list.size() - 1; i++) {
+                    input += input_list[i] + " ";
+                }
+                input += input_list[input_list.size() - 1];
                 std::cout << std::endl;
             }
             
-            this->chat_engine->start_ttft_timer();
             this->chat_engine->start_total_timer();
-            std::vector<int> user_tokens = this->chat_engine->tokenize(input, true, "user", true);
-            bool success = this->chat_engine->insert(meta_info, user_tokens, false);
+            std::vector<int> user_tokens = this->chat_engine->tokenize(input, true, "user", true, is_image ? 1 : 0);
+            bool success = this->chat_engine->insert(meta_info, user_tokens, false, is_image ? static_cast<void*>(&image) : nullptr);
             if (!success){
                 header_print("WARNING", "Max length reached, stopping generation...");
                 break;
@@ -374,7 +405,7 @@ void Runner::cmd_help(std::vector<std::string>& input_list) {
     std::cout << "                                       - If space is in the filename, use quotes to wrap it" << std::endl;
     std::cout << "  /save - save the history" << std::endl;
     std::cout << "  /clear - clear the context" << std::endl;
-    std::cout << "  /status - show the history" << std::endl;
+    std::cout << "  /status - show perf. metrics" << std::endl;
     std::cout << "  /history - show the history" << std::endl;
     std::cout << "  /verbose - toggle the verbose" << std::endl;
     std::cout << "  /think - toggle the think" << std::endl;

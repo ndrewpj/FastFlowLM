@@ -2,7 +2,7 @@
 /// \brief wstream_buf class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.2
+/// \version 0.9.4
 /// \note This class is used to write UTF-8 characters to a stream
 #pragma once
 

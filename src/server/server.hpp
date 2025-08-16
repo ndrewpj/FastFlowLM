@@ -101,6 +101,9 @@ public:
     void set_max_connections(size_t max_conns) { max_connections_ = max_conns; }
     void set_request_timeout(std::chrono::seconds timeout) { request_timeout_ = timeout; }
     void set_io_threads(size_t num_threads) { io_thread_count_ = num_threads; }
+    // Maximum accepted HTTP request body size (in bytes)
+    void set_max_body_size_bytes(std::size_t bytes) { max_body_size_bytes_ = bytes; }
+    std::size_t get_max_body_size_bytes() const { return max_body_size_bytes_; }
 
     void register_handler(const std::string& method, const std::string& path, RequestHandler handler);
 
@@ -140,6 +143,7 @@ private:
     size_t max_connections_ = 5;
     std::chrono::seconds request_timeout_ = std::chrono::seconds(600); // 5 minutes
     size_t io_thread_count_ = 5;
+    std::size_t max_body_size_bytes_ = 256ull * 1024 * 1024; // 256 MB default
     
     // Request tracking
     mutable std::mutex active_requests_mutex_;

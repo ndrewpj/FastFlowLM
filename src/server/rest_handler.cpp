@@ -10,6 +10,7 @@
 #include "wstream_buf.hpp"
 #include "streaming_ostream.hpp"
 #include "streaming_ostream_openai.hpp"
+#include "image/image_reader.hpp"
 #include <sstream>
 #include <iostream>
 #include <thread>
@@ -65,7 +66,7 @@ void RestHandler::handle_generate(const json& request,
         int top_p = options.value("top_p", 0.9);
         int top_k = options.value("top_k", 5);
         float frequency_penalty = options.value("frequency_penalty", 0.1);
-        int length_limit = request.value("max_tokens", -1);
+        int length_limit = request.value("max_tokens", 4096);
         bool enable_thinking = request.value("think", false);
         auto load_start_time = time_utils::now();
         ensure_model_loaded(model);
@@ -147,12 +148,34 @@ void RestHandler::handle_chat(const json& request,
         float top_p = options.value("top_p", 0.9);
         int top_k = options.value("top_k", 5);
         float frequency_penalty = options.value("frequency_penalty", 0.1);
-        int length_limit = options.value("num_predict", -1);
+        int length_limit = options.value("num_predict", 4096);
         bool enable_thinking = request.value("think", false);
         auto load_start_time = time_utils::now();
         ensure_model_loaded(model);
         auto load_end_time = time_utils::now();
-
+        int total_images = 0;
+        for (auto& message : messages){
+            nlohmann::ordered_json::array_t images = message.value("images", nlohmann::ordered_json::array());
+            if (images.size() > 0){
+                total_images += images.size();
+            }
+        }
+        header_print("FLM", "Total images: " << total_images);
+        // temporary solution
+        bytes pixel_values(3 * 896 * 896 * sizeof(bf16) * total_images);
+        uint8_t* pixel_values_ptr = pixel_values.data();
+        if (total_images > 0){
+            for (auto& message : messages){
+                nlohmann::ordered_json::array_t images = message.value("images", nlohmann::ordered_json::array());
+                for (auto& image : images){
+                    std::string image_str = image.get<std::string>();
+                    bytes image_rgb = load_image_base64(image_str);
+                    buffer<bf16> pv = preprocess_image(image_rgb);
+                    memcpy(pixel_values_ptr, pv.data(), pv.size() * sizeof(bf16));
+                    pixel_values_ptr += pv.size() * sizeof(bf16);
+                }
+            }
+        }
         chat_engine->set_temperature(temperature);
         chat_engine->set_topp(top_p);
         chat_engine->set_topk(top_k);
@@ -160,14 +183,14 @@ void RestHandler::handle_chat(const json& request,
         chat_engine->set_enable_think(enable_thinking);
         chat_meta_info meta_info;
         meta_info.load_duration = (uint64_t)time_utils::duration_ns(load_start_time, load_end_time).first;
-        
+        void* payload = pixel_values.size() > 0 ? static_cast<void*>(&pixel_values) : nullptr;
         header_print("FLM", "Start generating...");
         if (stream) {
             // Streaming response using streaming_ostream
             auto total_start_time = time_utils::now();
             streaming_ostream ostream(model, send_streaming_response, true);  // true for chat format
             std::vector<int> prompts = chat_engine->tokenize(messages, true);
-            bool success = chat_engine->insert(meta_info, prompts);
+            bool success = chat_engine->insert(meta_info, prompts, false, payload);
             if (!success){
                 json error_response = {{"error", "Max length reached"}};
                 send_response(error_response);
@@ -186,7 +209,7 @@ void RestHandler::handle_chat(const json& request,
             std::vector<int> prompts = chat_engine->tokenize(messages, true);
             auto total_start_time = time_utils::now();
             nullstream nstream;
-            std::string response_text = chat_engine->generate_with_prompt(meta_info, prompts, length_limit, nstream);
+            std::string response_text = chat_engine->generate_with_prompt(meta_info, prompts, length_limit, nstream, payload);
             auto total_end_time = time_utils::now();
             meta_info.total_duration = (uint64_t)time_utils::duration_ns(total_start_time, total_end_time).first;
             
@@ -401,7 +424,7 @@ void RestHandler::handle_openai_chat_completion(const json& request,
         float top_p = request.value("top_p", 0.9);
         int top_k = request.value("top_k", 5);
         float frequency_penalty = request.value("frequency_penalty", 0.1);
-        int length_limit = request.value("max_tokens", -1);
+        int length_limit = request.value("max_tokens", 4096);
         bool enable_thinking = request.value("think", false);
         ensure_model_loaded(model);
         chat_engine->set_enable_think(enable_thinking);

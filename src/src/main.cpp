@@ -2,7 +2,7 @@
 /// \brief Main entry point for the FLM application
 /// \author FastFlowLM Team
 /// \date 2025-08-05
-/// \version 0.9.2
+/// \version 0.9.4
 /// \note This is a header file for the main entry point
 #pragma once
 #include "runner.hpp"
@@ -19,11 +19,51 @@
 #include <filesystem>
 #include <shlobj.h>
 #include <cstdlib>
+#include <shellapi.h>
 
 
 // Global variables
 ///@brief should_exit is used to control the server thread
 std::atomic<bool> should_exit(false);
+
+///@brief get_unicode_command_line_args gets Unicode command line arguments
+///@param argc_out reference to store argument count
+///@return vector of UTF-8 encoded argument strings
+std::vector<std::string> get_unicode_command_line_args(int& argc_out) {
+    std::vector<std::string> args;
+    
+    // Get the Unicode command line
+    LPWSTR* szArglist;
+    int nArgs;
+    
+    szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
+    if (szArglist == nullptr) {
+        argc_out = 0;
+        return args;
+    }
+    
+    argc_out = nArgs;
+    
+    // Convert each argument from wide string to UTF-8
+    for (int i = 0; i < nArgs; i++) {
+        std::wstring warg(szArglist[i]);
+        
+        // Convert to UTF-8
+        int size_needed = WideCharToMultiByte(CP_UTF8, 0, warg.c_str(), (int)warg.size(), nullptr, 0, nullptr, nullptr);
+        if (size_needed > 0) {
+            std::string utf8_arg(size_needed, 0);
+            WideCharToMultiByte(CP_UTF8, 0, warg.c_str(), (int)warg.size(), &utf8_arg[0], size_needed, nullptr, nullptr);
+            args.push_back(utf8_arg);
+        } else {
+            args.push_back(""); // fallback for conversion error
+        }
+    }
+    
+    // Free memory allocated by CommandLineToArgvW
+    LocalFree(szArglist);
+    
+    return args;
+}
 
 ///@brief get_executable_directory gets the directory where the executable is located
 ///@return the executable directory path
@@ -107,16 +147,28 @@ int get_server_port() {
 int main(int argc, char* argv[]) {
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
+    
+    // Configure AMD XRT for performance mode
+    // system("cd \"C:\\Windows\\System32\\AMD\" && .\\xrt-smi.exe configure --pmode performance");
+    
+    // Get Unicode command line arguments
+    int unicode_argc;
+    std::vector<std::string> unicode_argv = get_unicode_command_line_args(unicode_argc);
+    
     std::string command;
     std::string tag;
-    std::string filename = "";
+    std::wstring filename = L"";
     int allowed_length = -1;
     bool force_redownload = false;
     // Parse the command line arguments
-    if (argc < 2 || argc > 4) {
-        std::cout << "Usage: " << argv[0] << " <command: run <model_tag> <file_name>" << std::endl;
-        std::cout << "Usage: " << argv[0] << " <command: serve <model_tag>" << std::endl;
-        std::cout << "Usage: " << argv[0] << " <command: pull <model_tag> [--force]" << std::endl;
+    if (unicode_argc < 2 || unicode_argc > 5) {
+        std::cout << "Usage: " << unicode_argv[0] << "run <model_tag> <file_name> [length]" << std::endl;
+        std::cout << "Usage: " << unicode_argv[0] << "serve <model_tag>" << std::endl;
+        std::cout << "Usage: " << unicode_argv[0] << "pull <model_tag> [--force]" << std::endl;
+        std::cout << "Usage: " << unicode_argv[0] << "help" << std::endl;
+        std::cout << "Usage: " << unicode_argv[0] << "remove <model_tag>" << std::endl;
+        std::cout << "Usage: " << unicode_argv[0] << "list" << std::endl;
+        std::cout << "Usage: " << unicode_argv[0] << "version" << std::endl;
         std::cout << "Commands:" << std::endl;
         std::cout << "  run     - Run the model interactively" << std::endl;
         std::cout << "  serve   - Start the Ollama-compatible server" << std::endl;
@@ -129,36 +181,36 @@ int main(int argc, char* argv[]) {
         std::cout << "  --force - Force re-download even if model exists (for pull command)" << std::endl;
         return 1;
     }
-    command = argv[1];
+    command = unicode_argv[1];
     if (command == "run") {
-        if (argc < 3) {
-            std::cout << "Usage: " << argv[0] << " run <model_tag>" << std::endl;
+        if (unicode_argc < 3) {
+            std::cout << "Usage: " << unicode_argv[0] << " run <model_tag>" << std::endl;
             return 1;
         }
-        if (argc >= 4){
-            filename = argv[3];
+        if (unicode_argc >= 4){
+            filename = utf8_to_wstring(unicode_argv[3]);
         }
-        if (argc >= 5){
-            allowed_length = std::stoi(argv[4]);
+        if (unicode_argc >= 5){
+            allowed_length = std::stoi(unicode_argv[4]);
         }
-        tag = argv[2];
+        tag = unicode_argv[2];
     }
     else if (command == "serve") {
-        if (argc < 3) {
+        if (unicode_argc < 3) {
             tag = "llama3.2:1b";
         }
         else {
-            tag = argv[2];
+            tag = unicode_argv[2];
         }
     }
     else if (command == "pull") {
-        if (argc < 3) {
-            std::cout << "Usage: " << argv[0] << " pull <model_tag>" << std::endl;
+        if (unicode_argc < 3) {
+            std::cout << "Usage: " << unicode_argv[0] << " pull <model_tag>" << std::endl;
             return 1;
         }
-        tag = argv[2];
+        tag = unicode_argv[2];
         // Check for force flag, if true, the model will be re-downloaded
-        if (argc == 4 && std::string(argv[3]) == "--force") {
+        if (unicode_argc == 4 && unicode_argv[3] == "--force") {
             force_redownload = true;
         }
 
@@ -168,35 +220,40 @@ int main(int argc, char* argv[]) {
         return 0;
     }
     else if (command == "help") {
-        std::cout << "Usage: " << argv[0] << " <command: run <model_tag> <file_name> [length]" << std::endl;
-        std::cout << "Usage: " << argv[0] << " <command: serve <model_tag>" << std::endl;
-        std::cout << "Usage: " << argv[0] << " <command: pull <model_tag> [--force]" << std::endl;
-        std::cout << "Usage: " << argv[0] << " <command: help" << std::endl;
-        std::cout << "Usage: " << argv[0] << " <command: remove <model_tag>" << std::endl;
-        std::cout << "Usage: " << argv[0] << " <command: list" << std::endl;
-        std::cout << "Usage: " << argv[0] << " <command: version" << std::endl;
+        std::cout << "Usage: " << unicode_argv[0] << " run <model_tag> <file_name> [length]" << std::endl;
+        std::cout << "Usage: " << unicode_argv[0] << " serve <model_tag>" << std::endl;
+        std::cout << "Usage: " << unicode_argv[0] << " pull <model_tag> [--force]" << std::endl;
+        std::cout << "Usage: " << unicode_argv[0] << " help" << std::endl;
+        std::cout << "Usage: " << unicode_argv[0] << " remove <model_tag>" << std::endl;
+        std::cout << "Usage: " << unicode_argv[0] << " list" << std::endl;
+        std::cout << "Usage: " << unicode_argv[0] << " version" << std::endl;
         std::cout << "Commands:" << std::endl;
-        std::cout << "  run    - Run the model interactively" << std::endl;
-        std::cout << "  serve  - Start the Ollama-compatible server" << std::endl;
-        std::cout << "  pull   - Download model files if not present" << std::endl;
-        std::cout << "  help   - Show the help" << std::endl;
-        std::cout << "  remove - Remove a model" << std::endl;
+        std::cout << "  run     - Run the model interactively" << std::endl;
+        std::cout << "  serve   - Start the Ollama-compatible server" << std::endl;
+        std::cout << "  pull    - Download model files if not present" << std::endl;
+        std::cout << "  help    - Show the help" << std::endl;
+        std::cout << "  list    - List all the models" << std::endl;
+        std::cout << "  version - Show the version" << std::endl;
+        std::cout << "  remove  - Remove a model" << std::endl;
         return 0;
     }
     else if (command == "remove") {
-        if (argc < 3) {
-            std::cout << "Usage: " << argv[0] << " remove <model_tag>" << std::endl;
+        if (unicode_argc < 3) {
+            std::cout << "Usage: " << unicode_argv[0] << " remove <model_tag>" << std::endl;
             return 1;
         }
-        tag = argv[2];
+        tag = unicode_argv[2];
     }
     else if (command == "list") {
-        if (argc < 2) {
-            std::cout << "Usage: " << argv[0] << " list" << std::endl;
+        if (unicode_argc < 2) {
+            std::cout << "Usage: " << unicode_argv[0] << " list" << std::endl;
             return 1;
         }
     }
 
+    // Set process priority to high for better performance
+    SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
+    
     // Get the command, model tag, and force flag
     std::string exe_dir = get_executable_directory();
     std::string config_path = exe_dir + "/model_list.json";
@@ -216,7 +273,7 @@ int main(int argc, char* argv[]) {
         }
 
         if (command == "run") {
-            if (filename == ""){          
+            if (filename == L""){          
                 Runner runner(supported_models, downloader, tag);
                 runner.run();
             }
@@ -227,19 +284,18 @@ int main(int argc, char* argv[]) {
                 }
                 nlohmann::json model_info = supported_models.get_model_info(tag);
                 chat.load_model(supported_models.get_model_path(tag), model_info);
+                std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8conv;
                 // read the file
-                std::ifstream file(filename);
+                std::wifstream file(filename);
                 if (!file.is_open()) {
-                    std::cerr << "Error: Could not open file: " << filename << std::endl;
+                    header_print("FLM", "Error: Could not open file: " << utf8conv.to_bytes(filename));
+                    header_print("FLM", "Please check if the file exists and is readable.");
                     return 1;
                 }
-                // get file size
-                file.seekg(0, std::ios::end);
-                size_t file_size = file.tellg();
-                file.seekg(0, std::ios::beg);
-                // read the file
-                std::string file_content(file_size, '\0');
-                file.read(file_content.data(), file_size);
+                file.imbue(std::locale(file.getloc(), new std::codecvt_utf8<wchar_t>));  // treat file content as UTF-8
+                std::wstring file_content_original((std::istreambuf_iterator<wchar_t>(file)), std::istreambuf_iterator<wchar_t>());
+                std::string file_content = utf8conv.to_bytes(file_content_original);
+                file.close();
                 // close the file
                 chat.start_ttft_timer();
                 chat.start_total_timer();
