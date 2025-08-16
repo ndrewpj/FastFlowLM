@@ -10,9 +10,9 @@
 
 Run large language models on AMD Ryzen™ AI NPUs — in minutes.
 
-FastFlowLM is a lightweight runtime for deploying LLMs like LLaMA, Qwen, DeepSeek and Gemma directly on AMD’s NPU — no GPU needed, faster and over 11x more power efficient than the iGPU or hybrid (iGPU+NPU) solutions.
+FastFlowLM is a lightweight runtime for deploying LLMs like LLaMA3.1/3.2, Qwen3, DeepSeek-R1 and Gemma3 (👀 Vision is now supported — the first NPU-only VLM! 🚀) directly on AMD’s NPU — no GPU needed, faster and over 11x more power efficient than the iGPU or hybrid (iGPU+NPU) solutions.
 
-FastFlowLM supports full context lengths — up to 128K tokens with LLaMA 3.1 and 3.2.
+FastFlowLM supports full context lengths — up to 128K tokens with LLaMA 3.1/3.2 and Gemma3:4B.
 
 **Just like Ollama — but purpose-built and deeply optimized for the Ryzen™ AI NPU**
 
@@ -20,15 +20,19 @@ FastFlowLM supports full context lengths — up to 128K tokens with LLaMA 3.1 an
 
 🔧 **Download:** [flm-setup.exe](https://github.com/FastFlowLM/FastFlowLM/releases/latest/download/flm-setup.exe)  
 📘 **Documentation:** [docs.fastflowlm.com](https://docs.fastflowlm.com)  
-💬 **Community Support:** [discord.gg/z24t23HsHF](https://discord.gg/z24t23HsHF)  
+💬 **Discord Server:** [discord.gg/z24t23HsHF](https://discord.gg/z24t23HsHF)  
 📺 **YouTube Demos:** [youtube.com/@FastFlowLM-YT](https://www.youtube.com/@FastFlowLM-YT)
-
+🧪 **Test Drive (Remote Demo Machine):** [https://open-webui.testdrive-fastflowlm.com/](https://open-webui.testdrive-fastflowlm.com/) 
 
 ---
 
 ## 📺 Demo Videos
 
-FastFlowLM vs AMD’s official stack (Ryzen™ AI software 1.4) — **real-time speedup and power efficiency**: 
+**🎥 Check out our demo videos!**  
+From the new **Gemma3:4b vision (first NPU-only VLM)** model to the **think/no_think Qwen3**, **4-power-mode operation**, and head-to-head comparisons with **Ollama, LM Studio, Lemonade**, and more — it’s all [up on YouTube](https://youtu.be/9QipiMg5Yz8?list=PLf87s9UUZrJp4r3JM4NliPEsYuJNNqFAJ)!
+
+
+<!-- FastFlowLM vs AMD’s official stack (Ryzen™ AI software 1.4) — **real-time speedup and power efficiency**: 
 
 - Same prompt (length: 1835 tokens), same model (LLaMA 3.2 1B model; weights int4; activation bf16), running on the same machine (AMD Ryzen™ AI 5 340 NPU with 32 GB SO-DIMM DDR5 5600 MHz memory)
 - Real-time CPU, iGPU, NPU usage, and power consumption shown (Windows task manager + HWINFO)
@@ -48,15 +52,17 @@ FastFlowLM vs AMD’s official stack (Ryzen™ AI software 1.4) — **real-time 
       </a>
     </td>
   </tr>
-</table>
+</table> -->
 
-🎥 More demo videos (e.g., the new think/no_think qwen3 model, 4 power mode operation, etc.) and comparisons with Ollama, LM Studio, Lemonade, etc. can be found [here on YouTube](https://www.youtube.com/watch?v=OZuLQcmFe9A&list=PLf87s9UUZrJp4r3JM4NliPEsYuJNNqFAJ).
+<!-- 🎥 Demo videos (e.g., the new gemma3:4b visoin, think/no_think qwen3 model, 4 power mode operation, etc.) and comparisons with Ollama, LM Studio, Lemonade, etc. can be found [here on YouTube](https://www.youtube.com/watch?v=OZuLQcmFe9A&list=PLf87s9UUZrJp4r3JM4NliPEsYuJNNqFAJ). -->
 
 ---
 
 ## 🧪 Test Drive (Remote Demo)
 
-🚀 Don’t have a Ryzen™ AI PC? Instantly try FastFlowLM on a live AMD Ryzen™ AI 5 340 NPU with 32 GB memory ([spec](https://www.amazon.com/4X4-BOX-AI340-Display-Support-Copilot/dp/B0F2GFLF67/ref=sr_1_5?crid=1X16RDUCQ2497&dib=eyJ2IjoiMSJ9.C5GS4xMl_kkJ7Yr6dNFi6g.Dfj_l9Dk1yuIBjppqmKSqNAAPQc1F4Mu3zJ9-MDlszw&dib_tag=se&keywords=4x4+box+ai340&qid=1752010554&sprefix=www.amazon.com%2F4X4-BOX-AI340%2Caps%2C176&sr=8-5)) — no setup needed:
+🚀 Don’t have a Ryzen™ AI PC? Instantly try FastFlowLM on a live AMD Ryzen™ AI 5 340 NPU with 32 GB memory ([spec](https://www.amazon.com/4X4-BOX-AI340-Display-Support-Copilot/dp/B0F2GFLF67/ref=sr_1_5?crid=1X16RDUCQ2497&dib=eyJ2IjoiMSJ9.C5GS4xMl_kkJ7Yr6dNFi6g.Dfj_l9Dk1yuIBjppqmKSqNAAPQc1F4Mu3zJ9-MDlszw&dib_tag=se&keywords=4x4+box+ai340&qid=1752010554&sprefix=www.amazon.com%2F4X4-BOX-AI340%2Caps%2C176&sr=8-5)) — no setup needed.  
+
+✨ Now with **Gemma3:4b (the first NPU-only VLM!)** supported here.  
 
 🌐 **Launch Now**: [https://open-webui.testdrive-fastflowlm.com/](https://open-webui.testdrive-fastflowlm.com/)  
 🔐 **Login**: `guest@flm.npu`  
@@ -67,12 +73,12 @@ FastFlowLM vs AMD’s official stack (Ryzen™ AI software 1.4) — **real-time 
 > Alternatively, **sign up** with your own credentials instead of using the shared guest account.
 > ⚠️ Some universities or companies may **block access** to the test drive site. If it doesn't load over Wi-Fi, try switching to a **cellular network**.  
 > Real-time demo powered by **FastFlowLM + Open WebUI** — no downloads, no installs.  
-> Try optimized LLM models: `llama3.2:1b`, `llama3.2:3b`, `qwen3:4b`, etc. — all accelerated on NPU.
+> Try optimized LLM models: `gemma3:4b`, `qwen3:4b`, etc. — all accelerated on NPU.
 
 ⚠️ **Please note**:  
 - FastFlowLM is designed for **single-user local use**. This remote demo machine may experience short wait times when **multiple users** access it concurrently — please be patient.
 - When switching models, it may take longer time to replace the model in memory.
-- Large prompts (30k+ tokens) may take longer — but it works.
+- Large prompts (30k+ tokens) and VLM (gemma3:4b) may take longer — but it works! 🙂
 
 ---
 
@@ -96,13 +102,9 @@ flm serve llama3.2:1b
 ```
 > The model tag (e.g., `llama3.2:1b`) sets the initial model, which is optional. If another model is requested, FastFlowLM will automatically switch to it. Local server is on port 11434 (default).
 
-For best performance, it is recommended to set the NPU power mode to **performance** or **turbo**. Open **PowerShell** and change path to:
+For best performance, it is recommended to set the NPU power mode to **performance** or **turbo**. Open **PowerShell** and enter:
 ```powershell
-cd C:\Windows\System32\AMD\
-```
-Then, run
-```powershell
-.\xrt-smi configure --pmode turbo
+cd C:\Windows\System32\AMD\; .\xrt-smi configure --pmode turbo
 ```
 > For more details about NPU power mode, refer to the [AMD XRT SMI Documentation](https://ryzenai.docs.amd.com/en/latest/xrt_smi.html).
 
@@ -112,7 +114,7 @@ For detailed instructions, click [Documentation](https://docs.fastflowlm.com/).
 
 ## 🧠 Local AI on Your NPU
 
-FastFlowLM makes it easy to run modern LLMs locally with:
+FastFlowLM makes it easy to run cutting-edge **LLMs** (and now **VLMs** too ) locally with:
 - ⚡ Fast and low power
 - 🧰 Simple CLI and API
 - 🔐 Fully private and offline
@@ -125,14 +127,14 @@ No model rewrites, no tuning — it just works.
 
 - **Runs fully on AMD Ryzen™ AI NPU** — no GPU or CPU load  
 - **Developer-first flow** — like Ollama, but optimized for NPU  
-- **Support for long context windows** — up to 128k tokens (e.g., LLaMA 3.1/3.2)  
+- **Support for long context windows** — up to 128k tokens (e.g., LLaMA 3.1/3.2, Gemma3:4B)  
 - **No low-level tuning required** — You focus on your app, we handle the rest
 
 ---
 
 ## ⚡ Performance
 
-Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
+<!-- Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 
 ### LLM Decoding Speed (TPS: Tokens per Second)
 - 🚀 Up to **14.2× faster** vs NPU-only baseline  
@@ -144,7 +146,7 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 - 🔋 Up to **3.4× more efficient in prefill** vs NPU-only or hybrid
 
 ### Latency
-- ⏱️ **Matches or exceeds** TTFT (Time to First Token) of NPU-only or hybrid mode
+- ⏱️ **Matches or exceeds** TTFT (Time to First Token) of NPU-only or hybrid mode -->
 
 ### Benchmarks
 <p style="font-size:85%; margin:0;">
@@ -158,7 +160,7 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 
 ## 🛠️ Instructions
 
-[Documentation and example workflows](https://docs.fastflowlm.com/). Like Ollama, you can:
+[Documentation and examples](https://docs.fastflowlm.com/). Like Ollama, you can:
 - Load and run models locally via CLI (Interactive Mode)
 - Integrate into your app via a simple REST API via a local server (Server Mode)
 > Compatible with tools like **Microsoft AI Toolkit**, **Open WebUI**, and more.
@@ -169,12 +171,15 @@ Compared to AMD Ryzen™ AI Software 1.4 (GAIA or Lemonade):
 
 - All orchestration code and CLI tools are open-source under the [MIT License](./LICENSE_RUNTIME.txt).
 - NPU-accelerated kernels are **proprietary binaries**, free for **non-commercial use** only — see [LICENSE_BINARY.txt](./LICENSE_BINARY.txt) and [TERMS.md](./TERMS.md) for details.
-
+- ⚠️ **Non-commercial users must acknowledge FastFlowLM** by adding this line to your README, docs, or project page:  
+  ```
+  Powered by [FastFlowLM](https://github.com/FastFlowLM/FastFlowLM)
+  ```
 For commercial use or licensing inquiries, email us: info@fastflowlm.com
 
 ---
 
-💬 **Have feedback or want early access? [Open an issue](https://github.com/fastflowlm/fastflowlm/issues/new) or [Join our Discord community](https://discord.gg/z24t23HsHF)
+💬 **Have feedback or want early access to our new releases? [Open an issue](https://github.com/fastflowlm/fastflowlm/issues/new) or [Join our Discord community](https://discord.gg/z24t23HsHF)
 
 ---
 

@@ -141,6 +141,31 @@ Use any file that can be opened in Notepad (like `.txt`, `.json`, `.csv`, etc.).
 
 ---
 
+### 🌄 Loading Images in CLI Mode (for VLMs only, e.g. gemma3:4b)
+
+Supports **.png** and **.jpg** formats.  
+
+#### ✅ Usage:
+
+```powershell
+/input "<image_path>" prompt
+```
+
+#### 🧪 Example:
+
+```powershell
+/input "C:\Users\Public\Desktop\cat.jpg" describe this image
+```
+
+#### 🔎 Notes:
+
+* Make sure the model you are using is a **vision model (VLM)**  
+* Put quotes **only around the file path**  
+* Do **not** use quotes around the prompt  
+* Image must be in **.jpg** or **.png** format  
+
+---
+
 ### 🌐 Start Server Mode
 
 Launch FastFlowLM as a local REST API server (also support OpenAI API):
