@@ -2,7 +2,7 @@
 /// \brief chat_bot class
 /// \author FastFlowLM Team
 /// \date 2025-08-05
-/// \version 0.9.2
+/// \version 0.9.4
 /// \note This is a header file for the chat_bot class
 #pragma once
 
@@ -107,7 +107,7 @@ public:
     /// \param tokens the tokens
     /// \param is_system_prompt the is system prompt
     /// \return true if the tokens are inserted successfully, false otherwise
-    bool insert(chat_meta_info& meta_info, std::vector<int>& tokens, bool is_system_prompt = false);
+    bool insert(chat_meta_info& meta_info, std::vector<int>& tokens, bool is_system_prompt = false, void* payload = nullptr);
 
     /// \brief Generate the tokens
     /// \param os the output stream
@@ -115,7 +115,7 @@ public:
     std::string generate(chat_meta_info& meta_info, int length_limit, std::ostream& os = std::cout);
 
     /// \brief Generate the tokens with prompt
-    std::string generate_with_prompt(chat_meta_info& meta_info, std::vector<int>& tokens, int length_limit, std::ostream& os = std::cout);
+    std::string generate_with_prompt(chat_meta_info& meta_info, std::vector<int>& tokens, int length_limit, std::ostream& os = std::cout, void* payload = nullptr);
 
     /// \brief Get the current context length
     /// \return the current context length
@@ -168,7 +168,7 @@ public:
     /// \param role the role
     /// \param add_generation_prompt the add generation prompt
     /// \return the tokens
-    std::vector<int> tokenize(std::string& text, bool apply_chat_template, std::string role, bool add_generation_prompt);
+    std::vector<int> tokenize(std::string& text, bool apply_chat_template, std::string role, bool add_generation_prompt, int num_images = 0);
 
     /// \brief Tokenize the messages
     /// \param messages the messages, chat template is applied

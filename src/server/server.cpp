@@ -67,6 +67,19 @@ void brief_print_message_request(nlohmann::json request) {
                     message["content"] = utf8_truncate_middle(content, 10, 10);
                 }
             }
+            if (message.contains("images")) {
+                nlohmann::ordered_json::array_t images = message.value("images", nlohmann::ordered_json::array());
+                nlohmann::ordered_json::array_t new_images;
+                for (auto& image : images) {
+                    std::string image_str = image.get<std::string>();
+                    if (image_str.size() > 20) {
+                        new_images.push_back(utf8_truncate_middle(image_str, 10, 10));
+                    } else {
+                        new_images.push_back(image_str);
+                    }
+                }
+                message["images"] = new_images;
+            }
         }
     }
     if (request.contains("message")){
@@ -124,7 +137,8 @@ HttpSession::HttpSession(tcp::socket socket, WebServer& server)
     , is_streaming_(false) {
     // Set socket timeout
     socket_.set_option(tcp::socket::keep_alive(false));
-    socket_.set_option(tcp::socket::linger(true, 0));
+    // Avoid abortive close that can lead to client-side broken pipe on large uploads
+    socket_.set_option(tcp::socket::linger(false, 0));
     
     // Debug: Log TCP connection formation
     header_print("🔗 ", "TCP connection established - Remote: " + socket_.remote_endpoint().address().to_string() + ":" + std::to_string(socket_.remote_endpoint().port()));
@@ -153,18 +167,41 @@ void HttpSession::close_connection() {
 void HttpSession::read_request() {
     auto self = shared_from_this();
 
-    http::async_read(socket_, buffer_, req_,
-        [self](beast::error_code ec, std::size_t bytes_transferred) {
+    // Use a parser to control the maximum accepted body size
+    auto parser = std::make_shared<http::request_parser<http::string_body>>();
+    parser->body_limit(self->server_.get_max_body_size_bytes());
+
+    http::async_read(self->socket_, self->buffer_, *parser,
+        [self, parser](beast::error_code ec, std::size_t bytes_transferred) {
             if (!ec) {
-                // Log the bytes read to debug
                 header_print("TCP", "Read " + std::to_string(bytes_transferred) + " bytes from socket");
-                
+                // Move the parsed message into our request object
+                self->req_ = parser->release();
                 self->handle_request();
-            } else {
-                // Connection closed or error, decrement connection counter
-                header_print("🔒 ", "TCP connection closed - Remote: " + self->socket_.remote_endpoint().address().to_string() + ":" + std::to_string(self->socket_.remote_endpoint().port()));
-                self->server_.active_connections_.fetch_sub(1);
+                return;
             }
+
+            // Handle body too large explicitly with 413
+            if (ec == http::error::body_limit) {
+                self->res_ = {};
+                self->res_.version(11);
+                self->res_.result(http::status::payload_too_large);
+                self->res_.set(http::field::content_type, "application/json");
+                self->res_.keep_alive(false);
+                json err = {{"error", "Request payload too large"}, {"max_bytes", self->server_.get_max_body_size_bytes()}};
+                self->res_.body() = err.dump();
+                self->res_.prepare_payload();
+                self->write_response();
+                return;
+            }
+
+            // Connection closed or other error, decrement connection counter
+            try {
+                header_print("🔒 ", "TCP connection closed - Remote: " + self->socket_.remote_endpoint().address().to_string() + ":" + std::to_string(self->socket_.remote_endpoint().port()));
+            } catch (...) {
+                header_print("🔒 ", "TCP connection closed - Remote endpoint unavailable");
+            }
+            self->server_.active_connections_.fetch_sub(1);
         });
 }
 

@@ -2,7 +2,7 @@
 /// \brief Buffer and bytes class for memory management
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.2
+/// \version 0.9.4
 /// \note This class is used to manage the memory.
 #pragma once
 #include <cstdint>
@@ -79,7 +79,7 @@ public:
     /// \brief constructor
     /// \param size the size
     bytes(size_t size)
-        : owned_data_(new uint8_t[size]), data_(owned_data_.get()), size_(size), is_owner_(true)
+        : owned_data_(size > 0 ? new uint8_t[size] : nullptr), data_(owned_data_.get()), size_(size), is_owner_(true)
 #ifdef __XRT__
         , is_bo_owner_(false), bo_(nullptr), owned_bo_(nullptr)
 #endif

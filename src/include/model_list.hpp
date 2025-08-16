@@ -2,7 +2,7 @@
 /// \brief model_list class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.2
+/// \version 0.9.4
 /// \note This class is used to manage the model list.
 #pragma once
 #include "nlohmann/json.hpp"
@@ -12,7 +12,7 @@
 #include <vector>
 #include "utils/utils.hpp"
 
-#define __FLM_VERSION__ "0.9.2"
+#define __FLM_VERSION__ "0.9.4"
 
 /// \note This class is used to manage the model list.
 class model_list {
@@ -29,8 +29,16 @@ class model_list {
             "model.q4nx",
             "tokenizer_config.json"
         };
+        static constexpr const char* vision_model_files[] = {
+            "vision_attn.xclbin",
+            "vision_mm.xclbin",
+            "vision_weight.q4nx"
+        };
         /// \brief number of model files
         static constexpr int model_files_count = sizeof(model_files) / sizeof(model_files[0]);
+        
+        /// \brief number of vision model files
+        static constexpr int vision_model_files_count = sizeof(vision_model_files) / sizeof(vision_model_files[0]);
 
         /// \brief constructor
         model_list(){}
@@ -56,6 +64,7 @@ class model_list {
         /// \param tag the tag of the model
         /// \return the model info
         nlohmann::json get_model_info(const std::string& tag){
+            static std::string last_error_tag = "";
             std::string new_tag = this->cut_tag(tag);
             bool model_found = false;
             // get model type, the string before ':' in the tag
@@ -95,14 +104,20 @@ class model_list {
                     }
                 } 
                 if (!model_found) {
-                    header_print("ERROR", "Model not found: " + model_size + " in subset " + model_type);
-                    header_print("ERROR", "Using default model: llama3.2-1B");
-                    return this->config["models"]["llama3.2"]["1B"];
+                    if (last_error_tag != new_tag) {
+                        last_error_tag = new_tag;
+                        header_print("ERROR", "Model not found: " + model_size + " in subset " + model_type);
+                        header_print("ERROR", "Using default model: llama3.2-1B");
+                    }
+                    return this->config["models"]["llama3.2"]["1b"];
                 }
             }
             else{
-                header_print("ERROR", "Model subset not found: " << model_type << "; using default model: llama3.2-1B");
-                return this->config["models"]["llama3.2"]["1B"];
+                if (last_error_tag != new_tag) {
+                    last_error_tag = new_tag;
+                    header_print("ERROR", "Model subset not found: " << model_type << "; using default model: llama3.2-1B");
+                }
+                return this->config["models"]["llama3.2"]["1b"];
             }
         }
 

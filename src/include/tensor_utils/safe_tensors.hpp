@@ -2,7 +2,7 @@
 /// \brief SafeTensors class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.2
+/// \version 0.9.4
 /// \note This class is used to load weights from a safe-tensors file.
 #pragma once
 

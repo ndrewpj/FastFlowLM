@@ -2,7 +2,7 @@
 /// \brief typedef file for the FastFlowLM project
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.2
+/// \version 0.9.4
 /// \note This file contains the typedefs for the FastFlowLM project
 
 #pragma once
@@ -11,6 +11,7 @@
 #include "buffer.hpp"
 #include <immintrin.h>
 #include <math.h>
+#include <codecvt>
 
 typedef float f32;
 typedef std::int8_t i8;
@@ -56,10 +57,13 @@ public:
     u16 value;
 
     bf16_t(u16 v = 0) : value(v) {}
-    bf16_t(float v)  {
-        u32 f_bits = *reinterpret_cast<u32*>(&v);
-        this->value = static_cast<u16>(f_bits >> 16); 
-    }
+    // Constructor from float (implicitly used with static_cast)
+
+    explicit bf16_t(float v) {
+        u32 f_bits = std::bit_cast<u32>(v);
+        u32 rounding_bias = 0x7FFF + ((f_bits >> 16) & 1);
+        value = static_cast<u16>((f_bits + rounding_bias) >> 16);
+    }    
     bf16_t(int v)  {
         float f = v;
         u32 f_bits = *reinterpret_cast<u32*>(&f);
@@ -69,6 +73,19 @@ public:
     // Implicit conversion to u16
     operator u16() const {
         return this->value;
+    }
+    // Explicit conversion to float for static_cast
+    explicit operator float() const {
+        return this->as_float();
+    }
+    
+    // Helper function to get raw pointer for AVX operations
+    u16* raw_ptr() {
+        return &this->value;
+    }
+    
+    const u16* raw_ptr() const {
+        return &this->value;
     }
     // Convert to float
     float as_float() const {
@@ -86,6 +103,32 @@ public:
     static bf16_t from_float(float f) {
         u32 f_bits = *reinterpret_cast<u32*>(&f);
         return bf16_t(static_cast<u16>(f_bits >> 16));
+    }
+
+    // For memory reinterpretation (similar to reinterpret_cast)
+    static bf16_t* reinterpret_from_u16(u16* ptr) {
+        return reinterpret_cast<bf16_t*>(ptr);
+    }
+
+    static const bf16_t* reinterpret_from_u16(const u16* ptr) {
+        return reinterpret_cast<const bf16_t*>(ptr);
+    }
+
+    static u16* reinterpret_to_u16(bf16_t* ptr) {
+        return reinterpret_cast<u16*>(ptr);
+    }
+
+    static const u16* reinterpret_to_u16(const bf16_t* ptr) {
+        return reinterpret_cast<const u16*>(ptr);
+    }
+
+    // Get raw memory address
+    void* address() {
+        return static_cast<void*>(&value);
+    }
+
+    const void* address() const {
+        return static_cast<const void*>(&value);
     }
 
     // Assignment from another bf16_t
@@ -234,6 +277,38 @@ typedef bf16_t bf16;
 typedef bf16 dtype;
 typedef buffer<bf16> vdtype;
 
+/// \brief Helper functions for bf16 array reinterpretation
+/// \param u16_arr u16 array
+/// \param size size of the array
+/// \return bf16_t array view (does not own memory)
+inline bf16_t* reinterpret_u16_as_bf16(u16* u16_arr, size_t size) {
+    return reinterpret_cast<bf16_t*>(u16_arr);
+}
+
+/// \brief Helper functions for bf16 array reinterpretation (const version)
+/// \param u16_arr const u16 array
+/// \param size size of the array
+/// \return const bf16_t array view (does not own memory)
+inline const bf16_t* reinterpret_u16_as_bf16(const u16* u16_arr, size_t size) {
+    return reinterpret_cast<const bf16_t*>(u16_arr);
+}
+
+/// \brief Helper functions for bf16 array reinterpretation
+/// \param bf16_arr bf16_t array
+/// \param size size of the array
+/// \return u16 array view (does not own memory)
+inline u16* reinterpret_bf16_as_u16(bf16_t* bf16_arr, size_t size) {
+    return reinterpret_cast<u16*>(bf16_arr);
+}
+
+/// \brief Helper functions for bf16 array reinterpretation (const version)
+/// \param bf16_arr const bf16_t array
+/// \param size size of the array
+/// \return const u16 array view (does not own memory)
+inline const u16* reinterpret_bf16_as_u16(const bf16_t* bf16_arr, size_t size) {
+    return reinterpret_cast<const u16*>(bf16_arr);
+}
+
 /// \brief AVX2 Convert bfloat16 to float32
 /// \param bf16_vals the bfloat16 values, 128-bits, 8xbf16
 /// \return the float32 values, 256-bits, 8xfloat32
@@ -250,3 +325,16 @@ inline __m128i f32o_bf16(__m256 fp32_vals) {
     return _mm_packus_epi32(_mm256_extracti128_si256(rounded, 0),
                             _mm256_extracti128_si256(rounded, 1));
 }
+
+/// \brief Convert UTF-8 string to wide string
+/// \param str the UTF-8 string
+/// \return the wide string
+/// \note Usage: std::wstring wstr = utf8_to_wstring(str);
+#ifdef _IS_WINDOWS_
+inline std::wstring utf8_to_wstring(const std::string& str) {
+    int size_needed = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), (int)str.size(), nullptr, 0);
+    std::wstring wstr(size_needed, 0);
+    MultiByteToWideChar(CP_UTF8, 0, str.c_str(), (int)str.size(), &wstr[0], size_needed);
+    return wstr;
+}
+#endif

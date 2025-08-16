@@ -1,14 +1,35 @@
 {
     "model_path": "flm/models",
     "models": {
- 	"gemma3": {
+ 	    "gemma3": {
+            "4b": {
+                "name": "Gemma3-4B-NPU2",
+                "url": "https://huggingface.co/FastFlowLM/Gemma3-4B-NPU2",
+                "modified_at": "2025-05-30T00:00:00Z",
+                "size": 4000000000,
+                "default_context_length": 16384,
+		        "flm_min_version": "0.9.4",
+                "vlm": true,
+                "details": {
+                    "format": "NPU2",
+                    "family": "gemma3_text",
+                    "think": false,
+                    "think_toggleable": false,
+                    "parameter_size": "4B",
+                    "quantization_level": "Q4_1"
+                }
+            }
+        },
+
+        "gemma3-text": {
             "4b": {
                 "name": "Gemma3-4B-Text-NPU2",
                 "url": "https://huggingface.co/FastFlowLM/Gemma3-4B-Text-NPU2",
                 "modified_at": "2025-05-30T00:00:00Z",
                 "size": 4000000000,
-                "default_context_length": 65536,
-		        "flm_min_version": "0.9.2",
+                "default_context_length": 16384,
+		        "flm_min_version": "0.9.4",
+                "vlm": false,
                 "details": {
                     "format": "NPU2",
                     "family": "gemma3_text",
@@ -59,7 +80,7 @@
                 "modified_at": "2025-05-30T00:00:00Z",
                 "size": 8000000000,
                 "flm_min_version": "0.1.8",
-                "default_context_length": 65536,
+                "default_context_length": 16384,
                 "details": {
                     "format": "NPU2",
                     "family": "llama",
@@ -76,7 +97,7 @@
                 "modified_at": "2025-05-30T00:00:00Z",
                 "size": 8000000000,
                 "flm_min_version": "0.1.8",
-                "default_context_length": 65536,
+                "default_context_length": 16384,
                 "details": {
                     "format": "NPU2",
                     "family": "llama",
@@ -92,7 +113,7 @@
                 "url": "https://huggingface.co/FastFlowLM/Qwen3-0.6B-NPU2",
                 "modified_at": "2025-05-30T00:00:00Z",
                 "size": 600000000,
-                "flm_min_version": "0.9.1",
+                "flm_min_version": "0.9.3",
                 "default_context_length": 65536,
                 "details": {
                     "format": "NPU2",
@@ -108,7 +129,7 @@
                 "url": "https://huggingface.co/FastFlowLM/Qwen3-1.7B-NPU2",
                 "modified_at": "2025-05-30T00:00:00Z",
                 "size": 1700000000,
-                "flm_min_version": "0.9.1",
+                "flm_min_version": "0.9.3",
                 "default_context_length": 65536,
                 "details": {
                     "format": "NPU2",
@@ -124,8 +145,8 @@
                 "url": "https://huggingface.co/FastFlowLM/Qwen3-4B-NPU2",
                 "modified_at": "2025-05-30T00:00:00Z",
                 "size": 4000000000,
-                "flm_min_version": "0.1.8",
-                "default_context_length": 65536,
+                "flm_min_version": "0.9.3",
+                "default_context_length": 16384,
                 "details": {
                     "format": "NPU2",
                     "family": "qwen",
@@ -140,8 +161,8 @@
                 "url": "https://huggingface.co/FastFlowLM/Qwen3-8B-NPU2",
                 "modified_at": "2025-05-30T00:00:00Z",
                 "size": 8000000000,
-                "flm_min_version": "0.1.8",
-                "default_context_length": 40960,
+                "flm_min_version": "0.9.3",
+                "default_context_length": 16384,
                 "details": {
                     "format": "NPU2",
                     "family": "qwen",

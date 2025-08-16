@@ -2,7 +2,7 @@
 /// \brief sampler class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.2
+/// \version 0.9.4
 /// \note This is a header file for the sampler class
 #pragma once
 
