@@ -112,6 +112,24 @@ For detailed instructions, click [Documentation](https://docs.fastflowlm.com/).
 
 ---
 
+## 🖼️ Vision Support for Gemma3:4b (VLM)  
+
+FastFlowLM now supports **vision-language inference** with **Gemma3:4b**. ⚡ Quick start:  
+
+After installation, open **PowerShell** and run:
+```
+flm run gemma3:4b
+```
+
+In CLI, attach an image:
+```
+/input "path/to/image.png" What's in this image?
+```
+
+> Supports **.png** and **.jpg** formats  
+
+---
+
 ## 🧠 Local AI on Your NPU
 
 FastFlowLM makes it easy to run cutting-edge **LLMs** (and now **VLMs** too ) locally with:
