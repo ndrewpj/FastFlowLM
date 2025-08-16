@@ -130,6 +130,13 @@ In CLI, attach an image:
 
 ---
 
+## 📚 Supported Models by FastFlowLM (FLM)
+
+Check the full list here:
+👉 https://docs.fastflowlm.com/models/
+
+---
+
 ## 🧠 Local AI on Your NPU
 
 FastFlowLM makes it easy to run cutting-edge **LLMs** (and now **VLMs** too ) locally with:
