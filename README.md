@@ -10,7 +10,7 @@
 
 Run large language models on AMD Ryzen™ AI NPUs — in minutes.
 
-FastFlowLM is a lightweight runtime for deploying LLMs like LLaMA3.1/3.2, Qwen3, DeepSeek-R1 and Gemma3 (👀 Vision is now supported — the first NPU-only VLM! 🚀) directly on AMD’s NPU — no GPU needed, faster and over 11x more power efficient than the iGPU or hybrid (iGPU+NPU) solutions.
+FastFlowLM is a lightweight runtime for deploying LLMs like LLaMA3.1/3.2, Qwen3, DeepSeek-R1 and Gemma3 (Vision is now supported) directly on AMD’s NPU — no GPU needed, faster and over 11x more power efficient than the iGPU or hybrid (iGPU+NPU) solutions.
 
 FastFlowLM supports full context lengths — up to 128K tokens with LLaMA 3.1/3.2 and Gemma3:4B.
 
@@ -21,14 +21,14 @@ FastFlowLM supports full context lengths — up to 128K tokens with LLaMA 3.1/3.
 🔧 **Download:** [flm-setup.exe](https://github.com/FastFlowLM/FastFlowLM/releases/latest/download/flm-setup.exe)  
 📘 **Documentation:** [docs.fastflowlm.com](https://docs.fastflowlm.com)  
 💬 **Discord Server:** [discord.gg/z24t23HsHF](https://discord.gg/z24t23HsHF)  
-📺 **YouTube Demos:** [youtube.com/@FastFlowLM-YT](https://www.youtube.com/@FastFlowLM-YT)
-🧪 **Test Drive (Remote Demo Machine):** [https://open-webui.testdrive-fastflowlm.com/](https://open-webui.testdrive-fastflowlm.com/) 
+📺 **YouTube Demos:** [youtube.com/@FastFlowLM-YT](https://www.youtube.com/@FastFlowLM-YT)  
+🧪 **Test Drive (Remote Machine):** [open-webui.testdrive-fastflowlm.com](https://open-webui.testdrive-fastflowlm.com/)
 
 ---
 
 ## 📺 Demo Videos
 
-**🎥 Check out our demo videos!**  
+<!-- **🎥 Check out our demo videos!**   -->
 From the new **Gemma3:4b vision (first NPU-only VLM)** model to the **think/no_think Qwen3**, **4-power-mode operation**, and head-to-head comparisons with **Ollama, LM Studio, Lemonade**, and more — it’s all [up on YouTube](https://youtu.be/9QipiMg5Yz8?list=PLf87s9UUZrJp4r3JM4NliPEsYuJNNqFAJ)!
 
 
@@ -148,7 +148,7 @@ No model rewrites, no tuning — it just works.
 ### Latency
 - ⏱️ **Matches or exceeds** TTFT (Time to First Token) of NPU-only or hybrid mode -->
 
-### Benchmarks
+<!-- ### Benchmarks -->
 <p style="font-size:85%; margin:0;">
 📊 View the detailed results here:
 <a href="https://docs.fastflowlm.com/benchmarks/" style="text-decoration:none;">
@@ -171,7 +171,7 @@ No model rewrites, no tuning — it just works.
 
 - All orchestration code and CLI tools are open-source under the [MIT License](./LICENSE_RUNTIME.txt).
 - NPU-accelerated kernels are **proprietary binaries**, free for **non-commercial use** only — see [LICENSE_BINARY.txt](./LICENSE_BINARY.txt) and [TERMS.md](./TERMS.md) for details.
-- ⚠️ **Non-commercial users must acknowledge FastFlowLM** by adding this line to your README, docs, or project page:  
+- **Non-commercial users need to acknowledge FastFlowLM** by adding this line to your README or project page:  
   ```
   Powered by [FastFlowLM](https://github.com/FastFlowLM/FastFlowLM)
   ```
