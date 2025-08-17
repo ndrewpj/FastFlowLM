@@ -42,20 +42,26 @@ For version history and changelog, see the [release notes](https://github.com/Fa
 
 ## 🚀 NPU Power Mode
 
-For optimal performance, set the NPU power mode to **performance** or **turbo**.  
-Open **PowerShell** and enter:
+By default, **FLM runs in `performance` NPU power mode**. You can switch to other NPU power modes (`powersaver`, `balanced`, or `turbo`) using the `--pmode` flag:
 
-```powershell
-cd C:\Windows\System32\AMD\; .\xrt-smi configure --pmode turbo
+**CLI mode:**
+```Powershell
+flm run gemma3:4b --pmode balanced
 ```
 
-> For more details about NPU power mode, refer to the [AMD XRT SMI Documentation](https://ryzenai.docs.amd.com/en/latest/xrt_smi.html).
+**Server mode:**
+```Powershell
+flm serve gemma3:4b --pmode balanced
+```
+
+> ⚠️ Note: Using powersaver or balanced will lower NPU clock speeds and cause a significant drop in speed. For more details about NPU power mode, refer to the [AMD XRT SMI Documentation](https://ryzenai.docs.amd.com/en/latest/xrt_smi.html).
+
 
 ---
 
 ## 🧪 Quick Test (CLI Mode)
 
-After installation, do a quick test to see if FastFlowLM is properly installed. Open **PowerShell**, and run a model in terminal (CLI or Interactive Mode):
+After installation, do a quick test to see if FastFlowLM is properly installed. Open **PowerShell**, and run a model in terminal (CLI mode):
 
 ```powershell
 flm run llama3.2:1b
