@@ -102,10 +102,21 @@ flm serve llama3.2:1b
 ```
 > The model tag (e.g., `llama3.2:1b`) sets the initial model, which is optional. If another model is requested, FastFlowLM will automatically switch to it. Local server is on port 11434 (default).
 
-For best performance, it is recommended to set the NPU power mode to **performance** or **turbo**. Open **PowerShell** and enter:
-```powershell
-cd C:\Windows\System32\AMD\; .\xrt-smi configure --pmode turbo
+By default, **FLM runs in `performance` power mode**.  
+You can switch to other modes (`powersaver`, `balanced`, or `turbo`) using the `--pmode` flag:
+
+**CLI mode:**
+```Powershell
+flm run gemma3:4b --pmode balanced
 ```
+
+**Server mode:**
+```Powershell
+flm serve gemma3:4b --pmode balanced
+```
+
+⚠️ Note: Using powersaver or balanced will lower NPU clock speeds and cause a significant drop in speed.
+
 > For more details about NPU power mode, refer to the [AMD XRT SMI Documentation](https://ryzenai.docs.amd.com/en/latest/xrt_smi.html).
 
 For detailed instructions, click [Documentation](https://docs.fastflowlm.com/).
