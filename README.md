@@ -10,9 +10,9 @@
 
 Run large language models on AMD Ryzen™ AI NPUs — in minutes.
 
-FastFlowLM is a lightweight runtime for deploying LLMs like LLaMA3.1/3.2, Qwen3, DeepSeek-R1 and Gemma3 (Vision is now supported) directly on AMD’s NPU — no GPU needed, faster and over 11x more power efficient than the iGPU or hybrid (iGPU+NPU) solutions.
+FastFlowLM is a lightweight runtime for deploying LLMs like Gemma3 (Vision is now supported), Qwen3, DeepSeek-R1 and LLaMA3.1/3.2 directly on AMD’s NPU — no GPU needed, faster and over 11x more power efficient than the iGPU or hybrid (iGPU+NPU) solutions.
 
-FastFlowLM supports full context lengths — up to 128K tokens with LLaMA 3.1/3.2 and Gemma3:4B.
+FastFlowLM supports full context lengths — up to 128K tokens with Gemma3:4B and LLaMA 3.1/3.2.
 
 **Just like Ollama — but purpose-built and deeply optimized for the Ryzen™ AI NPU**
 
