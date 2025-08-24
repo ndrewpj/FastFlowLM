@@ -70,23 +70,31 @@ flm remove llama3.2:3b
 
 ---
 
-### 📄 Run with a Text File
+### 📂 Load a Local Text File in CLI Mode
 
-Load input from a local text file:
+Use any file that can be opened in Notepad (like `.txt`, `.json`, `.csv`, etc.).
 
-```powershell
-flm run llama3.2:1b "C:\Users\Public\Desktop\alice_in_wonderland.txt"
-```
-
-👉 [Download the sample prompt](https://github.com/FastFlowLM/FastFlowLM/blob/main/assets/alice_in_wonderland.txt)  
-
-> Specify the maximum generation length directly after the file path/name. For example,
+Format (in CLI mode):
 
 ```powershell
-flm run llama3.2:1b "C:\Users\Public\Desktop\alice_in_wonderland.txt" 1024
+/input "<file_path>" prompt
 ```
 
-> ⚠️ **Note:**: a model’s supported context length is limited by available DRAM capacity. For example, with **32 GB** of DRAM, **LLaMA 3.1:8B** cannot run beyond a **32K** context length. For the full **128K** context, we recommend larger memory system.
+Example:
+
+```powershell
+/input "C:\Users\Public\Desktop\alice_in_wonderland.txt" Summarize it into 200 words?
+```
+
+> Notes:
+
+* Use quotes **only around the file path**
+* **No quotes** around the prompt
+* File must be plain text (readable in Notepad)
+
+👉 [Download a sample prompt (around 40k tokens)](https://github.com/FastFlowLM/FastFlowLM/blob/main/assets/alice_in_wonderland.txt)  
+
+> ⚠️ **Caution:**: a model’s supported context length is limited by available DRAM capacity. For example, with **32 GB** of DRAM, **LLaMA 3.1:8B** cannot run beyond a **32K** context length. For the full **128K** context, we recommend larger memory system.
 
 If DRAM is heavily used by other programs while running **FastFlowLM**, you may encounter errors due to insufficient memory, such as:
 
@@ -117,49 +125,23 @@ resmon
 
 ---
 
-### 📂 Load a Local Text File in CLI Mode (Preferred Method to Attach Text File)
-
-Use any file that can be opened in Notepad (like `.txt`, `.json`, `.csv`, etc.).
-
-#### ✅ Format (in CLI mode):
-
-```powershell
-/input "<file_path>" prompt
-```
-
-#### 🧪 Example:
-
-```powershell
-/input "C:\Users\Public\Desktop\alice_in_wonderland.txt" Can you rewrite the story in 2 sentences?
-```
-
-#### 🔎 Notes:
-
-* Use quotes **only around the file path**
-* **No quotes** around the prompt
-* File must be plain text (readable in Notepad)
-
----
-
 ### 🌄 Loading Images in CLI Mode (for VLMs only, e.g. gemma3:4b)
 
 Supports **.png** and **.jpg** formats.  
-
-#### ✅ Usage:
 
 ```powershell
 /input "<image_path>" prompt
 ```
 
-#### 🧪 Example:
+Example:
 
 ```powershell
 /input "C:\Users\Public\Desktop\cat.jpg" describe this image
 ```
 
-#### 🔎 Notes:
+> Notes:
 
-* Make sure the model you are using is a **vision model (VLM)**  
+* Make sure the model you are using is a **vision model (VLM)** (e.g., gemma3:4b) 
 * Put quotes **only around the file path**  
 * Do **not** use quotes around the prompt  
 * Image must be in **.jpg** or **.png** format  
@@ -198,7 +180,7 @@ Once inside the CLI, use the following commands:
 /show
 ```
 
-> View model architecture, size, cache path, and more.
+> View model architecture, size, **max context size (Adjustable – see bottom)** and more.
 
 ---
 
@@ -296,14 +278,14 @@ Type `/think` to toggle Think Mode on or off interactively in the CLI.
 /set
 ```
 
-> Customize decoding parameters like `top_k`, `top_p`, `temperature`, `context length`, `generate_limit`, etc.
+> Customize decoding parameters like `top_k`, `top_p`, `temperature`, `context length (max)`, `generate_limit`, etc.
 
 > ⚠️ **Note:** Providing invalid or extreme hyperparameter values may cause inference errors.
 > `generate_limit` sets an upper limit on the number of tokens that can be generated for each response.
 
 ---
 
-### 🛠 Change Default Context Length
+### 🛠 Change Default Context Length (max)
 
 You can find more information about available models here:  
 
@@ -317,4 +299,6 @@ You can also change the `default_context_length` setting.
 > Setting a longer default context length may cause errors on systems with smaller DRAM.
 > Also, each model has its own context length limit (examples below).  
 > - **Qwen3** → up to **32k** tokens  
+> - **Gemma3:4b** → up to **128k** tokens
+> - **Gemma3:1b** → up to **32k** tokens
 > - **LLaMA 3.1 / 3.2** → up to **128k** tokens
