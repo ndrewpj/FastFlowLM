@@ -83,7 +83,7 @@ Format (in CLI mode):
 Example:
 
 ```powershell
-/input "C:\Users\Public\Desktop\alice_in_wonderland.txt" Summarize it into 200 words?
+/input "C:\Users\Public\Desktop\alice_in_wonderland.txt" Summarize it into 200 words
 ```
 
 > Notes:
@@ -94,7 +94,7 @@ Example:
 
 👉 [Download a sample prompt (around 40k tokens)](https://github.com/FastFlowLM/FastFlowLM/blob/main/assets/alice_in_wonderland.txt)  
 
-> ⚠️ **Caution:**: a model’s supported context length is limited by available DRAM capacity. For example, with **32 GB** of DRAM, **LLaMA 3.1:8B** cannot run beyond a **32K** context length. For the full **128K** context, we recommend larger memory system.
+> ⚠️ **Caution:** a model’s supported context length is limited by available DRAM capacity. For example, with **32 GB** of DRAM, **LLaMA 3.1:8B** cannot run beyond a **32K** context length. For the full **128K** context, we recommend larger memory system.
 
 If DRAM is heavily used by other programs while running **FastFlowLM**, you may encounter errors due to insufficient memory, such as:
 
@@ -114,12 +114,7 @@ The device is unable to continue.
 
 **Method 2 – Resource Monitor (Detailed View)**  
 1. Press **Windows + R**.  
-2. Type:  
-
-```
-resmon
-```
-
+2. Type:  ```resmon```
 3. Press **Enter**.  
 4. Go to the **Memory** tab to view detailed DRAM usage and a per-process breakdown.
 
