@@ -4,11 +4,15 @@ nav_order: 4
 parent: Models
 ---
 
+**Google/gemma-3-1b-it**
+
 ```
 flm run gemma3:1b
 ```
 
 ---
+
+**Google/gemma-3-4b-it**
 
 ```
 flm run gemma3:4b
@@ -23,14 +27,16 @@ flm run gemma3:4b
 
 ---
 
+**Google/gemma-3-270m**
+
 ```
 flm run gemma3:270m
 ```
 
 ⚠️ **Warning:** 
-> – Experimental in FLM  
+> – `gemma3:270m` is Experimental in FLM  
 > – Limited accuracy; may produce errors  
 > – Can loop on long outputs (quirk from Unsloth weights, also seen in LM Studio)  
-> – We’re working on improved quantization + hyperparameters  
+> – Experimenting with different quantization + hyperparameters  
 
 ---
