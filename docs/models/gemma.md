@@ -15,11 +15,10 @@ flm run gemma3:4b
 ```
 
 📝 **Note:**
-> – Vision-enabled version (supports both text and images)
-> – In CLI mode, use this command to attach an image:
+> – Vision-enabled (supports text + images); in CLI mode, attach an image with:
 
 ```
-/input "file/to/image.jpg" what is inside this image?
+/input "file/to/image.jpg" describe this image?
 ```
 
 ---
