@@ -2,7 +2,7 @@
 /// \brief Download model class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.4
+/// \version 0.9.6
 /// \note This class for curl download
 #include "download_model.hpp"
 #include <fstream>
@@ -96,7 +96,7 @@ bool download_file(const std::string& url, const std::string& local_path,
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
     curl_easy_setopt(curl, CURLOPT_USERAGENT, "FastFlowLM/1.0");
-    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 300L); // 5 minutes timeout
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 3600L); // 1 hour timeout
 
     // Set progress callback if provided
     if (progress_cb) {

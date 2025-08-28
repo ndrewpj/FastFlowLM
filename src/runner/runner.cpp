@@ -4,7 +4,7 @@
 *  \brief Runner implementation for interactive model execution
 *  \author FastFlowLM Team
 *  \date 2025-08-05
-*  \version 0.9.2
+*  \version 0.9.6
 */
 #include "runner.hpp"
 #include <iostream>
@@ -49,7 +49,6 @@ Runner::Runner(model_list& supported_models, ModelDownloader& downloader, std::s
 
 /// \brief Run the runner
 void Runner::run() {
-    
     chat_meta_info meta_info;
     bool verbose = false;
     this->system_prompt = "";
@@ -80,6 +79,8 @@ void Runner::run() {
         std::wistringstream wiss(winput);
         std::wstring wtoken;
         std::vector<std::string> input_list;
+        std::cout << std::endl;
+
         while (wiss >> wtoken) {
             // Convert each token back → UTF-8 bytes
             input_list.push_back(utf8conv.to_bytes(wtoken));
@@ -93,6 +94,7 @@ void Runner::run() {
         // For commands, we only need to check the first token
         std::string first_token = input_list[0];
         
+
         // Check if this is a command (starts with /)
         bool is_command = (first_token[0] == '/');
         
@@ -161,7 +163,7 @@ void Runner::run() {
             }
         } else {
             // This is a regular message, not a command
-            std::cout << std::endl;  // Add newline before AI response
+            // std::cout << std::endl;  // Add newline before AI response
             this->chat_engine->start_ttft_timer();
             int last_file_name_idx = 0;
             if (first_token == "/input") {
@@ -274,9 +276,18 @@ void Runner::cmd_load(std::vector<std::string>& input_list) {
 void Runner::cmd_save(std::vector<std::string>& input_list) {
     std::pair<std::string, std::vector<int>> history = this->chat_engine->get_history();
     
-    // Get the Documents directory and create the history directory
-    std::string documents_dir = utils::get_user_documents_directory();
-    std::string history_dir = documents_dir + "/flm/history";
+    // Get the FLM_MODEL_PATH environment variable for the history directory
+    std::string history_dir;
+    char* model_path_env = nullptr;
+    size_t len = 0;
+    if (_dupenv_s(&model_path_env, &len, "FLM_MODEL_PATH") == 0 && model_path_env != nullptr) {
+        history_dir = std::string(model_path_env) + "\\history";
+        free(model_path_env);
+    } else {
+        // Fallback to Documents directory if environment variable is not set
+        std::string documents_dir = utils::get_user_documents_directory();
+        history_dir = documents_dir + "\\flm\\history";
+    }
     
     // Create the history directory if it doesn't exist
     if (!std::filesystem::exists(history_dir)) {
@@ -301,7 +312,7 @@ void Runner::cmd_save(std::vector<std::string>& input_list) {
     std::string date_str = date_ss.str();
 
     // 2) build filename in the history directory
-    std::string file_name = history_dir + "/history_" + date_str + ".txt";
+    std::string file_name = history_dir + "\\history_" + date_str + ".txt";
     std::ofstream file(file_name);
     if (file.is_open()) {
         file << history.first << std::endl;
@@ -317,6 +328,9 @@ void Runner::cmd_save(std::vector<std::string>& input_list) {
 /// \param input_list, std::vector<std::string>
 void Runner::cmd_show(std::vector<std::string>& input_list) {
     std::cout << this->chat_engine->show_model_info() << std::endl;
+    std::cout << "    max context length    : " << this->chat_engine->get_max_length() << std::endl;
+    std::cout << std::endl;
+
 }
 
 /// \brief Set the model parameters

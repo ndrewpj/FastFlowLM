@@ -2,7 +2,7 @@
 /// \brief lm_config class
 /// \author FastFlowLM Team
 /// \date 2025-08-05
-/// \version 0.9.4
+/// \version 0.9.6
 /// \note This class is used to store the model configuration.
 #pragma once
 
@@ -158,7 +158,9 @@ class LM_Config{
             ss << "    compatible_flm_version: >= " << this->flm_version << std::endl;
             ss << "    head_dim:               " << this->head_dim << std::endl;
             ss << "    hidden_size:            " << this->hidden_size << std::endl;
-            ss << "    hidden_act:             " << this->hidden_act << std::endl;
+            if (this->hidden_act != ""){
+                ss << "    hidden_act:             " << this->hidden_act << std::endl;
+            }
             ss << "    intermediate_size:      " << this->intermediate_size << std::endl;
             ss << "    num_attention_heads:    " << this->num_attention_heads << std::endl;
             ss << "    num_hidden_layers:      " << this->num_hidden_layers << std::endl;
@@ -166,7 +168,7 @@ class LM_Config{
             ss << "    pretraining_tp:         " << this->pretraining_tp << std::endl;
             ss << "    rms_norm_eps:           " << this->rms_norm_eps << std::endl;
             if (this->sliding_window > 0){
-                ss << "    sliding_window:       " << this->sliding_window << std::endl;
+                ss << "    sliding_window:         " << this->sliding_window << std::endl;
                 ss << "    sliding_window_pattern: " << this->sliding_window_pattern << std::endl;
             }
             return ss.str();

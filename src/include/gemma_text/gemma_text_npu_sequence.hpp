@@ -2,7 +2,7 @@
 /// \brief gemma_npu_sequence class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.6
+/// \version 0.1.0
 /// \note This is a header file for the gemma_npu_sequence class
 #pragma once
 #include "npu_utils/npu_instr_utils.hpp"
@@ -10,15 +10,15 @@
 
 /// \brief gemma_npu_sequence class
 /// \note This is a class for the gemma_npu_sequence
-class gemma_npu_sequence{
+class gemma_text_npu_sequence{
 public:
-    gemma_npu_sequence(){}
+    gemma_text_npu_sequence(){}
 
     /// \brief Constructor
     /// \param config the configuration
     /// \param MAX_L the max length
-    gemma_npu_sequence(LM_Config config, uint32_t MAX_L);
-    ~gemma_npu_sequence();
+    gemma_text_npu_sequence(LM_Config config, uint32_t MAX_L);
+    ~gemma_text_npu_sequence();
 
     /// \brief Generate the rtp sequence
     /// \param seq the sequence
@@ -40,11 +40,9 @@ public:
     /// \param L_end the end length
     void gen_mha_engine_seq(npu_sequence* seq, const uint32_t L_begin, const uint32_t L_end, bool is_sliding_window, int buffer_length);
 
-    /// \brief Get the k03 offset
-    size_t get_k01_offset() const;
-    size_t get_k23_offset() const;
-    size_t get_v01_offset() const;
-    size_t get_v23_offset() const;
+    /// \brief Get the k offset
+    size_t get_k_offset() const;
+    size_t get_v_offset() const;
 
 private:
     struct Impl;

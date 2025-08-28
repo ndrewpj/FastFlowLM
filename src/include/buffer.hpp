@@ -2,7 +2,7 @@
 /// \brief Buffer and bytes class for memory management
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.4
+/// \version 0.9.6
 /// \note This class is used to manage the memory.
 #pragma once
 #include <cstdint>
@@ -111,7 +111,12 @@ public:
     bytes(size_t size, xrt::device& device, xrt::kernel& kernel, int group_id, xrtBufferFlags flags = XRT_BO_FLAGS_HOST_ONLY)
         : owned_data_(nullptr), size_(size), is_owner_(false), is_bo_owner_(true)
     {
-        owned_bo_ = std::make_unique<xrt::bo>(device, size, flags, kernel.group_id(group_id));
+        int padded_size = (size + 4095) / 4096 * 4096; // 4K alignment
+        if (flags == XRT_BO_FLAGS_HOST_ONLY){
+            owned_bo_ = std::make_unique<xrt::bo>(device, padded_size, flags, kernel.group_id(group_id));
+        } else {
+            owned_bo_ = std::make_unique<xrt::bo>(device, size, flags, kernel.group_id(group_id));
+        }
         data_ = owned_bo_->map<uint8_t*>();
         bo_ = owned_bo_.get();
     }

@@ -2,7 +2,7 @@
 /// \brief chat_bot class
 /// \author FastFlowLM Team
 /// \date 2025-08-05
-/// \version 0.9.4
+/// \version 0.9.6
 /// \note This is a header file for the chat_bot class
 #pragma once
 
@@ -20,6 +20,7 @@
 #include "llama/llama_npu.hpp"
 #include "qwen/qwen_npu.hpp"
 #include "gemma/gemma_npu.hpp"
+#include "gemma_text/gemma_text_npu.hpp"
 #include "tokenizer/tokenizer.hpp"
 #include "modules/sampler.hpp"
 #include "utils/utils.hpp"
@@ -138,6 +139,10 @@ public:
     /// \brief Set the max length
     /// \param MAX_L the max length 
     void set_max_length(unsigned int MAX_L);
+
+    /// \brief Get the max length
+    /// \return the max length
+    unsigned int get_max_length() const { return MAX_L; }
 
     /// \brief Get the current model
     /// \return the current model
