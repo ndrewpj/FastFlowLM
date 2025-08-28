@@ -10,7 +10,7 @@ parent: Models
 - **Think:** Toggleable  
 - **Base Model:** [Qwen/Qwen3-0.6B](https://huggingface.co/Qwen/Qwen3-0.6B)
 - **Max Context Length:** 32k tokens  
-- **Default Context Length:** 32k tokens ([change default](https://docs.fastflowlm.com/instructions/cli.html))  
+- **Default Context Length:** 32k tokens ([change default](https://docs.fastflowlm.com/instructions/cli.html#-change-default-context-length-max))  
 
 ▶️ Run with FastFlowLM in PowerShell:  
 
@@ -31,7 +31,7 @@ flm run qwen3:0.6b
 - **Think:** Toggleable  
 - **Base Model:** [Qwen/Qwen3-1.7B](https://huggingface.co/Qwen/Qwen3-1.7B)
 - **Max Context Length:** 32k tokens  
-- **Default Context Length:** 32k tokens ([change default](https://docs.fastflowlm.com/instructions/cli.html))  
+- **Default Context Length:** 32k tokens ([change default](https://docs.fastflowlm.com/instructions/cli.html#-change-default-context-length-max))  
 
 ▶️ Run with FastFlowLM in PowerShell:  
 
@@ -52,7 +52,7 @@ flm run qwen3:0.6b
 - **Think:** Toggleable  
 - **Base Model:** [Qwen/Qwen3-4B](https://huggingface.co/Qwen/Qwen3-4B)
 - **Max Context Length:** 32k tokens  
-- **Default Context Length:** 16k tokens ([change default](https://docs.fastflowlm.com/instructions/cli.html))  
+- **Default Context Length:** 16k tokens ([change default](https://docs.fastflowlm.com/instructions/cli.html#-change-default-context-length-max))  
 
 ▶️ Run with FastFlowLM in PowerShell:  
 
@@ -73,7 +73,7 @@ flm run qwen3:4b
 - **Think:** Toggleable  
 - **Base Model:** [Qwen/Qwen3-8B](https://huggingface.co/Qwen/Qwen3-8B)
 - **Max Context Length:** 32k tokens  
-- **Default Context Length:** 16k tokens ([change default](https://docs.fastflowlm.com/instructions/cli.html))  
+- **Default Context Length:** 16k tokens ([change default](https://docs.fastflowlm.com/instructions/cli.html#-change-default-context-length-max))  
 
 ▶️ Run with FastFlowLM in PowerShell:  
 
