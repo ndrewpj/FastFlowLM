@@ -2,7 +2,7 @@
 /// \brief model_list class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.4
+/// \version 0.9.6
 /// \note This class is used to manage the model list.
 #pragma once
 #include "nlohmann/json.hpp"
@@ -12,7 +12,7 @@
 #include <vector>
 #include "utils/utils.hpp"
 
-#define __FLM_VERSION__ "0.9.4"
+#define __FLM_VERSION__ "0.9.6"
 
 /// \note This class is used to manage the model list.
 class model_list {
@@ -56,7 +56,7 @@ class model_list {
             this->config = nlohmann::json::parse(config_file);
             // Resolve model_root_path relative to executable directory
             std::string relative_model_path = this->config["model_path"];
-            this->model_root_path = exe_dir + "/" + relative_model_path;
+            this->model_root_path = exe_dir + "\\" + relative_model_path;
             config_file.close();
         }
 
@@ -119,6 +119,7 @@ class model_list {
                 }
                 return this->config["models"]["llama3.2"]["1b"];
             }
+            return this->config["models"]["llama3.2"]["1b"];
         }
 
         /// \brief get the model root path
@@ -159,7 +160,7 @@ class model_list {
         std::string get_model_path(const std::string& tag){
             std::string new_tag = this->cut_tag(tag);
             std::string model_name = this->get_model_info(new_tag)["name"];
-            std::string model_path = this->model_root_path + "/" + model_name;
+            std::string model_path = this->model_root_path + "\\" + model_name;
             return model_path;
         }
 

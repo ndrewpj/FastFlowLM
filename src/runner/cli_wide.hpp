@@ -4,7 +4,7 @@
  * \brief CLI interactive input handling using Windows Console API
  * \author FastFlowLM Team
  * \date 2025-06-24
- * \version 0.9.2
+ * \version 0.9.6
  */
 #pragma once
 #include <vector>
@@ -39,6 +39,7 @@ class CLIWide {
         /// \brief Input state structure
         struct InputState {
             std::vector<std::string> lines;
+            std::vector<bool> is_wrapped_line;  // Track which lines were created by wrapping
             int current_line_index = 0;
             size_t cursor_pos = 0;
             int history_nav_index = -1;

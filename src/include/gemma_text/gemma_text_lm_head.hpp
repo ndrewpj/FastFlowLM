@@ -11,16 +11,16 @@
 
 /// \brief lm_head class
 /// \note This is a class for the lm_head layer
-class LMHead{
+class GemmaTextLMHead{
 public:
-    LMHead(){}
+    GemmaTextLMHead(){}
 
     /// \brief Constructor
     /// \param config the configuration
     /// \param xclbin_name the xclbin name
     /// \param npu the npu manager
-    LMHead(LM_Config config, npu_manager *npu);
-    ~LMHead();
+    GemmaTextLMHead(LM_Config config, npu_manager *npu);
+    ~GemmaTextLMHead();
 
     /// \brief Load the weights
     /// \param q4nx the q4nx

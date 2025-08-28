@@ -2,7 +2,7 @@
 /// \brief Model downloader class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.4
+/// \version 0.9.6
 /// \note This class is used to download models from the huggingface
 #include "model_downloader.hpp"
 #include "utils/utils.hpp"
@@ -284,7 +284,7 @@ bool ModelDownloader::file_exists(const std::string& file_path) {
 /// \param filename the filename
 /// \return the model file path
 std::string ModelDownloader::get_model_file_path(const std::string& model_path, const std::string& filename) {
-    return model_path + "/" + filename;
+    return model_path + "\\" + filename;
 }
 
 /// \brief Build the download list

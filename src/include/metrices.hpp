@@ -2,7 +2,7 @@
 /// \brief metrices class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.4
+/// \version 0.9.6
 /// \note This class is used to calculate the numerical error metrics.
 #pragma once
 

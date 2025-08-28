@@ -4,7 +4,7 @@
 
 AppName=flm
 
-AppVersion=0.9.4
+AppVersion=0.9.6
 
 AppPublisher=FastFlowLM
 
@@ -46,6 +46,7 @@ Source: "flm.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "libcurl.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "llama_npu.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "gemma_npu.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "gemma_text_npu.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "qwen_npu.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "lm_head.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "dequant.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -106,56 +107,106 @@ Name: "{commondesktop}\flm serve"; \
     Tasks: desktopicon
 
 [Registry]
-; Add application directory to system PATH (only if not already present)
+; Add application directory to system PATH
 Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; \
-    ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};{app}"; \
-    Check: NeedsAddPath('{app}')
+    ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};{app}"
 
-; Set FLM_SERVE_PORT environment variable (only if not already defined)
-Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; \
-    ValueType: string; ValueName: "FLM_SERVE_PORT"; ValueData: "11434"; \
-    Check: NeedsSetFlmPort
+; FLM_MODEL_PATH and FLM_SERVE_PORT will be set to user's choice during installation
 
 [Tasks]
-
 ; Optional desktop icon task
 
 Name: "desktopicon"; Description: "Create a desktop icon"; GroupDescription: "Additional icons:"; Flags: unchecked
 
 [Code]
-function NeedsAddPath(Param: string): boolean;
 var
-  OrigPath: string;
+  ModelPathPage: TInputDirWizardPage;
+  PortPage: TInputQueryWizardPage;
+  CustomModelPath: string;
+  CustomPort: string;
+
+function GetExistingModelPath: string;
+var
+  ExistingPath: string;
 begin
-  // Check if PATH environment variable exists
-  if not RegQueryStringValue(HKEY_LOCAL_MACHINE,
+  // Check if FLM_MODEL_PATH environment variable already exists
+  if RegQueryStringValue(HKEY_LOCAL_MACHINE,
     'SYSTEM\CurrentControlSet\Control\Session Manager\Environment',
-    'Path', OrigPath)
+    'FLM_MODEL_PATH', ExistingPath)
   then begin
-    // PATH doesn't exist, so we need to add it
-    Result := True;
-    exit;
+    // FLM_MODEL_PATH exists, use it as default
+    Result := ExistingPath;
+  end
+  else begin
+    // FLM_MODEL_PATH doesn't exist, use default userdocs location
+    Result := ExpandConstant('{userdocs}\flm');
   end;
-  
-  // Check if the path is already in the PATH variable
-  // We add semicolons around both the original path and our parameter
-  // to ensure we match complete path entries, not partial matches
-  Result := Pos(';' + Param + ';', ';' + OrigPath + ';') = 0;
 end;
 
-function NeedsSetFlmPort: boolean;
+function GetExistingPort: string;
 var
-  FlmPort: string;
+  ExistingPort: string;
 begin
   // Check if FLM_SERVE_PORT environment variable already exists
-  if not RegQueryStringValue(HKEY_LOCAL_MACHINE,
+  if RegQueryStringValue(HKEY_LOCAL_MACHINE,
     'SYSTEM\CurrentControlSet\Control\Session Manager\Environment',
-    'FLM_SERVE_PORT', FlmPort)
+    'FLM_SERVE_PORT', ExistingPort)
   then begin
-    // FLM_SERVE_PORT doesn't exist, so we need to set it
-    Result := True;
-    exit;
+    // FLM_SERVE_PORT exists, use it as default
+    Result := ExistingPort;
+  end
+  else begin
+    // FLM_SERVE_PORT doesn't exist, use default port
+    Result := '11434';
   end;
-  // FLM_SERVE_PORT already exists, don't overwrite it
-  Result := False;
 end;
+
+procedure InitializeWizard;
+begin
+  ModelPathPage := CreateInputDirPage(wpSelectDir,
+    'Model Storage Location', 'Where should FLM store downloaded models?',
+    'Select the folder where FLM will store downloaded models, then click Next.' + #13#10 + #13#10 + 
+    'Existing FLM users -- restart PC after path change, then move flm/model/.',
+    True, '');
+  ModelPathPage.Add('Model storage location:');
+  ModelPathPage.Values[0] := GetExistingModelPath;
+  
+  PortPage := CreateInputQueryPage(wpSelectDir,
+    'Server Port Configuration', 'What port should FLM use for the server?',
+    'Enter the port number for FLM server (default: 11434).' + #13#10 + #13#10 +
+    'Existing FLM users -- the current port will be used as default.');
+  PortPage.Add('Server port:', False);
+  PortPage.Values[0] := GetExistingPort;
+end;
+
+function NextButtonClick(CurPageID: Integer): Boolean;
+begin
+  if CurPageID = ModelPathPage.ID then
+  begin
+    CustomModelPath := ModelPathPage.Values[0];
+  end
+  else if CurPageID = PortPage.ID then
+  begin
+    CustomPort := PortPage.Values[0];
+  end;
+  Result := True;
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  if CurStep = ssPostInstall then
+  begin
+    
+    // Always set the FLM_MODEL_PATH environment variable to user's choice
+    RegWriteStringValue(HKEY_LOCAL_MACHINE,
+      'SYSTEM\CurrentControlSet\Control\Session Manager\Environment',
+      'FLM_MODEL_PATH', CustomModelPath);
+      
+    // Always set the FLM_SERVE_PORT environment variable to user's choice
+    RegWriteStringValue(HKEY_LOCAL_MACHINE,
+      'SYSTEM\CurrentControlSet\Control\Session Manager\Environment',
+      'FLM_SERVE_PORT', CustomPort);
+  end;
+end;
+
+

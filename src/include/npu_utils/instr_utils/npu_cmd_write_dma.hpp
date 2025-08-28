@@ -2,7 +2,7 @@
 /// \brief npu dma block write command
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.4
+/// \version 0.9.6
 /// \note This is a class for the npu dma block write command
 #pragma once
 

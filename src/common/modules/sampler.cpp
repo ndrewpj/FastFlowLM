@@ -2,7 +2,7 @@
 /// \brief sampler class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.4
+/// \version 0.9.6
 /// \note This is a header file for the sampler class
 #pragma once
 
@@ -90,25 +90,28 @@ int Sampler::sample(buffer<bf16>& x) {
     for (int token_id = 0; token_id < in_features; token_id++) {
         // --- (A) Repetition Penalty (sliding window = rep_penalty_window) ---
         int last_pos = this->token_positions[token_id]; // –1 if never seen
-        if (last_pos >= 0 && this->rep_penalty_window > 0) {
+        if (last_pos >= 0 && this->rep_penalty_window > 0 && this->rep_penalty != 1.0f) {
             size_t distance = this->total_tokens - last_pos;
             if (distance < this->rep_penalty_window) {
                 float frac    = 1.0f - (float)distance / (float)this->rep_penalty_window;
-                float penalty = this->rep_penalty * frac;
-                if (this->logits[token_id] > 0.0f) {
-                    this->logits[token_id] = this->logits[token_id] / (1.0f + penalty);
+                // Apply penalty based on sign: if logit < 0 then multiply, else divide
+                if (this->logits[token_id] < 0.0f) {
+                    this->logits[token_id] = this->logits[token_id] * this->rep_penalty;
                 } else {
-                    this->logits[token_id] = this->logits[token_id] * (1.0f + penalty);
+                    this->logits[token_id] = this->logits[token_id] / this->rep_penalty;
                 }
+                // Apply distance-based scaling
+                this->logits[token_id] = this->logits[token_id] * (1.0f - frac * (this->rep_penalty - 1.0f));
             }
         }
 
         // --- (B) Frequency Penalty (sliding window = freq_penalty_window) ---
-        if (this->freq_penalty_window > 0) {
+        if (this->freq_penalty_window > 0 && this->freq_penalty != 1.0f) {
             float normalized_freq = (float)this->counters[token_id] /
                                     (float)this->freq_penalty_window;
+            // Apply frequency penalty: subtract penalty * frequency
             this->logits[token_id] =
-                this->logits[token_id] - this->freq_penalty * normalized_freq;
+                this->logits[token_id] - (this->freq_penalty - 1.0f) * normalized_freq;
         }
     }
 

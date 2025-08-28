@@ -2,7 +2,7 @@
 /// \brief gemma_npu class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.4
+/// \version 0.9.6
 /// \note This is a header file for the gemma_npu class
 #pragma once
 #include "lm_config.hpp"

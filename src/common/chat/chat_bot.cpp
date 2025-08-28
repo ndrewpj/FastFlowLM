@@ -2,7 +2,7 @@
 /// \brief chat bot class
 /// \author FastFlowLM Team
 /// \date 2025-08-05
-/// \version 0.9.4
+/// \version 0.9.6
 /// \note This is a header file for the chat bot class
 #pragma once
 #include "chat/chat_bot.hpp"
@@ -24,13 +24,6 @@ chat_bot::chat_bot(unsigned int device_id){
 /// \param model_info the model info
 /// \note The function will load the model
 void chat_bot::load_model(std::string model_path, json model_info){
-    // default models
-    static const std::vector<std::pair<std::string, std::string>> default_models = {
-        {"Llama-3.2-1B-q4nx", "1B"}, // 1B
-        {"Llama-3.2-3B-q4nx", "3B"}, // 3B
-        {"Llama-3.1-8B-q4nx", "8B"}, // 8B
-        {"deepseek-distill-llama-8B-q4nx", "ds8B"}, // ds8B
-    };
     if (this->is_model_loaded && this->model_path != model_path){
         header_print("FLM", "Unloading model " << this->model_path << "...");
         this->lm_engine.reset();
@@ -47,12 +40,6 @@ void chat_bot::load_model(std::string model_path, json model_info){
     JSON_GET(this->is_think_toggleable, model_info["details"], "think_toggleable", false, bool);
     this->enable_think = this->is_think_model;
     this->model_path = model_path;
-    for (const auto& model : default_models){
-        if (model.second == model_path){
-            this->model_path = "models/" + model.first;
-            break;
-        }
-    }
     header_print("FLM", "Loading model: " << this->model_path);
     this->lm_config = std::make_unique<LM_Config>();
     this->lm_config->from_pretrained(this->model_path);
@@ -67,6 +54,9 @@ void chat_bot::load_model(std::string model_path, json model_info){
     }
     else if (this->lm_config->model_type == "gemma3_text"){
         this->lm_engine = std::make_unique<gemma_npu>(*this->lm_config, this->npu.get(), this->MAX_L);
+    }
+    else if (this->lm_config->model_type == "gemma3_text_only"){
+        this->lm_engine = std::make_unique<gemma_text_npu>(*this->lm_config, this->npu.get(), this->MAX_L);
     }
     else {
         header_print("WARNING", "Model type not supported: " << this->lm_config->model_type);
@@ -90,13 +80,13 @@ void chat_bot::load_model(std::string model_path, json model_info){
     this->sampler.reset();
 
     sampler_config config;
-    config.rep_penalty = 0.1;
+    config.rep_penalty = 1.1;
     config.temperature = 0.6;
     config.top_p = 0.95;
-    config.top_k = 5;
-    config.rep_penalty_window = 64;
-    config.freq_penalty = 0.1;
-    config.freq_penalty_window = 256;
+    config.top_k = 10;
+    config.rep_penalty_window = 1024;
+    config.freq_penalty = 1.1;
+    config.freq_penalty_window = 1024;
     config.freq_penalty_decay = 0.995;
     this->set_sampler(config);
     for (size_t i = 0; i < PROFILER_TYPE_NUM; i++){
@@ -198,7 +188,7 @@ std::string chat_bot::generate(chat_meta_info& meta_info, int length_limit, std:
         if (think_marker_id != -1){
             std::string think_result = this->tokenizer->run_time_decoder(this->tokenizer->get_think_marker_id());
             result += think_result;
-            os << think_result << std::flush;
+            os << think_result << "\n" << std::flush;
         }
     }
 
@@ -422,9 +412,12 @@ void chat_bot::set_temperature(float temperature){
 /// \note The function will set the repetition penalty
 /// \note The function will check if the repetition penalty is valid
 void chat_bot::set_repetition_penalty(float repetition_penalty){
-    if (repetition_penalty < 0.0f || repetition_penalty > 1.0f){
-        header_print("WARNING", "Repetition penalty must be between 0.0 and 1.0");
+    if (repetition_penalty < 0.0f){
+        header_print("WARNING", "Repetition penalty must be greater than 0.0");
         return;
+    }
+    if (repetition_penalty < 1.0f){
+        header_print("WARNING", "If Repetition Penalty < 1.0, it will reward previous generated tokens, which may cause infinite loop!");
     }
     this->sampler->rep_penalty = repetition_penalty;
 }
@@ -435,6 +428,9 @@ void chat_bot::set_frequency_penalty(float frequency_penalty){
     if (frequency_penalty < 0.0f){
         header_print("WARNING", "Frequency penalty must be greater than 0.0");
         return;
+    }
+    if (frequency_penalty < 1.0f){
+        header_print("WARNING", "If Frequency Penalty < 1.0, it will reward previous generated tokens, which may cause infinite loop!");
     }
     this->sampler->freq_penalty = frequency_penalty;
 }

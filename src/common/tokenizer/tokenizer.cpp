@@ -2,7 +2,7 @@
 /// \brief Tokenizer implementation for text encoding/decoding
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.4
+/// \version 0.9.6
 #include "tokenizer/tokenizer.hpp"
 #include <iostream>
 #include <fstream>
@@ -128,6 +128,7 @@ std::unordered_map<uint32_t, uint8_t> Tokenizer::make_inverse_byte_map() {
 std::string Tokenizer::cpt_to_utf8(const std::string& input) {
     static auto inv_map = this->make_inverse_byte_map();
     std::string output = "";
+    output.reserve(input.size());
     size_t i = 0;
     if (!this->is_doubled_encoded) { // simply do pattern substitution of "▁" to " ", temporary solution
         std::string output = "";
