@@ -9,8 +9,8 @@ parent: Models
 - **Type:** Text-to-Text
 - **Think:** No  
 - **Base Model:** [google/gemma-3-1b-it](https://huggingface.co/google/gemma-3-1b-it)
-- **Max Context Length (Model):** 32k tokens  
-- **Default Context Length (FastFlowLM):** 32k tokens ([change default](https://docs.fastflowlm.com/instructions/cli.html))  
+- **Max Context Length:** 32k tokens  
+- **Default Context Length:** 32k tokens ([change default](https://docs.fastflowlm.com/instructions/cli.html))  
 
 ▶️ Run with FastFlowLM in PowerShell:  
 
@@ -25,8 +25,8 @@ flm run gemma3:1b
 - **Type:** Image-Text-to-Text
 - **Think:** No  
 - **Base Model:** [google/gemma-3-4b-it](https://huggingface.co/google/gemma-3-4b-it)
-- **Max Context Length (Model):** 128k tokens  
-- **Default Context Length (FastFlowLM):** 32k tokens ([change default](https://docs.fastflowlm.com/instructions/cli.html))  
+- **Max Context Length:** 128k tokens  
+- **Default Context Length:** 32k tokens ([change default](https://docs.fastflowlm.com/instructions/cli.html))  
 
 ▶️ Run with FastFlowLM in PowerShell:  
 
@@ -47,8 +47,8 @@ flm run gemma3:4b
 - **Type:** Image-Text-to-Text
 - **Think:** No  
 - **Base Model:** [google/gemma-3-270m-it](https://huggingface.co/google/gemma-3-270m-it)
-- **Max Context Length (Model):** 32k tokens  
-- **Default Context Length (FastFlowLM):** 32k tokens ([change default](https://docs.fastflowlm.com/instructions/cli.html))  
+- **Max Context Length:** 32k tokens  
+- **Default Context Length:** 32k tokens ([change default](https://docs.fastflowlm.com/instructions/cli.html))  
 
 ▶️ Run with FastFlowLM in PowerShell:  
 
