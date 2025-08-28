@@ -26,7 +26,7 @@ flm run gemma3:1b
 - **Think:** No  
 - **Base Model:** [google/gemma-3-4b-it](https://huggingface.co/google/gemma-3-4b-it)
 - **Max Context Length:** 128k tokens  
-- **Default Context Length:** 32k tokens ([change default](https://docs.fastflowlm.com/instructions/cli.html#-change-default-context-length-max))  
+- **Default Context Length:** 64k tokens ([change default](https://docs.fastflowlm.com/instructions/cli.html#-change-default-context-length-max))  
 
 ▶️ Run with FastFlowLM in PowerShell:  
 

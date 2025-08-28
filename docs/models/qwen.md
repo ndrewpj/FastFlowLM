@@ -87,3 +87,33 @@ flm run qwen3:8b
 - **Server Mode**: Set the `"think"` flag in the request payload.
 
 ---
+
+## 🧩 Model Card: Qwen/Qwen3-4B-Thinking-2507
+
+- **Type:** Text-to-Text
+- **Think:** Yes  
+- **Base Model:** [Qwen/Qwen3-4B-Thinking-2507](https://huggingface.co/Qwen/Qwen3-4B-Thinking-2507)
+- **Max Context Length:** 256k tokens  
+- **Default Context Length:** 32k tokens ([change default](https://docs.fastflowlm.com/instructions/cli.html#-change-default-context-length-max))  
+
+▶️ Run with FastFlowLM in PowerShell:  
+
+```powershell
+flm run qwen3-tk:4b
+```
+
+---
+
+## 🧩 Model Card: Qwen/Qwen3-4B-Instruct-2507
+
+- **Type:** Text-to-Text
+- **Think:** No  
+- **Base Model:** [Qwen/Qwen3-4B-Instruct-2507](https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507)
+- **Max Context Length:** 256k tokens  
+- **Default Context Length:** 32k tokens ([change default](https://docs.fastflowlm.com/instructions/cli.html#-change-default-context-length-max))  
+
+▶️ Run with FastFlowLM in PowerShell:  
+
+```powershell
+flm run qwen3-it:4b
+```
