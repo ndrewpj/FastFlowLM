@@ -52,7 +52,7 @@ flm run qwen3:0.6b
 - **Think:** Toggleable  
 - **Base Model:** [Qwen/Qwen3-4B](https://huggingface.co/Qwen/Qwen3-4B)
 - **Max Context Length:** 32k tokens  
-- **Default Context Length:** 16k tokens ([change default](https://docs.fastflowlm.com/instructions/cli.html#-change-default-context-length-max))  
+- **Default Context Length:** 32k tokens ([change default](https://docs.fastflowlm.com/instructions/cli.html#-change-default-context-length-max))  
 
 ▶️ Run with FastFlowLM in PowerShell:  
 
