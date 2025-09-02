@@ -4,7 +4,7 @@
  * \brief RestHandler class and related declarations
  * \author FastFlowLM Team
  * \date 2025-08-05
- * \version 0.9.6
+ * \version 0.9.7
  */
 #include "rest_handler.hpp"
 #include "wstream_buf.hpp"
@@ -66,12 +66,18 @@ void RestHandler::handle_generate(const json& request,
         int top_p = options.value("top_p", 0.9);
         int top_k = options.value("top_k", 5);
         float frequency_penalty = options.value("frequency_penalty", 1.1);
+        float repetition_penalty = options.value("repeat_penalty", 1.1);
         int length_limit = request.value("max_tokens", 4096);
         bool enable_thinking = request.value("think", false);
         auto load_start_time = time_utils::now();
         ensure_model_loaded(model);
         auto load_end_time = time_utils::now();
         chat_engine->set_enable_think(enable_thinking);
+        chat_engine->set_frequency_penalty(frequency_penalty);
+        chat_engine->set_repetition_penalty(repetition_penalty);
+        chat_engine->set_topp(top_p);
+        chat_engine->set_topk(top_k);
+        chat_engine->set_temperature(temperature);
         chat_meta_info meta_info;
         
         meta_info.load_duration = (uint64_t)time_utils::duration_ns(load_start_time, load_end_time).first;
@@ -148,6 +154,7 @@ void RestHandler::handle_chat(const json& request,
         float top_p = options.value("top_p", 0.9);
         int top_k = options.value("top_k", 5);
         float frequency_penalty = options.value("frequency_penalty", 1.1);
+        float repetition_penalty = options.value("repeat_penalty", 1.1);
         int length_limit = options.value("num_predict", 4096);
         bool enable_thinking = request.value("think", false);
         auto load_start_time = time_utils::now();
@@ -180,6 +187,7 @@ void RestHandler::handle_chat(const json& request,
         chat_engine->set_topp(top_p);
         chat_engine->set_topk(top_k);
         chat_engine->set_frequency_penalty(frequency_penalty);
+        chat_engine->set_repetition_penalty(repetition_penalty);
         chat_engine->set_enable_think(enable_thinking);
         chat_meta_info meta_info;
         meta_info.load_duration = (uint64_t)time_utils::duration_ns(load_start_time, load_end_time).first;
@@ -424,6 +432,7 @@ void RestHandler::handle_openai_chat_completion(const json& request,
         float top_p = request.value("top_p", 0.9);
         int top_k = request.value("top_k", 5);
         float frequency_penalty = request.value("frequency_penalty", 1.1);
+        float repetition_penalty = request.value("repeat_penalty", 1.1);
         int length_limit = request.value("max_tokens", 4096);
         bool enable_thinking = request.value("think", false);
         ensure_model_loaded(model);
@@ -432,6 +441,7 @@ void RestHandler::handle_openai_chat_completion(const json& request,
         chat_engine->set_topp(top_p);
         chat_engine->set_topk(top_k);
         chat_engine->set_frequency_penalty(frequency_penalty);
+        chat_engine->set_repetition_penalty(repetition_penalty);
         chat_meta_info meta_info;
         header_print("FLM", "Start generating...");
         if (stream){

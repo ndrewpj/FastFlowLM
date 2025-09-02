@@ -2,7 +2,7 @@
 /// \brief causal_lm class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.6
+/// \version 0.9.7
 /// \note This class is a virtual class for causal language models
 /// \note All other models should inherit from this class so that they can be used in the same way.
 #pragma once

@@ -2,7 +2,7 @@
 /// \brief llama_npu class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.6
+/// \version 0.9.7
 /// \note This is a header file for the llama_npu class
 #pragma once
 #include "lm_config.hpp"

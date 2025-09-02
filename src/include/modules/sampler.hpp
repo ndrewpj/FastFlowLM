@@ -2,7 +2,7 @@
 /// \brief sampler class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.6
+/// \version 0.9.7
 /// \note This class is used to sample the tokens.
 #pragma once
 
@@ -20,11 +20,10 @@ typedef struct sampler_config_{
     float temperature = 1.0f;
     int top_k = 5;
     float top_p = 0.9f;
-    float rep_penalty = 0.0f;
-    float freq_penalty = 0.0f;
-    int rep_penalty_window = 0;
-    int freq_penalty_window = 0;  // Window size for frequency penalty
-    float freq_penalty_decay = 0.95f;  // Decay factor for frequency penalty
+    float rep_penalty = 1.0f;
+    float freq_penalty = 1.0f;
+    int rep_penalty_window = 1024;
+    int freq_penalty_window = 1024;  // Window size for frequency penalty
 } sampler_config;
 
 typedef std::pair<float, int> logits_t;
@@ -36,7 +35,6 @@ public:
     int in_features;
     std::vector<int> counters;
     logits_list_t top_k_logits;
-    std::vector<float> freq_penalty_factor;
     float rep_penalty;
     float freq_penalty;
     float temperature;
@@ -69,8 +67,4 @@ public:
     /// \param x the input buffer
     /// \return the sampled token
     int sample(buffer<bf16>& x);
-
-    /// \brief Set the sampler config
-    /// \param config the configuration
-    void set_sampler_config(sampler_config& config);
 };

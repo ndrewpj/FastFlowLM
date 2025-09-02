@@ -2,7 +2,7 @@
 /// \brief lm_config class
 /// \author FastFlowLM Team
 /// \date 2025-08-05
-/// \version 0.9.6
+/// \version 0.9.7
 /// \note This class is used to store the model configuration.
 #pragma once
 

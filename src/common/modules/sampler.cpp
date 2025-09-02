@@ -2,7 +2,7 @@
 /// \brief sampler class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.6
+/// \version 0.9.7
 /// \note This is a header file for the sampler class
 #pragma once
 
@@ -21,7 +21,6 @@ Sampler::Sampler(int in_features, sampler_config& config) {
     this->in_features           = in_features;
     this->logits.resize(in_features);
     this->counters.resize(in_features, 0);
-    this->freq_penalty_factor.resize(in_features, 1.0f);
     this->token_positions.resize(in_features, -1);
     this->top_k_logits.resize(config.top_k);
 
@@ -34,7 +33,6 @@ Sampler::Sampler(int in_features, sampler_config& config) {
     this->freq_penalty          = config.freq_penalty;
     this->rep_penalty_window    = config.rep_penalty_window;
     this->freq_penalty_window   = config.freq_penalty_window;
-    this->freq_penalty_decay    = config.freq_penalty_decay;
 
     this->token_history.clear();
 }
@@ -49,7 +47,6 @@ void Sampler::reset_penalties() {
     for (int i = 0; i < in_features; i++) {
         this->counters[i]            = 0;
         this->token_positions[i]     = -1;
-        this->freq_penalty_factor[i] = 1.0f;
     }
     this->total_tokens = 0;
     this->token_history.clear();
@@ -93,15 +90,12 @@ int Sampler::sample(buffer<bf16>& x) {
         if (last_pos >= 0 && this->rep_penalty_window > 0 && this->rep_penalty != 1.0f) {
             size_t distance = this->total_tokens - last_pos;
             if (distance < this->rep_penalty_window) {
-                float frac    = 1.0f - (float)distance / (float)this->rep_penalty_window;
                 // Apply penalty based on sign: if logit < 0 then multiply, else divide
                 if (this->logits[token_id] < 0.0f) {
                     this->logits[token_id] = this->logits[token_id] * this->rep_penalty;
                 } else {
                     this->logits[token_id] = this->logits[token_id] / this->rep_penalty;
                 }
-                // Apply distance-based scaling
-                this->logits[token_id] = this->logits[token_id] * (1.0f - frac * (this->rep_penalty - 1.0f));
             }
         }
 

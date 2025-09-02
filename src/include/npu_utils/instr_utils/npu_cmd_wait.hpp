@@ -2,7 +2,7 @@
 /// \brief npu wait command
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.6
+/// \version 0.9.7
 /// \note This is a class for the npu wait command
 #pragma once
 
