@@ -22,7 +22,7 @@ FLM supports full context lengths — up to **256k** tokens with Qwen3-4B-Instru
 📦 **Supported Models:** [docs.fastflowlm.com/models/](https://docs.fastflowlm.com/models/)  
 📖 **Documentation:** [docs.fastflowlm.com](https://docs.fastflowlm.com)  
 💬 **Discord Server:** [discord.gg/z24t23HsHF](https://discord.gg/z24t23HsHF)  
-📺 **YouTube Demos:** [youtube.com/@FastFlowLM-YT](https://www.youtube.com/@FastFlowLM-YT)  
+📺 **YouTube Demos:** [youtube.com/@FastFlowLM-YT/playlists](https://www.youtube.com/@FastFlowLM-YT/playlists)  
 🧪 **Test Drive (Remote Machine):** [open-webui.testdrive-fastflowlm.com](https://open-webui.testdrive-fastflowlm.com/)  
 
 ---
@@ -30,7 +30,7 @@ FLM supports full context lengths — up to **256k** tokens with Qwen3-4B-Instru
 ## 📺 Demo Videos
 
 <!-- **🎥 Check out our demo videos!**   -->
-From the new **Gemma3:4b vision (first NPU-only VLM)** model to the **think/no_think Qwen3**, **4-power-mode operation**, and head-to-head comparisons with **Ollama, LM Studio, Lemonade**, and more — it’s all [up on YouTube](https://youtu.be/9QipiMg5Yz8?list=PLf87s9UUZrJp4r3JM4NliPEsYuJNNqFAJ)!
+From the new **Gemma3:4b vision (first NPU-only VLM)** model to the **think/no_think Qwen3**, **4-power-mode operation**, and head-to-head comparisons with **Ollama, LM Studio, Lemonade**, and more — it’s all [up on YouTube](https://www.youtube.com/@FastFlowLM-YT/playlists)!
 
 
 <!-- FastFlowLM vs AMD’s official stack (Ryzen™ AI software 1.4) — **real-time speedup and power efficiency**: 
@@ -69,7 +69,7 @@ From the new **Gemma3:4b vision (first NPU-only VLM)** model to the **think/no_t
 🔐 **Login**: `guest@flm.npu`  
 🔑 **Password**: `0000`
 
-📺 [Watch this short video](https://www.youtube.com/watch?v=0AhkX2ZLu7Y&list=PLf87s9UUZrJp4r3JM4NliPEsYuJNNqFAJ&index=2) to see how to try the remote demo in just a few clicks.
+📺 [Watch this short video](https://youtu.be/0AhkX2ZLu7Y?list=PLf87s9UUZrJqcaO6Vrl4YAmkofdGkvlom) to see how to try the remote demo in just a few clicks.
 
 > Alternatively, **sign up** with your own credentials instead of using the shared guest account.
 > ⚠️ Some universities or companies may **block access** to the test drive site. If it doesn't load over Wi-Fi, try switching to a **cellular network**.  
@@ -87,7 +87,7 @@ From the new **Gemma3:4b vision (first NPU-only VLM)** model to the **think/no_t
 
 A packaged Windows installer is available here: [**flm-setup.exe**](https://github.com/FastFlowLM/FastFlowLM/releases/latest/download/flm-setup.exe). For more details, see the [release notes](https://github.com/FastFlowLM/FastFlowLM/releases/).
 
-📺 [Watch the quick start video](https://www.youtube.com/watch?v=YkwFQ9-cc3I&list=PLf87s9UUZrJp4r3JM4NliPEsYuJNNqFAJ)
+📺 [Watch the quick start video](https://youtu.be/YkwFQ9-cc3I?list=PLf87s9UUZrJqcaO6Vrl4YAmkofdGkvlom)
 
 > ⚠️ Ensure NPU driver is **32.0.203.258** or later (check via Task Manager→Performance→NPU or Device Manager) — [Driver Download](https://www.amd.com/en/support).
 
