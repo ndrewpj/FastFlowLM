@@ -2,7 +2,7 @@
 /// \brief chat bot class
 /// \author FastFlowLM Team
 /// \date 2025-08-05
-/// \version 0.9.6
+/// \version 0.9.7
 /// \note This is a header file for the chat bot class
 #pragma once
 #include "chat/chat_bot.hpp"
@@ -80,14 +80,13 @@ void chat_bot::load_model(std::string model_path, json model_info){
     this->sampler.reset();
 
     sampler_config config;
-    config.rep_penalty = 1.1;
+    config.rep_penalty = 1.05;
     config.temperature = 0.6;
     config.top_p = 0.95;
     config.top_k = 10;
     config.rep_penalty_window = 1024;
-    config.freq_penalty = 1.1;
+    config.freq_penalty = 1.05;
     config.freq_penalty_window = 1024;
-    config.freq_penalty_decay = 0.995;
     this->set_sampler(config);
     for (size_t i = 0; i < PROFILER_TYPE_NUM; i++){
         this->profiler_list[i].reset();

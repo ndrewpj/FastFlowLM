@@ -2,7 +2,7 @@
 /// \brief lm_head class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.6
+/// \version 0.9.7
 /// \note This is a header file for the lm_head class
 #pragma once
 #include "lm_config.hpp"

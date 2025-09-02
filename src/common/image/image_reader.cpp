@@ -2,7 +2,7 @@
 /// \brief image_reader class
 /// \author FastFlowLM Team
 /// \date 2025-08-16
-/// \version 0.9.6
+/// \version 0.9.7
 /// \note This is a source file for the image_reader functions
 
 #include "image/image_reader.hpp"

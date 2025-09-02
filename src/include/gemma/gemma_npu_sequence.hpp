@@ -2,7 +2,7 @@
 /// \brief gemma_npu_sequence class
 /// \author FastFlowLM Team
 /// \date 2025-06-24
-/// \version 0.9.6
+/// \version 0.9.7
 /// \note This is a header file for the gemma_npu_sequence class
 #pragma once
 #include "npu_utils/npu_instr_utils.hpp"

@@ -4,7 +4,7 @@
 *  \brief Runner implementation for interactive model execution
 *  \author FastFlowLM Team
 *  \date 2025-08-05
-*  \version 0.9.6
+*  \version 0.9.7
 */
 #include "runner.hpp"
 #include <iostream>

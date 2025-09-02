@@ -2,7 +2,7 @@
 /// \brief Main entry point for the FLM application
 /// \author FastFlowLM Team
 /// \date 2025-08-05
-/// \version 0.9.6
+/// \version 0.9.7
 /// \note This is a source file for the main entry point
 #pragma once
 #include "runner.hpp"

@@ -2,7 +2,7 @@
 /// \brief chat_bot class
 /// \author FastFlowLM Team
 /// \date 2025-08-05
-/// \version 0.9.6
+/// \version 0.9.7
 /// \note This is a header file for the chat_bot class
 #pragma once
 
