@@ -10,7 +10,7 @@
 
 Run large language models on AMD Ryzen™ AI NPUs — in minutes.
 
-FastFlowLM (FLM) is a lightweight runtime for deploying LLMs like Gemma3 (Vision is now supported), Qwen3, DeepSeek-R1 and LLaMA3.1/3.2 directly on AMD’s NPU — no GPU needed, faster and over 11x more power efficient than the iGPU or hybrid (iGPU+NPU) solutions.
+FastFlowLM (FLM) is a lightweight runtime for deploying LLMs like Gemma3 (Vision supported), Qwen3, DeepSeek-R1, MedGemma and LLaMA3.1/3.2 directly on AMD’s NPU — no GPU needed, faster and over 11x more power efficient than the iGPU or hybrid (iGPU+NPU) solutions.
 
 FLM supports full context lengths — up to **256k** tokens with Qwen3-4B-Instruct/Thinking-2507.
 
@@ -30,7 +30,7 @@ FLM supports full context lengths — up to **256k** tokens with Qwen3-4B-Instru
 ## 📺 Demo Videos
 
 <!-- **🎥 Check out our demo videos!**   -->
-From the new **Gemma3:4b vision (first NPU-only VLM)** model to the **think/no_think Qwen3**, **4-power-mode operation**, and head-to-head comparisons with **Ollama, LM Studio, Lemonade**, and more — it’s all [up on YouTube](https://www.youtube.com/@FastFlowLM-YT/playlists)!
+From the new **Gemma3:4b vision (first NPU-only VLM)** model to the **think/no_think Qwen3**, head-to-head comparisons with **Ollama, LM Studio, Lemonade**, and more — it’s all [up on YouTube](https://www.youtube.com/@FastFlowLM-YT/playlists)!
 
 
 <!-- FastFlowLM vs AMD’s official stack (Ryzen™ AI software 1.4) — **real-time speedup and power efficiency**: 
