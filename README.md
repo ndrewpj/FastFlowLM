@@ -213,7 +213,7 @@ For commercial use or licensing inquiries, email us: info@fastflowlm.com
 
 ---
 
-💬 **Have feedback or want early access to our new releases? [Open an issue](https://github.com/fastflowlm/fastflowlm/issues/new) or [Join our Discord community](https://discord.gg/z24t23HsHF)
+💬 Have **feedback/issues** or want **early access** to our new releases?[Open an issue](https://github.com/fastflowlm/fastflowlm/issues/new) or [Join our Discord community](https://discord.gg/z24t23HsHF)
 
 ---
 
